@@ -10,6 +10,9 @@ namespace Data
         {
         }
 
-        //public DbSet<Activity> Activities { get; set; }
+        //For direct querying
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<Post> Posts { get; set; }
     }
 }

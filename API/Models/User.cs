@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Models
 {
     public class User : IdentityUser
     {
+        [Key]
         [Required]
         public Guid UserId { get; set; }
 
@@ -15,12 +17,10 @@ namespace API.Models
         [Required]
         public string LastName { get; set; }
 
-       // public DateTime DateOfBirth { get; set; }
+        public List<Post> Posts { get; set; }
 
-        //public List<Post> Posts { get; set; }
+        public List<Comment> Comments { get; set; }
 
-        //public List<Comment> Comments { get; set; }
-
-        //public List<Photo> Photos { get; set; }
+        public List<Photo> Photos { get; set; }
     }
 }

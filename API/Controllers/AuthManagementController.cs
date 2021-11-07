@@ -153,13 +153,24 @@ namespace API.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("Update")]
+        [HttpPut("Update/{id}")]
+        //[Route("Update/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateUserAccount([FromBody] UpdateUserAccountDto userUpdate)
+        public async Task<IActionResult> UpdateUserAccount(Guid id, [FromBody] UpdateUserAccountDto userUpdate)
         {
             var user = await _dataContext.Users.SingleOrDefaultAsync(
                 x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
+
+            if(id != user.UserId)
+            {
+                return Unauthorized();
+            }
+
+            if(await _dataContext.Users.AnyAsync(x => x.Email == userUpdate.Email)
+                && userUpdate.Email != user.Email)
+            {
+                return BadRequest("Email is already in use");
+            }
 
             user.FirstName = userUpdate.FirstName ?? user.FirstName;
             user.LastName = userUpdate.LastName ?? user.LastName;

@@ -1,4 +1,5 @@
 using API.Configuration;
+using API.Infrastracture;
 using API.Models;
 using API.Services;
 using Data;
@@ -29,6 +30,7 @@ namespace API
         {
             var jwtConfig = _configuration.GetSection("JwtConfig");
             services.Configure<JwtConfig>(jwtConfig);
+            services.Configure<CloudinarySettings>(_configuration.GetSection("Cloudinary"));
 
             var secretKey = jwtConfig.Get<JwtConfig>();
 
@@ -69,6 +71,8 @@ namespace API
 
             services.AddScoped<IUserAccessorService, UserAccessorService>();
             services.AddScoped<IAuthManagementService, AuthManagementService>();
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IPhotoService, PhotoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211107202405_UpdateNewModels")]
+    partial class UpdateNewModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,6 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("CommentId");
@@ -56,9 +57,6 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LikesCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Url")
@@ -97,7 +95,6 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PostId");
@@ -326,9 +323,7 @@ namespace API.Migrations
 
                     b.HasOne("API.Models.User", null)
                         .WithMany("Comments")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("API.Models.Photo", b =>
@@ -346,9 +341,7 @@ namespace API.Migrations
 
                     b.HasOne("API.Models.User", null)
                         .WithMany("Posts")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Photo");
                 });

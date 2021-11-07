@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211107201615_AddNewModels")]
+    partial class AddNewModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,9 +23,6 @@ namespace API.Migrations
                     b.Property<Guid>("CommentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("LikesCount")
-                        .HasColumnType("INTEGER");
 
                     b.Property<Guid>("ParentId")
                         .HasColumnType("TEXT");
@@ -37,17 +36,35 @@ namespace API.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId1")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("CommentId");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId1");
-
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("API.Models.Like", b =>
+                {
+                    b.Property<Guid>("LikeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CommentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("LoverId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LikeId");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("API.Models.Photo", b =>
@@ -56,9 +73,6 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LikesCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Url")
@@ -87,9 +101,6 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LikesCount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PhotoId")
                         .HasColumnType("TEXT");
 
@@ -97,7 +108,6 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PostId");
@@ -323,12 +333,17 @@ namespace API.Migrations
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("API.Models.User", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("API.Models.Like", b =>
+                {
+                    b.HasOne("API.Models.Comment", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentId");
+
+                    b.HasOne("API.Models.Post", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId");
                 });
 
             modelBuilder.Entity("API.Models.Photo", b =>
@@ -346,9 +361,7 @@ namespace API.Migrations
 
                     b.HasOne("API.Models.User", null)
                         .WithMany("Posts")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Photo");
                 });
@@ -404,15 +417,20 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("API.Models.Comment", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("API.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Photos");
 
                     b.Navigation("Posts");
