@@ -102,7 +102,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto user)
+        public async Task<IActionResult> Login(UserLoginDto user)
         {
             if (ModelState.IsValid)
             {

@@ -11,16 +11,18 @@ namespace API.Models
 
         [Required]
         public string Body { get; set; }
-
-        public Photo Photo { get; set; }
-
+        
         [Required]
         public DateTime CreatedAt { get; set; }
 
         [Required]
         public Guid UserId { get; set; }
 
+        public User User { get; set; }
+
         public List<Comment> Comments { get; set; }
+
+        public List<Photo> Photos { get; set; }
 
         public int LikesCount { get; set; } = 0;
     }

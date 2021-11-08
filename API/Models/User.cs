@@ -7,7 +7,6 @@ namespace API.Models
 {
     public class User : IdentityUser
     {
-        [Key]
         [Required]
         public Guid UserId { get; set; }
 

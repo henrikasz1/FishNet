@@ -1,4 +1,4 @@
-﻿using API.Models;
+﻿using API.Dtos.Responses;
 using API.Services;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -28,35 +27,17 @@ namespace API.Controllers
             _userAccessorService = userAccessorService;//
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadPhoto(IFormFile file)
+        [HttpPost("User")]
+        public async Task<ActionResult<PhotoUploadResponse>> UploadUserPhoto(IFormFile file)
         {
-            var result = await _photoService.SavePhoto(file);
+            var result = await _photoService.SaveUserPhoto(file);
 
             if(result == null)
             {
                 return BadRequest();
             }
 
-            return Ok();
-        }
-
-        //Test endpoint
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            //var us = await _dataContext.Users.SingleOrDefaultAsync(
-               //x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
-
-            var user = await _dataContext.Users.Include(x => x.Photos)
-              .FirstOrDefaultAsync(y => y.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
-
-            if (id != user.UserId)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(user.Photos);
+            return Ok(result);
         }
 
     }

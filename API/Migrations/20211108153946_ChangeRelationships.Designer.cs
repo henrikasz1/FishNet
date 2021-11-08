@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211108153946_ChangeRelationships")]
+    partial class ChangeRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +40,7 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("CommentId");
@@ -98,6 +101,7 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PostId");
@@ -324,7 +328,9 @@ namespace API.Migrations
 
                     b.HasOne("API.Models.User", null)
                         .WithMany("Comments")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Models.Photo", b =>
@@ -340,11 +346,11 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Post", b =>
                 {
-                    b.HasOne("API.Models.User", "User")
+                    b.HasOne("API.Models.User", null)
                         .WithMany("Posts")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

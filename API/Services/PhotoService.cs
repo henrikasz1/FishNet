@@ -1,4 +1,5 @@
-﻿using API.Infrastracture;
+﻿using API.Dtos.Responses;
+using API.Infrastracture;
 using API.Models;
 using Data;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,7 @@ namespace API.Services
             _userAccessorService = userAccessorService;
         }
 
-        public async Task<Photo> SavePhoto(IFormFile file)
+        public async Task<PhotoUploadResponse> SaveUserPhoto(IFormFile file)
         {
             var user = await _dataContext.Users.Include(x => x.Photos)
                 .FirstOrDefaultAsync(y => y.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
@@ -51,10 +52,35 @@ namespace API.Services
 
             if(result)
             {
-                return photo;
+                return photoUploadResult;
             }
             
             return null;
+        }
+
+        public async Task SavePostPhoto(IFormFile file, Guid postId)
+        {
+            var post = await _dataContext.Posts.Include(x => x.Photos)
+                .FirstOrDefaultAsync(y => y.PostId == postId);
+
+            if (post == null) throw new Exception("Invalid post");
+
+            var photoUploadResult = await _photoAccessor.AddPhoto(file);
+            
+            var photo = new Photo
+            {
+                Url = photoUploadResult.Url,
+                Id = photoUploadResult.PublicId,
+            };
+
+            post.Photos.Add(photo);
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Failed to add");
+            }
         }
     }
 }
