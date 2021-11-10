@@ -1,6 +1,5 @@
 ﻿using API.Dtos;
 using API.Services;
-using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -25,14 +24,14 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPost([FromForm] IFormFile file, [FromForm] AddPostDto post)
+        public async Task<IActionResult> AddPost([FromForm] List<IFormFile> files, [FromForm] AddPostDto post)
         {
-            await _postService.AddPost(file, post);
+            await _postService.AddPost(files, post);
 
             return Ok();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("post/{id}")]
         public async Task<ActionResult<GetPostDto>> GetPostByPostId(Guid id)
         {
             var result = await _postService.GetPostById(id);
@@ -54,6 +53,22 @@ namespace API.Controllers
             var result = await _postService.GetAllPosts();
 
             return Ok(result);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeletePost(string id)
+        {
+            await _postService.DeletePostById(id);
+
+            return Ok();
+        }
+
+        [HttpPut("update/{postId}")]
+        public async Task<IActionResult> UpdatePost(Guid postId, EditPostDto newPost)
+        {
+            await _postService.UpdatePostById(postId, newPost);
+
+            return Ok();
         }
     }
 }

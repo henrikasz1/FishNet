@@ -1,12 +1,11 @@
 ﻿using API.Dtos.Responses;
 using API.Services;
+using API.Services.Interfaces;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -14,23 +13,19 @@ namespace API.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
-    public class PhotoController : ControllerBase
+    public class UserPhotoController : ControllerBase
     {
-        private readonly IPhotoService _photoService;
-        private readonly DataContext _dataContext;//
-        private readonly IUserAccessorService _userAccessorService;//
+        private readonly IUserPhotoService _userPhotoService;
 
-        public PhotoController(IPhotoService photoService, DataContext dataContext, IUserAccessorService userAccessorService)
+        public UserPhotoController(IPostPhotoService photoService, DataContext dataContext, IUserPhotoService userPhotoService)
         {
-            _photoService = photoService;
-            _dataContext = dataContext;//
-            _userAccessorService = userAccessorService;//
+            _userPhotoService = userPhotoService;
         }
 
-        [HttpPost("User")]
+        [HttpPost("upload")]
         public async Task<ActionResult<PhotoUploadResponse>> UploadUserPhoto(IFormFile file)
         {
-            var result = await _photoService.SaveUserPhoto(file);
+            var result = await _userPhotoService.SaveUserPhoto(file);
 
             if(result == null)
             {
@@ -40,5 +35,12 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("delete/{photoId}")]
+        public async Task<IActionResult> DeleteUserPhoto(string photoId)
+        {
+            await _userPhotoService.DeleteUserPhoto(photoId);
+
+            return Ok();
+        }
     }
 }

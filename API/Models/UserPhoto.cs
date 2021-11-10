@@ -1,10 +1,13 @@
-﻿namespace API.Models
+﻿using System;
+
+namespace API.Models
 {
-    public class Photo
+    public class UserPhoto
     {
         public string Id { get; set; }
         public string Url { get; set; }
         public bool IsMain { get; set; }
         public int LikesCount { get; set; } = 0;
+        public Guid UserId { get; set; }
     }
 }

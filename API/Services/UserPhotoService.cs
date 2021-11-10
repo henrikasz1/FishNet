@@ -1,6 +1,7 @@
 ﻿using API.Dtos.Responses;
 using API.Infrastracture;
 using API.Models;
+using API.Services.Interfaces;
 using Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -10,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public class PhotoService : IPhotoService
+    public class UserPhotoService : IUserPhotoService
     {
         private readonly DataContext _dataContext;
-        private readonly IPhotoAccessor _photoAccessor;
         private readonly IUserAccessorService _userAccessorService;
+        private readonly IPhotoAccessor _photoAccessor;
 
-        public PhotoService(
+        public UserPhotoService(
             DataContext dataContext,
-            IPhotoAccessor photoAccessor,
-            IUserAccessorService userAccessorService)
+            IUserAccessorService userAccessorService,
+            IPhotoAccessor photoAccessor)
         {
             _dataContext = dataContext;
-            _photoAccessor = photoAccessor;
             _userAccessorService = userAccessorService;
+            _photoAccessor = photoAccessor;
         }
 
         public async Task<PhotoUploadResponse> SaveUserPhoto(IFormFile file)
@@ -35,10 +36,11 @@ namespace API.Services
 
             var photoUploadResult = await _photoAccessor.AddPhoto(file);
 
-            var photo = new Photo
+            var photo = new UserPhoto
             {
                 Url = photoUploadResult.Url,
                 Id = photoUploadResult.PublicId,
+                UserId = user.UserId
             };
 
             if (!user.Photos.Any(x => x.IsMain))
@@ -50,36 +52,35 @@ namespace API.Services
 
             var result = await _dataContext.SaveChangesAsync() > 0;
 
-            if(result)
+            if (result)
             {
                 return photoUploadResult;
             }
-            
+
             return null;
         }
 
-        public async Task SavePostPhoto(IFormFile file, Guid postId)
+        public async Task DeleteUserPhoto(string photoId)
         {
-            var post = await _dataContext.Posts.Include(x => x.Photos)
-                .FirstOrDefaultAsync(y => y.PostId == postId);
+            var photo = await _dataContext.UserPhotos.FindAsync(photoId);
 
-            if (post == null) throw new Exception("Invalid post");
-
-            var photoUploadResult = await _photoAccessor.AddPhoto(file);
-            
-            var photo = new Photo
+            if (photo == null)
             {
-                Url = photoUploadResult.Url,
-                Id = photoUploadResult.PublicId,
-            };
+                throw new NullReferenceException("Photo not found");
+            }    
 
-            post.Photos.Add(photo);
+            if (photo.UserId != Guid.Parse(_userAccessorService.GetCurrentUserId()))
+            {
+                throw new UnauthorizedAccessException("Only owner can delete this photo");
+            }
+
+            _dataContext.UserPhotos.Remove(photo);
 
             var result = await _dataContext.SaveChangesAsync() > 0;
 
             if (!result)
             {
-                throw new DbUpdateException("Failed to add");
+                throw new DbUpdateException("Could not delete photo");
             }
         }
     }

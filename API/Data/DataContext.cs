@@ -12,7 +12,8 @@ namespace Data
 
         //For direct querying
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Photo> Photos { get; set; }
+        public DbSet<UserPhoto> UserPhotos { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostPhoto> PostPhotos { get; set; }
     }
 }

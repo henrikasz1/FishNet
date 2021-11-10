@@ -1,5 +1,4 @@
 ﻿using API.Dtos;
-using API.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -9,9 +8,11 @@ namespace API.Services
 {
     public interface IPostService
     {
-        Task AddPost(IFormFile file, AddPostDto post);
+        Task AddPost(List<IFormFile> file, AddPostDto post);
         Task<GetPostDto> GetPostById(Guid postId);
         Task<IList<GetPostDto>> GetPostsByUserId(Guid userId);
         Task<IList<GetPostDto>> GetAllPosts();
+        Task DeletePostById(string id);
+        Task UpdatePostById(Guid postId, EditPostDto newPost);
     }
 }

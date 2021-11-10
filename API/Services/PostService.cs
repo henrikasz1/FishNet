@@ -14,19 +14,19 @@ namespace API.Services
     {
         private readonly DataContext _dataContext;
         private readonly IUserAccessorService _userAccessorService;
-        private readonly IPhotoService _photoService;
+        private readonly IPostPhotoService _photoService;
 
         public PostService(
             DataContext dataContext,
             IUserAccessorService userAccessorService,
-            IPhotoService photoService)
+            IPostPhotoService photoService)
         {
             _dataContext = dataContext;
             _userAccessorService = userAccessorService;
             _photoService = photoService;
         }
 
-        public async Task AddPost(IFormFile file, AddPostDto post)
+        public async Task AddPost(List<IFormFile> files, AddPostDto post)
         {
             var userId = _userAccessorService.GetCurrentUserId();
 
@@ -45,7 +45,10 @@ namespace API.Services
 
             var result = await _dataContext.SaveChangesAsync() > 0;
 
-            await _photoService.SavePostPhoto(file, newPost.PostId);
+            foreach (var photo in files)
+            {
+                await _photoService.SavePostPhoto(photo, newPost.PostId);
+            }
 
             if (!result)
             {
@@ -96,7 +99,8 @@ namespace API.Services
             return postsDtoList;
         }
 
-        //The purpose of that is to get posts for feed, later will be displayed posts of friends only, also would be nice to have pagination (if soc net would grow big)
+        //The purpose of that is to get posts for feed, later will be displayed posts of friends only, 
+        //also would be nice to have pagination (if soc net would grow big)
         public async Task<IList<GetPostDto>> GetAllPosts()
         {
             var postsDtoList = new List<GetPostDto>();
@@ -123,9 +127,50 @@ namespace API.Services
             return postsDtoList;
         }
 
-        //Future methods 
+        public async Task DeletePostById(string id)
+        {
+            var userId = _userAccessorService.GetCurrentUserId();
 
-        //put service
-        //delete service
+            var postToDelete = await _dataContext.Posts.Include(x => x.Photos)
+                .FirstOrDefaultAsync(y => y.PostId == Guid.Parse(id));
+
+            if (postToDelete.UserId != Guid.Parse(userId))
+            {
+                throw new UnauthorizedAccessException("User does not own this post");
+            }
+
+            foreach (var photo in postToDelete.Photos)
+            {
+                await _photoService.DeletePostPhoto(photo);
+            }
+
+            _dataContext.Posts.Remove(postToDelete);
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Unable to remove post");
+            }
+        }
+
+        public async Task UpdatePostById(Guid postId, EditPostDto newPost)
+        {
+            var post = await _dataContext.Posts.FirstOrDefaultAsync(x => x.PostId == postId);
+
+            if (post.UserId != Guid.Parse(_userAccessorService.GetCurrentUserId()))
+            {
+                throw new UnauthorizedAccessException("Only post owner can update it");
+            }
+
+            post.Body = newPost.Body ?? newPost.Body;
+
+            var success = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!success)
+            {
+                throw new DbUpdateException("Could not update post");
+            }
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace API.Models
 
         public List<Comment> Comments { get; set; }
 
-        public List<Photo> Photos { get; set; }
+        public List<PostPhoto> Photos { get; set; }
 
         public int LikesCount { get; set; } = 0;
     }

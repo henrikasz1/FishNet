@@ -20,6 +20,6 @@ namespace API.Models
 
         public List<Comment> Comments { get; set; }
 
-        public List<Photo> Photos { get; set; }
+        public List<UserPhoto> Photos { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using API.Configuration;
 using API.Infrastracture;
 using API.Models;
 using API.Services;
+using API.Services.Interfaces;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +40,7 @@ namespace API
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
-            });
+           });
 
             services.AddAuthentication(opt =>
             {
@@ -72,7 +73,8 @@ namespace API
             services.AddScoped<IUserAccessorService, UserAccessorService>();
             services.AddScoped<IAuthManagementService, AuthManagementService>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
-            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IPostPhotoService, PostPhotoService>();
+            services.AddScoped<IUserPhotoService, UserPhotoService>();
             services.AddScoped<IPostService, PostService>();
         }
 

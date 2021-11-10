@@ -1,13 +1,14 @@
-﻿using API.Dtos.Responses;
+﻿using API.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public interface IPhotoService
+    public interface IPostPhotoService
     {
-        Task<PhotoUploadResponse> SaveUserPhoto(IFormFile file);
         Task SavePostPhoto(IFormFile file, Guid postId);
+        Task DeletePostPhoto(PostPhoto photo);
+        Task DeletePostPhotoById(string photoId);
     }
 }

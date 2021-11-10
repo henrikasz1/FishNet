@@ -16,6 +16,6 @@ namespace API.Dtos
 
         public int LikesCount { get; set; }
 
-        public List<Photo> Photos { get; set; }
+        public List<PostPhoto> Photos { get; set; }
     }
 }
