@@ -17,14 +17,14 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthManagementController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IAuthManagementService _authManagementService;
         private readonly UserManager<User> _userManager;
         private readonly IUserAccessorService _userAccessorService;
         private readonly DataContext _dataContext;
 
-        public AuthManagementController(
+        public UserController(
             IAuthManagementService authManagementService,
             UserManager<User> userManager,
             IUserAccessorService userAccessorService,
@@ -64,7 +64,8 @@ namespace API.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    IsProfilePrivate = user.IsProfilePrivate
                 };
 
                 var IsCreated = await _userManager.CreateAsync(newUser, user.Password);
@@ -161,12 +162,12 @@ namespace API.Controllers
             var user = await _dataContext.Users.SingleOrDefaultAsync(
                 x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
 
-            if(id != user.UserId)
+            if (id != user.UserId)
             {
                 return Unauthorized();
             }
 
-            if(await _dataContext.Users.AnyAsync(x => x.Email == userUpdate.Email)
+            if (await _dataContext.Users.AnyAsync(x => x.Email == userUpdate.Email)
                 && userUpdate.Email != user.Email)
             {
                 return BadRequest("Email is already in use");
@@ -175,7 +176,8 @@ namespace API.Controllers
             user.FirstName = userUpdate.FirstName ?? user.FirstName;
             user.LastName = userUpdate.LastName ?? user.LastName;
             user.Email = userUpdate.Email ?? user.Email;
-            
+            if (user.IsProfilePrivate != userUpdate.IsProfilePrivate) user.IsProfilePrivate = userUpdate.IsProfilePrivate;
+
             var success = await _dataContext.SaveChangesAsync() > 0;
 
             if (success)

@@ -20,5 +20,6 @@ namespace API.Dtos
         [Required]
         public string Password { get; set; }
 
+        public bool IsProfilePrivate { get; set; }
     }
 }

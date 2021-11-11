@@ -4,6 +4,5 @@ obj
 *.db
 wwwroot
 publish
-settings.json
-appsettings.json
 .ideas
+.vs/FishNet/v16

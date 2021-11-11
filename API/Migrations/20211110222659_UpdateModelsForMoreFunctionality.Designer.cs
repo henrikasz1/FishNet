@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211110222659_UpdateModelsForMoreFunctionality")]
+    partial class UpdateModelsForMoreFunctionality
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,19 +51,6 @@ namespace API.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("API.Models.PhotoLikes", b =>
-                {
-                    b.Property<string>("ObjectId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("LoverId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ObjectId", "LoverId");
-
-                    b.ToTable("PhotoLikes");
-                });
-
             modelBuilder.Entity("API.Models.Post", b =>
                 {
                     b.Property<Guid>("PostId")
@@ -89,19 +78,6 @@ namespace API.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("API.Models.PostLikes", b =>
-                {
-                    b.Property<Guid>("ObjectId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("LoverId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ObjectId", "LoverId");
-
-                    b.ToTable("PostLikes");
                 });
 
             modelBuilder.Entity("API.Models.PostPhoto", b =>

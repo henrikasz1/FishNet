@@ -11,5 +11,6 @@ namespace API.Dtos
         [EmailAddress]
         public string Email { get; set; }
 
+        public bool IsProfilePrivate { get; set; }
     }
 }

@@ -61,6 +61,17 @@ namespace API.Services
             var post = await _dataContext.Posts.Include(x => x.Photos)
                 .FirstOrDefaultAsync(y => y.PostId == postId);
 
+            //---
+
+            //var postOwner = await _dataContext.Users.FirstOrDefaultAsync(x => x.UserId == post.UserId);
+            //var observerId = _userAccessorService.GetCurrentUserId();
+
+            //if (postOwner.IsProfilePrivate == true && )
+            //{
+            //    //get friendship state and then return null or ok
+            //}
+            //---
+
             var postDto = new GetPostDto
             {
                 PostId = post.PostId,

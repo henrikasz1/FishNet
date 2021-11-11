@@ -40,7 +40,7 @@ namespace API
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
-           });
+            });
 
             services.AddAuthentication(opt =>
             {
@@ -76,6 +76,7 @@ namespace API
             services.AddScoped<IPostPhotoService, PostPhotoService>();
             services.AddScoped<IUserPhotoService, UserPhotoService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddScoped<ILikesService, LikesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

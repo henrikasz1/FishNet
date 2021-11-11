@@ -1,4 +1,5 @@
 ﻿using API.Dtos.Responses;
+using API.Dtos.UserPhotoDtos;
 using API.Infrastracture;
 using API.Models;
 using API.Services.Interfaces;
@@ -6,6 +7,7 @@ using Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +29,7 @@ namespace API.Services
             _photoAccessor = photoAccessor;
         }
 
-        public async Task<PhotoUploadResponse> SaveUserPhoto(IFormFile file)
+        public async Task<PhotoUploadResponse> SaveUserPhoto(IFormFile file, string body)
         {
             var user = await _dataContext.Users.Include(x => x.Photos)
                 .FirstOrDefaultAsync(y => y.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
@@ -40,7 +42,8 @@ namespace API.Services
             {
                 Url = photoUploadResult.Url,
                 Id = photoUploadResult.PublicId,
-                UserId = user.UserId
+                UserId = user.UserId,
+                Body = body
             };
 
             if (!user.Photos.Any(x => x.IsMain))
@@ -67,7 +70,7 @@ namespace API.Services
             if (photo == null)
             {
                 throw new NullReferenceException("Photo not found");
-            }    
+            }
 
             if (photo.UserId != Guid.Parse(_userAccessorService.GetCurrentUserId()))
             {
@@ -82,6 +85,62 @@ namespace API.Services
             {
                 throw new DbUpdateException("Could not delete photo");
             }
+        }
+
+        public async Task<IList<GetAllUserPhotosDto>> GetAllUserPhotos(Guid userId)
+        {
+            var photosList = new List<GetAllUserPhotosDto>();
+
+            var photos = await _dataContext.UserPhotos.Where(x => x.UserId == userId).ToListAsync();
+
+            foreach (var photo in photos)
+            {
+                photosList.Add(new GetAllUserPhotosDto
+                {
+                    Url = photo.Url,
+                    Body = photo.Body,
+                    LikesCount = photo.LikesCount
+                });
+            }
+
+            if (!photosList.Any())
+            {
+                return null;
+            }
+
+            return photosList;
+        }
+
+        public async Task<GetMainUserPhotoDto> GetMainUserPhoto(Guid userId)
+        {
+            var photo = await _dataContext.UserPhotos.Where(x => x.UserId == userId && x.IsMain == true).ToListAsync();
+
+            if (!photo.Any())
+            {
+                return null;
+            }
+
+            return new GetMainUserPhotoDto
+            {
+                Url = photo[0].Url,
+                Body = photo[0].Body
+            };
+        }
+
+        public async Task<GetSelectedUserPhotoDto> GetSelectedUserPhoto(Guid userId, string photoId)
+        {
+            var photo = await _dataContext.UserPhotos.Where(x => x.UserId == userId && x.Id == photoId).ToListAsync();
+
+            if (!photo.Any())
+            {
+                return null;
+            }
+
+            return new GetSelectedUserPhotoDto
+            {
+                Url = photo[0].Url,
+                Body = photo[0].Body
+            };
         }
     }
 }

@@ -15,5 +15,15 @@ namespace Data
         public DbSet<UserPhoto> UserPhotos { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostPhoto> PostPhotos { get; set; }
+        public DbSet<PostLikes> PostLikes { get; set; }
+        public DbSet<PhotoLikes> PhotoLikes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<PostLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
+            builder.Entity<PhotoLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
+        }
     }
 }
