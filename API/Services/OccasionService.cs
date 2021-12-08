@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class EventService : IEventService
+    public class OccasionService : IOccasionService
     {
         private readonly DataContext _dataContext;
         private readonly IUserAccessorService _userAccessorService;
         
-        public EventService(
+        public OccasionService(
             DataContext dataContext,
             IUserAccessorService userAccessorService)
         {
@@ -20,13 +20,13 @@ namespace API.Services
             _userAccessorService = userAccessorService;
         }
 
-        public async Task AddEvent(AddEventDto occasion)
+        public async Task AddOccasion(AddOccasionDto occasion)
         {
             var UserId = _userAccessorService.GetCurrentUserId();
 
-            var newEvent = new Event()
+            var newOccasion = new Occasion()
             {
-                EventId = Guid.NewGuid(),
+                OccasionId = Guid.NewGuid(),
                 UserId = Guid.Parse(UserId),
                 Title = occasion.Title,
                 Description = occasion.Description,
@@ -35,27 +35,27 @@ namespace API.Services
                 EndsAt = occasion.EndsAt,
             };
 
-            _dataContext.Event.Add(newEvent);
+            _dataContext.Occasions.Add(newOccasion);
             
             var result = await _dataContext.SaveChangesAsync() > 0;
             
             if (!result)
             {
-                throw new DbUpdateException("Failed to create an event");
+                throw new DbUpdateException("Failed to create an occasion");
             }
         }
 
-        public async Task<GetEventDto> GetEventById(Guid eventId)
+        public async Task<GetOccasionDto> GetOccasionById(Guid occasionId)
         {
-            var occasion = await _dataContext.Event
-                // .Include(y => y.User)
-                .FirstOrDefaultAsync(x => x.EventId == eventId);
+            var occasion = await _dataContext.Occasions
+                .Include(y => y.User)
+                .FirstOrDefaultAsync(x => x.OccasionId == occasionId);
             // var post = await _dataContext.Posts.Include(x => x.Photos)
             //     .FirstOrDefaultAsync(y => y.PostId == postId);
             
-            var newEvent = new GetEventDto
+            var newOccasion = new GetOccasionDto
             {
-                EventId = occasion.EventId,
+                OccasionId = occasion.OccasionId,
                 UserId = occasion.UserId,
                 Title = occasion.Title,
                 Description = occasion.Description,
@@ -64,21 +64,28 @@ namespace API.Services
                 EndsAt = occasion.EndsAt,
             };
         
-            return newEvent;
+            return newOccasion;
         }
 
-        public async Task DeleteEventById(Guid eventId)
+        public async Task DeleteOccasionById(Guid occasionId)
         {
-            var Event = await _dataContext.Event.FirstOrDefaultAsync(x => x.EventId == eventId);
+            var occasion = await _dataContext.Occasions.FindAsync(occasionId);
             
             var userId = _userAccessorService.GetCurrentUserId();
 
-            if (Event.UserId != Guid.Parse(userId))
+            if (occasion.UserId != Guid.Parse(userId))
             {
-                throw new UnauthorizedAccessException("Only the host can delete the event");
+                throw new UnauthorizedAccessException("Only the host can delete the occasion");
             }
 
-            _dataContext.Event.Remove(Event);
+            _dataContext.Occasions.Remove(occasion);
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Unable to remove post");
+            }
         }
         //public async Task GetEventsByUserId(GetEventDto )
         //public async Task UpdateEvent(UpdateEventDto )

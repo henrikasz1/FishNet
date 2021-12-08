@@ -17,7 +17,7 @@ namespace Data
         public DbSet<PostPhoto> PostPhotos { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<PhotoLikes> PhotoLikes { get; set; }
-        public DbSet<Event> Event { get; set; }
+        public DbSet<Occasion> Occasions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

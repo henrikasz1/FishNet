@@ -2,9 +2,9 @@
 
 namespace API.Dtos.EventDtos
 {
-    public class GetEventDto
+    public class GetOccasionDto
     {
-        public Guid EventId { get; set; }
+        public Guid OccasionId { get; set; }
 
         public Guid UserId { get; set; }
 

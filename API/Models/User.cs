@@ -21,7 +21,7 @@ namespace API.Models
 
         public List<Post> Posts { get; set; }
         
-        public List<Event> Events { get; set; }
+        public List<Occasion> Events { get; set; }
 
         public List<Comment> Comments { get; set; }
 

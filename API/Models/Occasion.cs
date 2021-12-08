@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.Models
 {
-    public class Event
+    public class Occasion
     {
         [Required]
-        public Guid EventId { get; set; }
+        public Guid OccasionId { get; set; }
         
         [Required]
         public Guid UserId { get; set; }
