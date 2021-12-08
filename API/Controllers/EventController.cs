@@ -30,10 +30,18 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpGet("event/{id}")]
-        public async Task<ActionResult<GetEventDto>> GetEventByEventId(Guid EventId)
+        [HttpDelete("event/{id}")]
+        public async Task<IActionResult> DeleteEventByEventId(Guid eventId)
         {
-            await _eventService.GetEventById(EventId);
+            await _eventService.DeleteEventById(eventId);
+
+            return Ok();
+        }
+
+        [HttpGet("event/{id}")]
+        public async Task<ActionResult<GetEventDto>> GetEventByEventId(Guid eventId)
+        {
+            await _eventService.GetEventById(eventId);
 
             return Ok();
         }
