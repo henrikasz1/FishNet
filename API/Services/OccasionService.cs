@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using API.Dtos;
 using API.Dtos.EventDtos;
 using API.Models;
+using API.Services.Interfaces;
 using Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
@@ -14,16 +16,19 @@ namespace API.Services
     {
         private readonly DataContext _dataContext;
         private readonly IUserAccessorService _userAccessorService;
+        private readonly IOccasionPhotoService _occasionPhotoService;
         
         public OccasionService(
             DataContext dataContext,
-            IUserAccessorService userAccessorService)
+            IUserAccessorService userAccessorService,
+            IOccasionPhotoService occasionPhotoService)
         {
             _dataContext = dataContext;
             _userAccessorService = userAccessorService;
+            _occasionPhotoService = occasionPhotoService;
         }
 
-        public async Task AddOccasion(AddOccasionDto occasion)
+        public async Task AddOccasion(IFormFile file, AddOccasionDto occasion)
         {
             var hostId = _userAccessorService.GetCurrentUserId();
 
@@ -43,7 +48,9 @@ namespace API.Services
                 _dataContext.Occasions.Add(newOccasion);
             
                 var result = await _dataContext.SaveChangesAsync() > 0;
-            
+                
+                await _occasionPhotoService.SaveOccasionPhoto(file, newOccasion.OccasionId);
+
                 if (!result)
                 {
                     throw new DbUpdateException("Failed to create an occasion");
@@ -156,7 +163,7 @@ namespace API.Services
             {
                 throw new UnauthorizedAccessException("Only occasion host can update it");
             }
-
+            
             occasion.Title = newOccasion.Title;
             occasion.Description = newOccasion.Description;
             occasion.Location = newOccasion.Location;

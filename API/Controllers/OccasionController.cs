@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Controllers
 {
@@ -15,15 +16,15 @@ namespace API.Controllers
     {
         private readonly IOccasionService _occasionService;
 
-        public OccasionController(IOccasionService eventService)
+        public OccasionController(IOccasionService occasionService)
         {
-            _occasionService = eventService;
+            _occasionService = occasionService;
         }
         
         [HttpPost]
-        public async Task<IActionResult> AddOccasion(AddOccasionDto occasionDto) 
+        public async Task<IActionResult> AddOccasion([FromForm]IFormFile file, [FromForm]AddOccasionDto occasionDto) 
         {
-            await _occasionService.AddOccasion(occasionDto);
+            await _occasionService.AddOccasion(file, occasionDto);
 
             return Ok();
         }
@@ -61,7 +62,8 @@ namespace API.Controllers
         }
 
         [HttpPut("edit/{occasionId}")]
-        public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion)
+        public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, [FromForm] EditOccasionDto newOccasion,
+            [FromForm]IFormFile file)
         {
             await _occasionService.EditOccasionByOccasionId(occasionId, newOccasion);
 

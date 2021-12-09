@@ -27,7 +27,7 @@ namespace API.Models
         
         public DateTime EndsAt { get; set; }
         
-        public List<OccasionPhoto> Photo { get; set; }
+        public List<OccasionPhoto> Photos { get; set; }
 
        // public List<Post> Posts { get; set; }
         

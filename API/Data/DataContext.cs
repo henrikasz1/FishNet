@@ -18,6 +18,7 @@ namespace Data
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<PhotoLikes> PhotoLikes { get; set; }
         public DbSet<Occasion> Occasions { get; set; }
+        public DbSet<OccasionPhoto> OccasionsPhotos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
