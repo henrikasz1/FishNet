@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211209142427_Occasions3")]
+    partial class Occasions3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,11 +64,11 @@ namespace API.Migrations
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("HostId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Location")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartsAt")
@@ -76,14 +78,27 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("OccasionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Occasions");
+                });
+
+            modelBuilder.Entity("API.Models.OccasionOwner", b =>
+                {
+                    b.Property<Guid>("OccasionOwnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OccasionOwnerId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("OccasionOwner");
                 });
 
             modelBuilder.Entity("API.Models.PhotoLikes", b =>
@@ -402,6 +417,21 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("OccasionUser", b =>
+                {
+                    b.Property<Guid>("OccasionsOccasionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UsersAttendingId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OccasionsOccasionId", "UsersAttendingId");
+
+                    b.HasIndex("UsersAttendingId");
+
+                    b.ToTable("OccasionUser");
+                });
+
             modelBuilder.Entity("API.Models.Comment", b =>
                 {
                     b.HasOne("API.Models.Post", null)
@@ -417,11 +447,22 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Occasion", b =>
                 {
-                    b.HasOne("API.Models.User", "User")
-                        .WithMany("Occasions")
-                        .HasForeignKey("UserId");
+                    b.HasOne("API.Models.OccasionOwner", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("API.Models.OccasionOwner", b =>
+                {
+                    b.HasOne("API.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -500,6 +541,21 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OccasionUser", b =>
+                {
+                    b.HasOne("API.Models.Occasion", null)
+                        .WithMany()
+                        .HasForeignKey("OccasionsOccasionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersAttendingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("API.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -510,8 +566,6 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Occasions");
 
                     b.Navigation("Photos");
 

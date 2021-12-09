@@ -18,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Dtos\OccasionPhotoDtos" />
 	  <Folder Include="Migrations\" />
 	</ItemGroup>
 	

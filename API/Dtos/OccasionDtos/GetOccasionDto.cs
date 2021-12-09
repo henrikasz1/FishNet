@@ -6,7 +6,7 @@ namespace API.Dtos.EventDtos
     {
         public Guid OccasionId { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid HostId { get; set; }
 
         public string Title { get; set; }
         

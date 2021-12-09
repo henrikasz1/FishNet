@@ -36,12 +36,36 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpGet("occasion/{occasionId}")]
+        [HttpGet("{occasionId}")]
         public async Task<ActionResult<GetOccasionDto>> GetOccasionByOccasionId(Guid occasionId)
         {
             var result = await _occasionService.GetOccasionById(occasionId);
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<GetOccasionDto>> GetAllOccasions()
+        {
+            var result = await _occasionService.GetAllOccasions();
+
+            return Ok(result);
+        }
+
+        [HttpGet("userOccasions/{hostId}")]
+        public async Task<ActionResult<GetOccasionDto>> GetOccasionsByHostId(Guid hostId)
+        {
+            var result = await _occasionService.GetOccasionsByHostId(hostId);
+
+            return Ok(result);
+        }
+
+        [HttpPut("edit/{occasionId}")]
+        public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion)
+        {
+            await _occasionService.EditOccasionByOccasionId(occasionId, newOccasion);
+
+            return Ok();
         }
     }
 }

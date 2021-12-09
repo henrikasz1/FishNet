@@ -10,7 +10,7 @@ namespace API.Models
         public Guid OccasionId { get; set; }
         
         [Required]
-        public Guid UserId { get; set; }
+        public Guid HostId { get; set; }
         
         public User User { get; set; }
         
@@ -27,8 +27,12 @@ namespace API.Models
         
         public DateTime EndsAt { get; set; }
         
+        public List<OccasionPhoto> Photo { get; set; }
+
        // public List<Post> Posts { get; set; }
         
         //public List<User> UsersAttending { get; set; }
+        
+       // public 
     }
 }
