@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using API.Models;
+using Newtonsoft.Json;
 
 namespace API.Dtos.EventDtos
 {
@@ -20,8 +21,10 @@ namespace API.Dtos.EventDtos
         
         public DateTime EndsAt { get; set; }
         
-        public ICollection<OccasionUser> Participants { get; set; } = new List<OccasionUser>();
+        public List<Guid> ParticipantsIds { get; set; }
         
         public List<OccasionPhoto> Photos { get; set; }
+        
+        public int ParticipantsCount { get; set; } = 0;
     }
 }

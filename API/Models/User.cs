@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using API.Services;
+using Newtonsoft.Json;
 
 namespace API.Models
 {
@@ -21,7 +22,8 @@ namespace API.Models
 
         public List<Post> Posts { get; set; }
         
-        public ICollection<OccasionUser> Occasions { get; set; } = new List<OccasionUser>();
+        [JsonIgnore]
+        public List<OccasionUser> Occasions { get; set; }
 
         public List<Comment> Comments { get; set; }
 

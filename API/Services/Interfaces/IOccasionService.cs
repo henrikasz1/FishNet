@@ -12,7 +12,7 @@ namespace API.Services
         Task<GetOccasionDto> GetOccasionById(Guid occasionId);
         Task<IList<GetOccasionDto>> GetAllOccasions();
         Task<IList<GetOccasionDto>> GetOccasionsByHostId(Guid hostId);
-        //Task<IList<GetOccasionUsersDto>> GetOccasionUsersByOccasionId(Guid occasionId);
+        Task LeaveOccasion(Guid occasionId);
         Task DeleteOccasionById(Guid eventId);
         Task EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion);
         Task JoinOccasion(Guid occasionId);

@@ -45,7 +45,10 @@ namespace API.Services
 
             if (newOccasion.StartsAt >= DateTime.Now && newOccasion.EndsAt >= newOccasion.StartsAt)
             {
-                newOccasion.Participants.Add(new OccasionUser {UserId = Guid.Parse(hostId)});
+                newOccasion.Participants = new List<OccasionUser>();
+                newOccasion.Participants.Add(new OccasionUser {UserId = Guid.Parse(hostId),
+                    OccasionId = newOccasion.OccasionId});
+                newOccasion.ParticipantsCount++;
                 _dataContext.Occasions.Add(newOccasion);
                 var result = await _dataContext.SaveChangesAsync() > 0;
 
@@ -65,11 +68,12 @@ namespace API.Services
         public async Task JoinOccasion(Guid occasionId)
         {
             var userId = _userAccessorService.GetCurrentUserId();
-            var occasion = await _dataContext.Occasions.Include(x => x.Participants)
+            var occasion = await _dataContext.Occasions
+                .Include(x => x.Participants)
                 .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
             if (occasion == null) throw new Exception("Invalid occasion");
-            if (!occasion.Participants.Any(x => Equals(userId)))
+            if (occasion.Participants.Any(x => Equals(userId)))
             {
                 throw new Exception("User has already joined the event");
             }
@@ -79,7 +83,7 @@ namespace API.Services
                 UserId = Guid.Parse(userId),
                 OccasionId = occasion.OccasionId,
             };
-            
+            occasion.ParticipantsCount++;
             _dataContext.OccasionUsers.Add(participant);
             
             var result = await _dataContext.SaveChangesAsync() > 0;
@@ -89,11 +93,43 @@ namespace API.Services
                 throw new DbUpdateException("Failed to join an occasion");
             }
         }
+
+        public async Task LeaveOccasion(Guid occasionId)
+        {
+            var userId = _userAccessorService.GetCurrentUserId();
+            var user = await _dataContext.OccasionUsers
+                .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId));
+            var occasion = await _dataContext.Occasions
+                .Include(x => x.Participants)
+                .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
+
+            if (occasion == null) throw new Exception("Invalid occasion");
+            
+            if (occasion.Participants.All(x => x.UserId != Guid.Parse(userId)))
+            {
+                throw new Exception("User has not joined the event yet");
+            }
+
+            if (occasion.HostId != Guid.Parse(userId))
+            {
+                throw new Exception("As an occasion host, you cannot leave the occasion");
+            }
+            occasion.ParticipantsCount--;
+            _dataContext.OccasionUsers.Remove(user);
+            
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Unable to leave the occasion");
+            }
+        }
         
         public async Task<GetOccasionDto> GetOccasionById(Guid occasionId)
         {
             var occasion = await _dataContext.Occasions
-                //.Include(y => y.Participants)
+                .Include(y => y.Participants)
+                .Include(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.OccasionId == occasionId);
 
             var newOccasion = new GetOccasionDto
@@ -105,19 +141,24 @@ namespace API.Services
                 Location = occasion.Location,
                 StartsAt = occasion.StartsAt,
                 EndsAt = occasion.EndsAt,
-                Participants = occasion.Participants,
                 Photos = occasion.Photos,
+                ParticipantsCount = occasion.ParticipantsCount
             };
+            newOccasion.ParticipantsIds = new List<Guid>();
+            foreach (var participant in occasion.Participants)
+            {
+                newOccasion.ParticipantsIds.Add(participant.UserId);
+            }
             return newOccasion;
         }
 
         public async Task<IList<GetOccasionDto>> GetAllOccasions()
         {
             var occasionsList = new List<GetOccasionDto>();
-
+            
             var occasions = await _dataContext.Occasions
                 .Select(x => x)
-                //.Include(y => y.Participants)
+                .Include(y => y.Participants)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
@@ -132,11 +173,10 @@ namespace API.Services
                         Location = occasion.Location,
                         StartsAt = occasion.StartsAt,
                         EndsAt = occasion.EndsAt,
-                        Participants = occasion.Participants,
+                        ParticipantsIds = new List<Guid>(),
                         Photos = occasion.Photos,
                     });
             }
-
             return occasionsList;
         }
 
@@ -159,7 +199,7 @@ namespace API.Services
                         Location = occasion.Location,
                         StartsAt = occasion.StartsAt,
                         EndsAt = occasion.EndsAt,
-                        Participants = occasion.Participants,
+                        //Participants = occasion.Participants,
                         Photos = occasion.Photos,
                     });
             }

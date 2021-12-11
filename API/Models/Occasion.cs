@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API.Models
 {
@@ -29,8 +30,9 @@ namespace API.Models
         
         public List<OccasionPhoto> Photos { get; set; }
         
-        public ICollection<OccasionUser> Participants { get; set; } = new List<OccasionUser>();
+        public List<OccasionUser> Participants { get; set; }
         
+        public int ParticipantsCount { get; set; } = 0;
        // public 
     }
 }

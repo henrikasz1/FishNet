@@ -37,6 +37,14 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpDelete("leave/{occasionId}")]
+        public async Task<IActionResult> LeaveOccasion(Guid occasionId)
+        {
+            await _occasionService.LeaveOccasion(occasionId);
+
+            return Ok();
+        }
+
         [HttpGet("{occasionId}")]
         public async Task<ActionResult<GetOccasionDto>> GetOccasionByOccasionId(Guid occasionId)
         {
