@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Data;
+using API.Dtos.UserDtos;
+using API.Services.Interfaces;
 
 namespace API.Controllers
 {
@@ -23,17 +25,20 @@ namespace API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IUserAccessorService _userAccessorService;
         private readonly DataContext _dataContext;
+        private readonly IUserService _userService;
 
         public UserController(
             IAuthManagementService authManagementService,
             UserManager<User> userManager,
             IUserAccessorService userAccessorService,
-            DataContext dataContext)
+            DataContext dataContext,
+            IUserService userService)
         {
             _authManagementService = authManagementService;
             _userManager = userManager;
             _userAccessorService = userAccessorService;
             _dataContext = dataContext;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -186,6 +191,15 @@ namespace API.Controllers
             }
 
             throw new Exception("Problem occured while saving changes");
+        }
+
+        [HttpGet("getbyname/{filter}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<IList<GetUserDto>>> GetUserByName(string filter)
+        {
+            var result = await _userService.GetUserByName(filter);
+
+            return Ok(result);
         }
     }
 }
