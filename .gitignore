@@ -5,4 +5,6 @@ obj
 wwwroot
 publish
 .ideas
+.idea/.idea.FishNet/.idea
+.vs/FishNet/DesignTimeBuild
 .vs/FishNet/v16
