@@ -1,4 +1,4 @@
-﻿using API.Dtos.UserDtos;
+﻿using API.Dtos.SearchDtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,6 +6,6 @@ namespace API.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IList<GetUserDto>> GetUserByName(string filter);
+        Task<IList<GetSearchResultsDto>> GetUserByName(string filter);
     }
 }

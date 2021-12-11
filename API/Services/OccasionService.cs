@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Dtos;
-using API.Dtos.EventDtos;
+﻿using API.Dtos.EventDtos;
+using API.Dtos.SearchDtos;
 using API.Models;
 using API.Services.Interfaces;
 using Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static API.Models.Enums.SearchResultEnum;
 
 namespace API.Services
 {
@@ -152,35 +153,25 @@ namespace API.Services
             return newOccasion;
         }
 
-        public async Task<List<GetOccasionDto>> GetOccasionByName(string filter)
+        public async Task<List<GetSearchResultsDto>> GetOccasionByName(string filter)
         {
-            var occasionsList = new List<GetOccasionDto>();
+            var occasionsList = new List<GetSearchResultsDto>();
             var occasions = await _dataContext.Occasions
                 .Include(y => y.Photos)
-                .Include(y => y.Participants)
                 .Where(y => y.Title.ToLower().Contains(filter.ToLower()))
                 .ToListAsync();
             
             foreach (var occasion in occasions)
             {
-                var getOccasion = new GetOccasionDto
+                var occasionMainPhoto = occasion.Photos.Any() ? occasion.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+
+                occasionsList.Add( new GetSearchResultsDto
                 {
-                    OccasionId = occasion.OccasionId,
-                    HostId = occasion.HostId,
-                    Title = occasion.Title,
-                    Description = occasion.Description,
-                    Location = occasion.Location,
-                    StartsAt = occasion.StartsAt,
-                    EndsAt = occasion.EndsAt,
-                    ParticipantsCount = occasion.ParticipantsCount,
-                    Photos = occasion.Photos,
-                };
-                getOccasion.ParticipantsIds = new List<Guid>();
-                foreach (var participant in occasion.Participants)
-                {
-                    getOccasion.ParticipantsIds.Add(participant.UserId);
-                }
-                occasionsList.Add(getOccasion);
+                    EntityId = occasion.OccasionId,
+                    EntityMainPhotoUrl = occasionMainPhoto,
+                    EntityName = occasion.Title,
+                    EntityType = SearchResultType.Event
+                });
             }
             return occasionsList;
         }

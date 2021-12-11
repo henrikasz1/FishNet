@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using API.Dtos.SearchDtos;
 
 namespace API.Services
 {
@@ -10,7 +11,7 @@ namespace API.Services
     {
         Task AddOccasion(IFormFile file, AddOccasionDto occasion);
         Task<GetOccasionDto> GetOccasionById(Guid occasionId);
-        Task<List<GetOccasionDto>> GetOccasionByName(string filter);
+        Task<List<GetSearchResultsDto>> GetOccasionByName(string filter);
         Task<IList<GetOccasionDto>> GetAllOccasions();
         Task<IList<GetOccasionDto>> GetOccasionsByHostId(Guid hostId);
         Task DeleteOccasionById(Guid eventId);
