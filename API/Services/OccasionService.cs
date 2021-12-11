@@ -69,7 +69,7 @@ namespace API.Services
         {
             var userId = _userAccessorService.GetCurrentUserId();
             var occasion = await _dataContext.Occasions
-                .Include(x => x.Participants)
+                .Include(y => y.Participants)
                 .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
             if (occasion == null) throw new Exception("Invalid occasion");
@@ -98,9 +98,9 @@ namespace API.Services
         {
             var userId = _userAccessorService.GetCurrentUserId();
             var user = await _dataContext.OccasionUsers
-                .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId));
+                .FirstOrDefaultAsync(y => y.UserId == Guid.Parse(userId));
             var occasion = await _dataContext.Occasions
-                .Include(x => x.Participants)
+                .Include(y => y.Participants)
                 .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
             if (occasion == null) throw new Exception("Invalid occasion");
@@ -129,8 +129,8 @@ namespace API.Services
         {
             var occasion = await _dataContext.Occasions
                 .Include(y => y.Participants)
-                .Include(x => x.Photos)
-                .FirstOrDefaultAsync(x => x.OccasionId == occasionId);
+                .Include(y => y.Photos)
+                .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
             var newOccasion = new GetOccasionDto
             {
@@ -152,14 +152,47 @@ namespace API.Services
             return newOccasion;
         }
 
+        public async Task<List<GetOccasionDto>> GetOccasionByName(string filter)
+        {
+            var occasionsList = new List<GetOccasionDto>();
+            var occasions = await _dataContext.Occasions
+                .Include(y => y.Photos)
+                .Include(y => y.Participants)
+                .Where(y => y.Title.ToLower().Contains(filter.ToLower()))
+                .ToListAsync();
+            
+            foreach (var occasion in occasions)
+            {
+                var getOccasion = new GetOccasionDto
+                {
+                    OccasionId = occasion.OccasionId,
+                    HostId = occasion.HostId,
+                    Title = occasion.Title,
+                    Description = occasion.Description,
+                    Location = occasion.Location,
+                    StartsAt = occasion.StartsAt,
+                    EndsAt = occasion.EndsAt,
+                    ParticipantsCount = occasion.ParticipantsCount,
+                    Photos = occasion.Photos,
+                };
+                getOccasion.ParticipantsIds = new List<Guid>();
+                foreach (var participant in occasion.Participants)
+                {
+                    getOccasion.ParticipantsIds.Add(participant.UserId);
+                }
+                occasionsList.Add(getOccasion);
+            }
+            return occasionsList;
+        }
+
         public async Task<IList<GetOccasionDto>> GetAllOccasions()
         {
             var occasionsList = new List<GetOccasionDto>();
             
             var occasions = await _dataContext.Occasions
-                .Select(x => x)
+                .Select(y => y)
                 .Include(y => y.Participants)
-                .Include(x => x.Photos)
+                .Include(y => y.Photos)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
@@ -191,9 +224,9 @@ namespace API.Services
             var occasionsList = new List<GetOccasionDto>();
 
             var occasions = await _dataContext.Occasions
-                .Where(x => x.HostId == hostId)
-                .Include(x => x.Participants)
-                .Include(x => x.Photos)
+                .Where(y => y.HostId == hostId)
+                .Include(y => y.Participants)
+                .Include(y => y.Photos)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
@@ -243,7 +276,7 @@ namespace API.Services
         
         public async Task EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion)
         {
-            var occasion = await _dataContext.Occasions.FirstOrDefaultAsync(x => x.OccasionId == occasionId);
+            var occasion = await _dataContext.Occasions.FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
             if (occasion.HostId != Guid.Parse(_userAccessorService.GetCurrentUserId()))
             {
