@@ -17,7 +17,7 @@ namespace API.Services
         private readonly DataContext _dataContext;
         private readonly IUserAccessorService _userAccessorService;
         private readonly IOccasionPhotoService _occasionPhotoService;
-        
+
         public OccasionService(
             DataContext dataContext,
             IUserAccessorService userAccessorService,
@@ -45,10 +45,10 @@ namespace API.Services
 
             if (newOccasion.StartsAt >= DateTime.Now && newOccasion.EndsAt >= newOccasion.StartsAt)
             {
+                newOccasion.Participants.Add(new OccasionUser {UserId = Guid.Parse(hostId)});
                 _dataContext.Occasions.Add(newOccasion);
-            
                 var result = await _dataContext.SaveChangesAsync() > 0;
-                
+
                 await _occasionPhotoService.SaveOccasionPhoto(file, newOccasion.OccasionId);
 
                 if (!result)
@@ -62,10 +62,38 @@ namespace API.Services
             }
         }
 
+        public async Task JoinOccasion(Guid occasionId)
+        {
+            var userId = _userAccessorService.GetCurrentUserId();
+            var occasion = await _dataContext.Occasions.Include(x => x.Participants)
+                .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
+
+            if (occasion == null) throw new Exception("Invalid occasion");
+            if (!occasion.Participants.Any(x => Equals(userId)))
+            {
+                throw new Exception("User has already joined the event");
+            }
+            
+            var participant = new OccasionUser()
+            {
+                UserId = Guid.Parse(userId),
+                OccasionId = occasion.OccasionId,
+            };
+            
+            _dataContext.OccasionUsers.Add(participant);
+            
+            var result = await _dataContext.SaveChangesAsync() > 0;
+            
+            if (!result)
+            {
+                throw new DbUpdateException("Failed to join an occasion");
+            }
+        }
+        
         public async Task<GetOccasionDto> GetOccasionById(Guid occasionId)
         {
             var occasion = await _dataContext.Occasions
-                .Include(y => y.User)
+                //.Include(y => y.Participants)
                 .FirstOrDefaultAsync(x => x.OccasionId == occasionId);
 
             var newOccasion = new GetOccasionDto
@@ -77,39 +105,19 @@ namespace API.Services
                 Location = occasion.Location,
                 StartsAt = occasion.StartsAt,
                 EndsAt = occasion.EndsAt,
+                Participants = occasion.Participants,
+                Photos = occasion.Photos,
             };
-        
             return newOccasion;
         }
 
-        public async Task DeleteOccasionById(Guid occasionId)
-        {
-            var occasion = await _dataContext.Occasions.FindAsync(occasionId);
-            
-            var hostId = _userAccessorService.GetCurrentUserId();
-
-            if (occasion.HostId != Guid.Parse(hostId))
-            {
-                throw new UnauthorizedAccessException("Only the host can delete the occasion");
-            }
-
-            _dataContext.Occasions.Remove(occasion);
-
-            var result = await _dataContext.SaveChangesAsync() > 0;
-
-            if (!result)
-            {
-                throw new DbUpdateException("Unable to remove post");
-            }
-        }
-        
         public async Task<IList<GetOccasionDto>> GetAllOccasions()
         {
             var occasionsList = new List<GetOccasionDto>();
 
             var occasions = await _dataContext.Occasions
                 .Select(x => x)
-                .Include(y => y.User)
+                //.Include(y => y.Participants)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
@@ -124,6 +132,8 @@ namespace API.Services
                         Location = occasion.Location,
                         StartsAt = occasion.StartsAt,
                         EndsAt = occasion.EndsAt,
+                        Participants = occasion.Participants,
+                        Photos = occasion.Photos,
                     });
             }
 
@@ -149,12 +159,34 @@ namespace API.Services
                         Location = occasion.Location,
                         StartsAt = occasion.StartsAt,
                         EndsAt = occasion.EndsAt,
+                        Participants = occasion.Participants,
+                        Photos = occasion.Photos,
                     });
             }
-
             return occasionsList;
         }
 
+        public async Task DeleteOccasionById(Guid occasionId)
+        {
+            var occasion = await _dataContext.Occasions.FindAsync(occasionId);
+            
+            var hostId = _userAccessorService.GetCurrentUserId();
+
+            if (occasion.HostId != Guid.Parse(hostId))
+            {
+                throw new UnauthorizedAccessException("Only the host can delete the occasion");
+            }
+
+            _dataContext.Occasions.Remove(occasion);
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Unable to remove post");
+            }
+        }
+        
         public async Task EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion)
         {
             var occasion = await _dataContext.Occasions.FirstOrDefaultAsync(x => x.OccasionId == occasionId);

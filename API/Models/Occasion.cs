@@ -28,10 +28,8 @@ namespace API.Models
         public DateTime EndsAt { get; set; }
         
         public List<OccasionPhoto> Photos { get; set; }
-
-       // public List<Post> Posts { get; set; }
         
-        //public List<User> UsersAttending { get; set; }
+        public ICollection<OccasionUser> Participants { get; set; } = new List<OccasionUser>();
         
        // public 
     }

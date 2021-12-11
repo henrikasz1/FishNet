@@ -21,7 +21,7 @@ namespace API.Models
 
         public List<Post> Posts { get; set; }
         
-        public List<Occasion> Occasions { get; set; }
+        public ICollection<OccasionUser> Occasions { get; set; } = new List<OccasionUser>();
 
         public List<Comment> Comments { get; set; }
 

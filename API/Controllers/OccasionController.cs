@@ -29,10 +29,10 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpDelete("delete/{occasionId}")]
-        public async Task<IActionResult> DeleteOccasionByOccasionId(Guid occasionId)
+        [HttpPost("join/{occasionId}")]
+        public async Task<IActionResult> JoinOccasion(Guid occasionId)
         {
-            await _occasionService.DeleteOccasionById(occasionId);
+            await _occasionService.JoinOccasion(occasionId);
 
             return Ok();
         }
@@ -61,6 +61,22 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        // [HttpGet("occasionUsers/{occasionId}")]
+        // public async Task<ActionResult<GetOccasionUsersDto>> GetOccasionUsersByOccasionId(Guid occasionId);
+        // {
+        //     var result = await _occasionService.GetOccasionUsersByOccasionId(occasionId);
+        //
+        //     return Ok(result);
+        // }
+
+        [HttpDelete("delete/{occasionId}")]
+        public async Task<IActionResult> DeleteOccasionByOccasionId(Guid occasionId)
+        {
+            await _occasionService.DeleteOccasionById(occasionId);
+
+            return Ok();
+        }
+        
         [HttpPut("edit/{occasionId}")]
         public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, [FromForm] EditOccasionDto newOccasion,
             [FromForm]IFormFile file)

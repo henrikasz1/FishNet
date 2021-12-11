@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211210151202_OccasionPhoto10")]
+    partial class OccasionPhoto10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,7 +109,7 @@ namespace API.Migrations
                     b.ToTable("OccasionsPhotos");
                 });
 
-            modelBuilder.Entity("API.Models.OccasionUser", b =>
+            modelBuilder.Entity("API.Models.OccasionUsers", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
@@ -474,16 +476,16 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.OccasionUser", b =>
+            modelBuilder.Entity("API.Models.OccasionUsers", b =>
                 {
                     b.HasOne("API.Models.Occasion", "Occasion")
-                        .WithMany("Participants")
+                        .WithMany("OccasionUsers")
                         .HasForeignKey("OccasionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Models.User", "User")
-                        .WithMany("Occasions")
+                        .WithMany("OccasionUsers")
                         .HasForeignKey("UserId1");
 
                     b.Navigation("Occasion");
@@ -569,7 +571,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Occasion", b =>
                 {
-                    b.Navigation("Participants");
+                    b.Navigation("OccasionUsers");
 
                     b.Navigation("Photos");
                 });
@@ -585,7 +587,7 @@ namespace API.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Occasions");
+                    b.Navigation("OccasionUsers");
 
                     b.Navigation("Photos");
 
