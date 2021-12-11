@@ -35,5 +35,13 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        [HttpPut("changemainpostphoto/{photoId}")]
+        public async Task<ActionResult<string>> ChangeMainPostPhoto(string photoId)
+        {
+            var result = await _postPhotoService.ChangeMainPostPhoto(photoId);
+
+            return Ok(result);
+        }
     }
 }

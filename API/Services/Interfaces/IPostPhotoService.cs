@@ -10,5 +10,6 @@ namespace API.Services
         Task SavePostPhoto(IFormFile file, Guid postId);
         Task DeletePostPhoto(PostPhoto photo);
         Task DeletePostPhotoById(string photoId);
+        Task<string> ChangeMainPostPhoto(string newMainPhotoId);
     }
 }

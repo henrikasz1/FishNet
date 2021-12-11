@@ -21,7 +21,8 @@ namespace API.Models
         public bool IsProfilePrivate { get; set; } = false;
 
         public List<Post> Posts { get; set; }
-        
+        public List<Shop> ShopAds { get; set; }
+
         [JsonIgnore]
         public List<OccasionUser> Occasions { get; set; }
 

@@ -1,6 +1,6 @@
-﻿namespace API.Dtos.UserPhotoDtos
+﻿namespace API.Dtos.PhotoDtos
 {
-    public class GetAllUserPhotosDto
+    public class GetUserPhotoDto
     {
         public string Url { get; set; }
         public string Body { get; set; }

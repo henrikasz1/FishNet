@@ -17,6 +17,8 @@ namespace Data
         public DbSet<PostPhoto> PostPhotos { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<PhotoLikes> PhotoLikes { get; set; }
+        public DbSet<ShopPhoto> ShopPhotos { get; set; }
+        public DbSet<Shop> ShopAdverts { get; set; }
         public DbSet<Occasion> Occasions { get; set; }
         public DbSet<OccasionPhoto> OccasionsPhotos { get; set; }
         public DbSet<OccasionUser> OccasionUsers { get; set; }

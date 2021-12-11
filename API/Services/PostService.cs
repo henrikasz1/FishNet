@@ -174,7 +174,7 @@ namespace API.Services
                 throw new UnauthorizedAccessException("Only post owner can update it");
             }
 
-            post.Body = newPost.Body ?? newPost.Body;
+            post.Body = newPost.Body ?? post.Body;
 
             var success = await _dataContext.SaveChangesAsync() > 0;
 
