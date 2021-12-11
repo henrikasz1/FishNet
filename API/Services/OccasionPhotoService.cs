@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Infrastracture;
@@ -53,6 +54,10 @@ namespace API.Services
             if (!result)
             {
                 throw new DbUpdateException("Failed to add");
+            }
+            else
+            {
+                
             }
         }
         

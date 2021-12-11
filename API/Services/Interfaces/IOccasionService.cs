@@ -10,11 +10,12 @@ namespace API.Services
     {
         Task AddOccasion(IFormFile file, AddOccasionDto occasion);
         Task<GetOccasionDto> GetOccasionById(Guid occasionId);
+        Task<List<GetOccasionDto>> GetOccasionByName(string filter);
         Task<IList<GetOccasionDto>> GetAllOccasions();
         Task<IList<GetOccasionDto>> GetOccasionsByHostId(Guid hostId);
-        Task LeaveOccasion(Guid occasionId);
         Task DeleteOccasionById(Guid eventId);
         Task EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion);
         Task JoinOccasion(Guid occasionId);
+        Task LeaveOccasion(Guid occasionId);
     }
 }

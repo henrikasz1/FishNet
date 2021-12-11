@@ -53,6 +53,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("occasionByName/{filter}")]
+        public async Task<ActionResult<GetOccasionDto>> GetOccasionsByName(string filter)
+        {
+            var result = await _occasionService.GetOccasionByName(filter);
+
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<ActionResult<GetOccasionDto>> GetAllOccasions()
         {
