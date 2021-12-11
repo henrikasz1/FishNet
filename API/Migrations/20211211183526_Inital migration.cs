@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initalmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,20 +185,21 @@ namespace API.Migrations
                 columns: table => new
                 {
                     OccasionId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    HostId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
                     StartsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndsAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    EndsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ParticipantsCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Occasions", x => x.OccasionId);
                     table.ForeignKey(
-                        name: "FK_Occasions_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Occasions_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -220,6 +221,32 @@ namespace API.Migrations
                     table.PrimaryKey("PK_Posts", x => x.PostId);
                     table.ForeignKey(
                         name: "FK_Posts_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopAdverts",
+                columns: table => new
+                {
+                    ShopId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductName = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<double>(type: "REAL", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    ProductType = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    LikesCount = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopAdverts", x => x.ShopId);
+                    table.ForeignKey(
+                        name: "FK_ShopAdverts_AspNetUsers_UserId1",
                         column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -250,6 +277,71 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OccasionsPhotos",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: true),
+                    OccasionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IsMain = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OccasionsPhotos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OccasionsPhotos_Occasions_OccasionId",
+                        column: x => x.OccasionId,
+                        principalTable: "Occasions",
+                        principalColumn: "OccasionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OccasionUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OccasionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId1 = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OccasionUsers", x => new { x.UserId, x.OccasionId });
+                    table.ForeignKey(
+                        name: "FK_OccasionUsers_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OccasionUsers_Occasions_OccasionId",
+                        column: x => x.OccasionId,
+                        principalTable: "Occasions",
+                        principalColumn: "OccasionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostPhotos",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: true),
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IsMain = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostPhotos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostPhotos_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -259,6 +351,7 @@ namespace API.Migrations
                     ParentId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Text = table.Column<string>(type: "TEXT", nullable: true),
                     LikesCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShopId = table.Column<Guid>(type: "TEXT", nullable: true),
                     UserId1 = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -276,25 +369,31 @@ namespace API.Migrations
                         principalTable: "Posts",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_ShopAdverts_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "ShopAdverts",
+                        principalColumn: "ShopId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostPhotos",
+                name: "ShopPhotos",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     Url = table.Column<string>(type: "TEXT", nullable: true),
-                    LikesCount = table.Column<int>(type: "INTEGER", nullable: false),
-                    PostId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    ShopId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IsMain = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostPhotos", x => x.Id);
+                    table.PrimaryKey("PK_ShopPhotos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PostPhotos_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "PostId",
+                        name: "FK_ShopPhotos_ShopAdverts_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "ShopAdverts",
+                        principalColumn: "ShopId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -341,13 +440,33 @@ namespace API.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_ShopId",
+                table: "Comments",
+                column: "ShopId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId1",
                 table: "Comments",
                 column: "UserId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Occasions_UserId1",
+                name: "IX_Occasions_UserId",
                 table: "Occasions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OccasionsPhotos_OccasionId",
+                table: "OccasionsPhotos",
+                column: "OccasionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OccasionUsers_OccasionId",
+                table: "OccasionUsers",
+                column: "OccasionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OccasionUsers_UserId1",
+                table: "OccasionUsers",
                 column: "UserId1");
 
             migrationBuilder.CreateIndex(
@@ -359,6 +478,16 @@ namespace API.Migrations
                 name: "IX_Posts_UserId1",
                 table: "Posts",
                 column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopAdverts_UserId1",
+                table: "ShopAdverts",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPhotos_ShopId",
+                table: "ShopPhotos",
+                column: "ShopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPhotos_UserId1",
@@ -387,7 +516,10 @@ namespace API.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Occasions");
+                name: "OccasionsPhotos");
+
+            migrationBuilder.DropTable(
+                name: "OccasionUsers");
 
             migrationBuilder.DropTable(
                 name: "PhotoLikes");
@@ -399,13 +531,22 @@ namespace API.Migrations
                 name: "PostPhotos");
 
             migrationBuilder.DropTable(
+                name: "ShopPhotos");
+
+            migrationBuilder.DropTable(
                 name: "UserPhotos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Occasions");
+
+            migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "ShopAdverts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
