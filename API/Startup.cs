@@ -79,6 +79,8 @@ namespace API
             services.AddScoped<ILikesService, LikesService>();
             services.AddScoped<IShopPhotoService, ShopPhotoService>();
             services.AddScoped<IShopService, ShopService>();
+            services.AddScoped<IOccasionService, OccasionService>();
+            services.AddScoped<IOccasionPhotoService, OccasionPhotoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,7 +98,7 @@ namespace API
             app.UseAuthentication();
 
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

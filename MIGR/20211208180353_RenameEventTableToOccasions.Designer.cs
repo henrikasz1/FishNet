@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211208180353_RenameEventTableToOccasions")]
+    partial class RenameEventTableToOccasions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +33,6 @@ namespace API.Migrations
                     b.Property<Guid>("PostId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ShopId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
@@ -46,8 +45,6 @@ namespace API.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("PostId");
-
-                    b.HasIndex("ShopId");
 
                     b.HasIndex("UserId1");
 
@@ -67,15 +64,9 @@ namespace API.Migrations
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("HostId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("ParticipantsCount")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("StartsAt")
                         .HasColumnType("TEXT");
@@ -84,55 +75,17 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("OccasionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Occasions");
-                });
-
-            modelBuilder.Entity("API.Models.OccasionPhoto", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("OccasionId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OccasionId");
-
-                    b.ToTable("OccasionsPhotos");
-                });
-
-            modelBuilder.Entity("API.Models.OccasionUser", b =>
-                {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OccasionId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId1")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("UserId", "OccasionId");
-
-                    b.HasIndex("OccasionId");
+                    b.HasKey("OccasionId");
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("OccasionUsers");
+                    b.ToTable("Occasions");
                 });
 
             modelBuilder.Entity("API.Models.PhotoLikes", b =>
@@ -195,7 +148,7 @@ namespace API.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsMain")
+                    b.Property<int>("LikesCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid>("PostId")
@@ -209,69 +162,6 @@ namespace API.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("PostPhotos");
-                });
-
-            modelBuilder.Entity("API.Models.Shop", b =>
-                {
-                    b.Property<Guid>("ShopId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("LikesCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ShopId");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("ShopAdverts");
-                });
-
-            modelBuilder.Entity("API.Models.ShopPhoto", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("ShopId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShopId");
-
-                    b.ToTable("ShopPhotos");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -522,10 +412,6 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Shop", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ShopId");
-
                     b.HasOne("API.Models.User", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId1");
@@ -534,32 +420,10 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Occasion", b =>
                 {
                     b.HasOne("API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Events")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("API.Models.OccasionPhoto", b =>
-                {
-                    b.HasOne("API.Models.Occasion", null)
-                        .WithMany("Photos")
-                        .HasForeignKey("OccasionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Models.OccasionUser", b =>
-                {
-                    b.HasOne("API.Models.Occasion", null)
-                        .WithMany("Participants")
-                        .HasForeignKey("OccasionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Models.User", null)
-                        .WithMany("Occasions")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -576,24 +440,6 @@ namespace API.Migrations
                     b.HasOne("API.Models.Post", null)
                         .WithMany("Photos")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Models.Shop", b =>
-                {
-                    b.HasOne("API.Models.User", "User")
-                        .WithMany("ShopAds")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("API.Models.ShopPhoto", b =>
-                {
-                    b.HasOne("API.Models.Shop", null)
-                        .WithMany("Photos")
-                        .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -656,21 +502,7 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.Occasion", b =>
-                {
-                    b.Navigation("Participants");
-
-                    b.Navigation("Photos");
-                });
-
             modelBuilder.Entity("API.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("API.Models.Shop", b =>
                 {
                     b.Navigation("Comments");
 
@@ -681,13 +513,11 @@ namespace API.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Occasions");
+                    b.Navigation("Events");
 
                     b.Navigation("Photos");
 
                     b.Navigation("Posts");
-
-                    b.Navigation("ShopAds");
                 });
 #pragma warning restore 612, 618
         }
