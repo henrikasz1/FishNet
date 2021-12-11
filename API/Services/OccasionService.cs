@@ -141,8 +141,8 @@ namespace API.Services
                 Location = occasion.Location,
                 StartsAt = occasion.StartsAt,
                 EndsAt = occasion.EndsAt,
+                ParticipantsCount = occasion.ParticipantsCount,
                 Photos = occasion.Photos,
-                ParticipantsCount = occasion.ParticipantsCount
             };
             newOccasion.ParticipantsIds = new List<Guid>();
             foreach (var participant in occasion.Participants)
@@ -159,23 +159,29 @@ namespace API.Services
             var occasions = await _dataContext.Occasions
                 .Select(x => x)
                 .Include(y => y.Participants)
+                .Include(x => x.Photos)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
             {
-                occasionsList.Add(
-                    new GetOccasionDto
-                    {
-                        OccasionId = occasion.OccasionId,
-                        HostId = occasion.HostId,
-                        Title = occasion.Title,
-                        Description = occasion.Description,
-                        Location = occasion.Location,
-                        StartsAt = occasion.StartsAt,
-                        EndsAt = occasion.EndsAt,
-                        ParticipantsIds = new List<Guid>(),
-                        Photos = occasion.Photos,
-                    });
+                var getOccasion = new GetOccasionDto
+                {
+                    OccasionId = occasion.OccasionId,
+                    HostId = occasion.HostId,
+                    Title = occasion.Title,
+                    Description = occasion.Description,
+                    Location = occasion.Location,
+                    StartsAt = occasion.StartsAt,
+                    EndsAt = occasion.EndsAt,
+                    ParticipantsCount = occasion.ParticipantsCount,
+                    Photos = occasion.Photos,
+                };
+                getOccasion.ParticipantsIds = new List<Guid>();
+                foreach (var participant in occasion.Participants)
+                {
+                    getOccasion.ParticipantsIds.Add(participant.UserId);
+                }
+                occasionsList.Add(getOccasion);
             }
             return occasionsList;
         }
@@ -184,24 +190,32 @@ namespace API.Services
         {
             var occasionsList = new List<GetOccasionDto>();
 
-            var occasions = await _dataContext.Occasions.Where(x => x.HostId == hostId)
+            var occasions = await _dataContext.Occasions
+                .Where(x => x.HostId == hostId)
+                .Include(x => x.Participants)
+                .Include(x => x.Photos)
                 .ToListAsync();
 
             foreach (var occasion in occasions)
             {
-                occasionsList.Add(
-                    new GetOccasionDto
-                    {
-                        OccasionId = occasion.OccasionId,
-                        HostId = occasion.HostId,
-                        Title = occasion.Title,
-                        Description = occasion.Description,
-                        Location = occasion.Location,
-                        StartsAt = occasion.StartsAt,
-                        EndsAt = occasion.EndsAt,
-                        //Participants = occasion.Participants,
-                        Photos = occasion.Photos,
-                    });
+                var getOccasion = new GetOccasionDto
+                {
+                    OccasionId = occasion.OccasionId,
+                    HostId = occasion.HostId,
+                    Title = occasion.Title,
+                    Description = occasion.Description,
+                    Location = occasion.Location,
+                    StartsAt = occasion.StartsAt,
+                    EndsAt = occasion.EndsAt,
+                    ParticipantsCount = occasion.ParticipantsCount,
+                    Photos = occasion.Photos,
+                };
+                getOccasion.ParticipantsIds = new List<Guid>();
+                foreach (var participant in occasion.Participants)
+                {
+                    getOccasion.ParticipantsIds.Add(participant.UserId);
+                }
+                occasionsList.Add(getOccasion);
             }
             return occasionsList;
         }

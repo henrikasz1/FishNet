@@ -69,14 +69,6 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        // [HttpGet("occasionUsers/{occasionId}")]
-        // public async Task<ActionResult<GetOccasionUsersDto>> GetOccasionUsersByOccasionId(Guid occasionId);
-        // {
-        //     var result = await _occasionService.GetOccasionUsersByOccasionId(occasionId);
-        //
-        //     return Ok(result);
-        // }
-
         [HttpDelete("delete/{occasionId}")]
         public async Task<IActionResult> DeleteOccasionByOccasionId(Guid occasionId)
         {
