@@ -19,6 +19,7 @@ namespace API.Models
         public bool IsProfilePrivate { get; set; } = false;
 
         public List<Post> Posts { get; set; }
+        public List<Shop> ShopAds { get; set; }
 
         public List<Comment> Comments { get; set; }
 

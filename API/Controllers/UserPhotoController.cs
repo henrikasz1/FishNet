@@ -1,8 +1,6 @@
-﻿using API.Dtos.Responses;
-using API.Dtos.UserPhotoDtos;
-using API.Services;
+﻿using API.Dtos.PhotoDtos;
+using API.Dtos.Responses;
 using API.Services.Interfaces;
-using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +18,7 @@ namespace API.Controllers
     {
         private readonly IUserPhotoService _userPhotoService;
 
-        public UserPhotoController(IPostPhotoService photoService, DataContext dataContext, IUserPhotoService userPhotoService)
+        public UserPhotoController(IUserPhotoService userPhotoService)
         {
             _userPhotoService = userPhotoService;
         }
@@ -47,7 +45,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getall/{userId}")]
-        public async Task<ActionResult<IList<GetAllUserPhotosDto>>> GetAllUserPhotos(Guid userId)
+        public async Task<ActionResult<IList<GetUserPhotoDto>>> GetAllUserPhotos(Guid userId)
         {
             var result = await _userPhotoService.GetAllUserPhotos(userId);
 
@@ -60,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getmainphoto/{userId}")]
-        public async Task<ActionResult<GetMainUserPhotoDto>> GetUserMainPhoto(Guid userId)
+        public async Task<ActionResult<GetUserPhotoDto>> GetUserMainPhoto(Guid userId)
         {
             var result = await _userPhotoService.GetMainUserPhoto(userId);
 
@@ -73,9 +71,22 @@ namespace API.Controllers
         }
 
         [HttpGet("getselectedphoto/{userId}/{photoId}")]
-        public async Task<ActionResult<GetSelectedUserPhotoDto>> GetSelectedUserPhoto(Guid userId, string photoId)
+        public async Task<ActionResult<GetUserPhotoDto>> GetSelectedUserPhoto(Guid userId, string photoId)
         {
             var result = await _userPhotoService.GetSelectedUserPhoto(userId, photoId);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPut("changemainuserphoto/{photoId}")]
+        public async Task<ActionResult<string>> ChangeMainUserPhoto(string photoId)
+        {
+            var result = await _userPhotoService.ChangeMainUserPhoto(photoId);
 
             if (result == null)
             {

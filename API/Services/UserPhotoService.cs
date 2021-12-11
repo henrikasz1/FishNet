@@ -1,5 +1,5 @@
-﻿using API.Dtos.Responses;
-using API.Dtos.UserPhotoDtos;
+﻿using API.Dtos.PhotoDtos;
+using API.Dtos.Responses;
 using API.Infrastracture;
 using API.Models;
 using API.Services.Interfaces;
@@ -87,15 +87,15 @@ namespace API.Services
             }
         }
 
-        public async Task<IList<GetAllUserPhotosDto>> GetAllUserPhotos(Guid userId)
+        public async Task<IList<GetUserPhotoDto>> GetAllUserPhotos(Guid userId)
         {
-            var photosList = new List<GetAllUserPhotosDto>();
+            var photosList = new List<GetUserPhotoDto>();
 
             var photos = await _dataContext.UserPhotos.Where(x => x.UserId == userId).ToListAsync();
 
             foreach (var photo in photos)
             {
-                photosList.Add(new GetAllUserPhotosDto
+                photosList.Add(new GetUserPhotoDto
                 {
                     Url = photo.Url,
                     Body = photo.Body,
@@ -111,7 +111,7 @@ namespace API.Services
             return photosList;
         }
 
-        public async Task<GetMainUserPhotoDto> GetMainUserPhoto(Guid userId)
+        public async Task<GetUserPhotoDto> GetMainUserPhoto(Guid userId)
         {
             var photo = await _dataContext.UserPhotos.Where(x => x.UserId == userId && x.IsMain == true).ToListAsync();
 
@@ -120,14 +120,40 @@ namespace API.Services
                 return null;
             }
 
-            return new GetMainUserPhotoDto
+            return new GetUserPhotoDto
             {
                 Url = photo[0].Url,
                 Body = photo[0].Body
             };
         }
 
-        public async Task<GetSelectedUserPhotoDto> GetSelectedUserPhoto(Guid userId, string photoId)
+        public async Task<string> ChangeMainUserPhoto(string newMainPhotoId)
+        {
+            var photo = await _dataContext.UserPhotos.FindAsync(newMainPhotoId);
+            
+            var user = await _dataContext.Users
+                .FirstOrDefaultAsync(x => x.UserId == photo.UserId);
+
+            if (user.UserId != Guid.Parse(_userAccessorService.GetCurrentUserId()))
+            {
+                throw new UnauthorizedAccessException("Unauthorized to select this photo as main");
+            }
+
+            var mainPhoto = await _dataContext.UserPhotos
+                .Where(x => x.IsMain == true)
+                .FirstOrDefaultAsync();
+
+            mainPhoto.IsMain = false;
+            photo.IsMain = true;
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            return !result
+                ? throw new DbUpdateException("Failed to make the photo as main")
+                : "Photo has been changed to main successfully";
+        }
+
+        public async Task<GetUserPhotoDto> GetSelectedUserPhoto(Guid userId, string photoId)
         {
             var photo = await _dataContext.UserPhotos.Where(x => x.UserId == userId && x.Id == photoId).ToListAsync();
 
@@ -136,7 +162,7 @@ namespace API.Services
                 return null;
             }
 
-            return new GetSelectedUserPhotoDto
+            return new GetUserPhotoDto
             {
                 Url = photo[0].Url,
                 Body = photo[0].Body
