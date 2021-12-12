@@ -33,6 +33,5 @@ namespace API.Models
         public List<OccasionUser> Participants { get; set; }
         
         public int ParticipantsCount { get; set; } = 0;
-       // public 
     }
 }

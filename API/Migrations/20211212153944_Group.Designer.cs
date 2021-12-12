@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211212153944_Group")]
+    partial class Group
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,15 +94,17 @@ namespace API.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId")
-                        .IsUnique();
+                    b.HasIndex("GroupId");
 
-                    b.ToTable("GroupPhoto");
+                    b.ToTable("GroupPhotos");
                 });
 
             modelBuilder.Entity("API.Models.GroupUser", b =>
@@ -607,8 +611,8 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.GroupPhoto", b =>
                 {
                     b.HasOne("API.Models.Group", null)
-                        .WithOne("Photo")
-                        .HasForeignKey("API.Models.GroupPhoto", "GroupId")
+                        .WithMany("Photos")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -751,7 +755,7 @@ namespace API.Migrations
                 {
                     b.Navigation("Members");
 
-                    b.Navigation("Photo");
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("API.Models.Occasion", b =>
