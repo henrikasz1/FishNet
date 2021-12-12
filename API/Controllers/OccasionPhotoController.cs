@@ -1,11 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using API.Services;
-using API.Services.Interfaces;
+﻿using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {

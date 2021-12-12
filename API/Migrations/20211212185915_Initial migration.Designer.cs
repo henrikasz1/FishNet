@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211211183526_Inital migration")]
-    partial class Initalmigration
+    [Migration("20211212185915_Initial migration")]
+    partial class Initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,27 @@ namespace API.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("API.Models.Friendship", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FriendId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "FriendId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("API.Models.Occasion", b =>
@@ -299,6 +320,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("FriendsCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsProfilePrivate")
                         .HasColumnType("INTEGER");
 
@@ -533,6 +557,13 @@ namespace API.Migrations
                         .HasForeignKey("UserId1");
                 });
 
+            modelBuilder.Entity("API.Models.Friendship", b =>
+                {
+                    b.HasOne("API.Models.User", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId1");
+                });
+
             modelBuilder.Entity("API.Models.Occasion", b =>
                 {
                     b.HasOne("API.Models.User", "User")
@@ -566,11 +597,9 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Post", b =>
                 {
-                    b.HasOne("API.Models.User", "User")
+                    b.HasOne("API.Models.User", null)
                         .WithMany("Posts")
                         .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Models.PostPhoto", b =>
@@ -682,6 +711,8 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Friends");
 
                     b.Navigation("Occasions");
 

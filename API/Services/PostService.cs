@@ -30,9 +30,6 @@ namespace API.Services
         {
             var userId = _userAccessorService.GetCurrentUserId();
 
-            var user = await _dataContext.Users.Include(x => x.Posts)
-              .FirstOrDefaultAsync(y => y.UserId == Guid.Parse(userId));
-
             var newPost = new Post()
             {
                 PostId = Guid.NewGuid(),
@@ -61,16 +58,16 @@ namespace API.Services
             var post = await _dataContext.Posts.Include(x => x.Photos)
                 .FirstOrDefaultAsync(y => y.PostId == postId);
 
-            //---
+            var observer = _userAccessorService.GetCurrentUserId();
 
-            //var postOwner = await _dataContext.Users.FirstOrDefaultAsync(x => x.UserId == post.UserId);
-            //var observerId = _userAccessorService.GetCurrentUserId();
+            var postOwner = await _dataContext.Users
+                .Include(x => x.Friends)
+                .FirstOrDefaultAsync(x => x.UserId == post.UserId);
 
-            //if (postOwner.IsProfilePrivate == true && )
-            //{
-            //    //get friendship state and then return null or ok
-            //}
-            //---
+            if (postOwner.IsProfilePrivate == true && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+            {
+                throw new UnauthorizedAccessException("You are not alowed to view this post");
+            }
 
             var postDto = new GetPostDto
             {
@@ -93,6 +90,17 @@ namespace API.Services
                 .Include(y => y.Photos)
                 .ToListAsync();
 
+            var observer = _userAccessorService.GetCurrentUserId();
+
+            var postOwner = await _dataContext.Users
+                .Include(x => x.Friends)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            if (postOwner.IsProfilePrivate == true && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+            {
+                throw new UnauthorizedAccessException("You are not alowed to view this user's activity");
+            }
+
             foreach (var post in posts)
             {
                 postsDtoList.Add(
@@ -106,7 +114,7 @@ namespace API.Services
                         Photos = post.Photos
                     });
             }
-
+            
             return postsDtoList;
         }
 
@@ -121,9 +129,19 @@ namespace API.Services
                 .Include(y => y.Photos)
                 .ToListAsync();
 
+            var observer = _userAccessorService.GetCurrentUserId();
+
             foreach (var post in posts)
             {
-                postsDtoList.Add(
+                var postOwner = await _dataContext.Users
+                    .Include(x => x.Friends)
+                    .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+
+                if (postOwner.IsProfilePrivate == true && postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)) 
+                    || postOwner.IsProfilePrivate == false
+                    || postOwner.UserId == Guid.Parse(observer))
+                {
+                    postsDtoList.Add(
                     new GetPostDto
                     {
                         PostId = post.PostId,
@@ -133,6 +151,7 @@ namespace API.Services
                         LikesCount = post.LikesCount,
                         Photos = post.Photos
                     });
+                }
             }
 
             return postsDtoList;

@@ -22,6 +22,7 @@ namespace Data
         public DbSet<Occasion> Occasions { get; set; }
         public DbSet<OccasionPhoto> OccasionsPhotos { get; set; }
         public DbSet<OccasionUser> OccasionUsers { get; set; }
+        public DbSet<Friendship> Friends { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,7 +30,8 @@ namespace Data
 
             builder.Entity<PostLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
             builder.Entity<PhotoLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
-            builder.Entity<OccasionUser>().HasKey(pk => new {pk.UserId, pk.OccasionId});
+            builder.Entity<OccasionUser>().HasKey(pk => new { pk.UserId, pk.OccasionId });
+            builder.Entity<Friendship>().HasKey(pk => new { pk.UserId, pk.FriendId });
         }
     }
 }
