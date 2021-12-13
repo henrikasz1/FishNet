@@ -11,7 +11,7 @@ namespace API.Models
         public Guid OccasionId { get; set; }
         [Required]
         public Guid HostId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; }//?
         [Required]
         public string Title { get; set; }
         [Required]

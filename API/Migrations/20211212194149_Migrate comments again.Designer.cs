@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211212194149_Migrate comments again")]
+    partial class Migratecommentsagain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,12 +33,17 @@ namespace API.Migrations
                     b.Property<Guid?>("PostId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ShopId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CommentId");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("ShopId");
 
                     b.HasIndex("UserId");
 
@@ -533,6 +540,10 @@ namespace API.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
 
+                    b.HasOne("API.Models.Shop", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ShopId");
+
                     b.HasOne("API.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -688,6 +699,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Shop", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Photos");
                 });
 

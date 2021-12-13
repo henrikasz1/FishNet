@@ -8,20 +8,14 @@ namespace API.Models
     {
         [Required]
         public Guid PostId { get; set; }
-
         [Required]
         public string Body { get; set; }
-        
         [Required]
         public DateTime CreatedAt { get; set; }
-
         [Required]
         public Guid UserId { get; set; }
-
         public List<Comment> Comments { get; set; }
-
         public List<PostPhoto> Photos { get; set; }
-
         public int LikesCount { get; set; } = 0;
     }
 }
