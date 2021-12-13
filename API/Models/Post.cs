@@ -18,8 +18,6 @@ namespace API.Models
         [Required]
         public Guid UserId { get; set; }
 
-        public User User { get; set; }
-
         public List<Comment> Comments { get; set; }
 
         public List<PostPhoto> Photos { get; set; }
