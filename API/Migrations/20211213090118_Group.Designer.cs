@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211212185915_Initial migration")]
-    partial class Initialmigration
+    [Migration("20211213090118_Group")]
+    partial class Group
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,6 +75,70 @@ namespace API.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Friends");
+                });
+
+            modelBuilder.Entity("API.Models.Group", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MembersCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("API.Models.GroupPhoto", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique();
+
+                    b.ToTable("GroupPhoto");
+                });
+
+            modelBuilder.Entity("API.Models.GroupUser", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("GroupUsers");
                 });
 
             modelBuilder.Entity("API.Models.Occasion", b =>
@@ -564,6 +628,33 @@ namespace API.Migrations
                         .HasForeignKey("UserId1");
                 });
 
+            modelBuilder.Entity("API.Models.Group", b =>
+                {
+                    b.HasOne("API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Models.GroupPhoto", b =>
+                {
+                    b.HasOne("API.Models.Group", null)
+                        .WithOne("Photo")
+                        .HasForeignKey("API.Models.GroupPhoto", "GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Models.GroupUser", b =>
+                {
+                    b.HasOne("API.Models.Group", null)
+                        .WithMany("Members")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("API.Models.Occasion", b =>
                 {
                     b.HasOne("API.Models.User", "User")
@@ -685,6 +776,13 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Models.Group", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Photo");
                 });
 
             modelBuilder.Entity("API.Models.Occasion", b =>

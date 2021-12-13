@@ -72,6 +72,11 @@ namespace API.Services
                 throw new UnauthorizedAccessException("Unauthorized to delete this photo");
             }
 
+            if (occasion.Photos.Count == 1)
+            {
+                throw new Exception("You cannot delete the picture");
+            }
+
             await _photoAccessor.DeletePhoto(photo.Id);
             
             _dataContext.OccasionsPhotos.Remove(photo);
