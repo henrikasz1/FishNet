@@ -83,6 +83,8 @@ namespace API
             services.AddScoped<IOccasionPhotoService, OccasionPhotoService>();
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGroupPhotoService, GroupPhotoService>();
             services.AddScoped<IFriendsService, FriendsService>();
             services.AddScoped<ICommentService, CommentService>();
         }

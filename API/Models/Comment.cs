@@ -12,5 +12,6 @@ namespace API.Models
         public User User { get; set; }
         public string Body { get; set; }
         public int LikesCount { get; set; } = 0;
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using API.Dtos.CommentsDtos;
 using API.Dtos.Responses;
-using API.Models;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -32,22 +31,22 @@ namespace API.Controllers
         }
 
         [HttpGet("getall/{postId}")]
-        public async Task<ActionResult<IList<Comment>>> GettAllComments(Guid postId)
+        public async Task<ActionResult<IList<GetCommentDto>>> GettAllPostComments(Guid postId)
         {
             var result = await _commentService.GetAllPostComments(postId);
 
             return Ok(result);
         }
 
-        [HttpPut("Update/{commentId}")]
+        [HttpPut("update/{commentId}")]
         public async Task<ActionResult<CommentResponse>> EditComment(Guid commentId, CommentDto comment)
         {
-            var result = await _commentService.EditComment(commentId, comment);
+            var result = await _commentService.UpdateComment(commentId, comment);
 
-            return Ok(result);
+            return Ok();
         }
 
-        [HttpDelete("delete/{commetnId}")]
+        [HttpDelete("delete/{commentId}")]
         public async Task<ActionResult<CommentResponse>> DeleteComment(Guid commentId)
         {
             var result = await _commentService.DeleteComment(commentId);

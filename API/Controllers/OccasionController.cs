@@ -78,8 +78,7 @@ namespace API.Controllers
         }
         
         [HttpPut("edit/{occasionId}")]
-        public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, [FromForm] EditOccasionDto newOccasion,
-            [FromForm]IFormFile file)
+        public async Task<IActionResult> EditOccasionByOccasionId(Guid occasionId, EditOccasionDto newOccasion)
         {
             await _occasionService.EditOccasionByOccasionId(occasionId, newOccasion);
 

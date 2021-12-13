@@ -163,7 +163,8 @@ namespace API.Services
             
             foreach (var occasion in occasions)
             {
-                var occasionMainPhoto = occasion.Photos.Any() ? occasion.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+                var occasionMainPhoto = occasion.Photos.Any() ? occasion.Photos.FirstOrDefault(x => x.IsMain == true)
+                    .Url : string.Empty;
 
                 occasionsList.Add( new GetSearchResultsDto
                 {

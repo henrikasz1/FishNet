@@ -60,5 +60,21 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        [HttpPost("likecomment/{commentId}")]
+        public async Task<IActionResult> LikeComment(Guid commentId)
+        {
+            await _likesService.LikeComment(commentId);
+
+            return Ok();
+        }
+
+        [HttpPost("unlikecomment/{commentId}")]
+        public async Task<IActionResult> UnlikeComment(Guid commentId)
+        {
+            await _likesService.UnlikeComment(commentId);
+
+            return Ok();
+        }
     }
 }

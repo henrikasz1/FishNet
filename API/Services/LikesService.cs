@@ -10,10 +10,12 @@ namespace API.Services
     public class LikesService : ILikesService
     {
         private readonly DataContext _dataContext;
+        private readonly IUserAccessorService _userAccessorService;
 
-        public LikesService(DataContext dataContext)
+        public LikesService(DataContext dataContext, IUserAccessorService userAccessorService)
         {
             _dataContext = dataContext;
+            _userAccessorService = userAccessorService;
         }
 
         public async Task LikePost(Guid postId, Guid loverId)
@@ -75,9 +77,9 @@ namespace API.Services
 
         public async Task LikeUserPhoto(string photoId, Guid loverId)
         {
-            var post = await _dataContext.UserPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
+            var photo = await _dataContext.UserPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
 
-            post.LikesCount++;
+            photo.LikesCount++;
 
             var newRecord = new PhotoLikes
             {
@@ -102,9 +104,9 @@ namespace API.Services
 
         public async Task UnlikePhoto(string photoId, Guid loverId)
         {
-            var post = await _dataContext.UserPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
+            var photo = await _dataContext.UserPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
 
-            post.LikesCount--;
+            photo.LikesCount--;
 
             var newRecord = new PhotoLikes
             {
@@ -127,6 +129,64 @@ namespace API.Services
             else
             {
                 throw new Exception("You have already unliked this post");
+            }
+        }
+
+        public async Task LikeComment(Guid commentId)
+        {
+            var user = Guid.Parse(_userAccessorService.GetCurrentUserId());
+            var comment = await _dataContext.Comments.FirstOrDefaultAsync(x => x.CommentId == commentId);
+
+            comment.LikesCount++;
+
+            var newRecord = new CommentLikes
+            {
+                ObjectId = commentId,
+                LoverId = user
+            };
+
+            if (await _dataContext.CommentLikes.AnyAsync(x => x.LoverId == newRecord.LoverId && x.ObjectId == newRecord.ObjectId))
+            {
+                throw new Exception("You have already liked this comment");
+            }
+
+            _dataContext.CommentLikes.Add(newRecord);
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                throw new DbUpdateException("Could not update likes count");
+            }
+        }
+
+        public async Task UnlikeComment(Guid commentId)
+        {
+            var user = Guid.Parse(_userAccessorService.GetCurrentUserId());
+            var comment = await _dataContext.Comments.FirstOrDefaultAsync(x => x.CommentId == commentId);
+
+            comment.LikesCount--;
+
+            var newRecord = new CommentLikes
+            {
+                ObjectId = commentId,
+                LoverId = user
+            };
+
+            if (await _dataContext.CommentLikes.AnyAsync(x => x.LoverId == newRecord.LoverId && x.ObjectId == newRecord.ObjectId))
+            {
+                _dataContext.CommentLikes.Remove(newRecord);
+
+                var result = await _dataContext.SaveChangesAsync() > 0;
+
+                if (!result)
+                {
+                    throw new DbUpdateException("Could not update likes count");
+                }
+            }
+            else
+            {
+                throw new Exception("You have already unliked this comment");
             }
         }
     }
