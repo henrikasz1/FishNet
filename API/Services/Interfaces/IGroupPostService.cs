@@ -9,5 +9,7 @@ namespace API.Services.Interfaces
     public interface IGroupPostService
     {
         Task AddGroupPost(List<IFormFile> files, Guid groupId, AddPostDto post);
+        Task DeleteGroupPost(Guid postId);
+        Task<IList<GetPostDto>> GetAllGroupPosts(Guid groupId);
     }
 }

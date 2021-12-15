@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211215154049_Initial migration")]
-    partial class Initialmigration
+    [Migration("20211215205659_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,6 +131,21 @@ namespace API.Migrations
                     b.ToTable("GroupPhoto");
                 });
 
+            modelBuilder.Entity("API.Models.GroupPost", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PostId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("GroupPosts");
+                });
+
             modelBuilder.Entity("API.Models.GroupUser", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -176,12 +191,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("OccasionId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Occasions");
                 });
@@ -205,6 +215,21 @@ namespace API.Migrations
                     b.HasIndex("OccasionId");
 
                     b.ToTable("OccasionsPhotos");
+                });
+
+            modelBuilder.Entity("API.Models.OccasionPost", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OccasionId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PostId", "OccasionId");
+
+                    b.HasIndex("OccasionId");
+
+                    b.ToTable("OccasionPosts");
                 });
 
             modelBuilder.Entity("API.Models.OccasionUser", b =>
@@ -261,6 +286,9 @@ namespace API.Migrations
 
                     b.Property<string>("UserId1")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("postType")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("PostId");
 
@@ -649,6 +677,15 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("API.Models.GroupPost", b =>
+                {
+                    b.HasOne("API.Models.Group", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("API.Models.GroupUser", b =>
                 {
                     b.HasOne("API.Models.Group", null)
@@ -658,19 +695,19 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.Occasion", b =>
-                {
-                    b.HasOne("API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("API.Models.OccasionPhoto", b =>
                 {
                     b.HasOne("API.Models.Occasion", null)
                         .WithMany("Photos")
+                        .HasForeignKey("OccasionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Models.OccasionPost", b =>
+                {
+                    b.HasOne("API.Models.Occasion", null)
+                        .WithMany("Posts")
                         .HasForeignKey("OccasionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -786,6 +823,8 @@ namespace API.Migrations
                     b.Navigation("Members");
 
                     b.Navigation("Photo");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("API.Models.Occasion", b =>
@@ -793,6 +832,8 @@ namespace API.Migrations
                     b.Navigation("Participants");
 
                     b.Navigation("Photos");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>

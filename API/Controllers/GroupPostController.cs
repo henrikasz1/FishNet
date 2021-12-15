@@ -29,5 +29,21 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("delete/{postId}")]
+        public async Task<IActionResult> DeleteGroupPost(Guid postId)
+        {
+            await _groupPostService.DeleteGroupPost(postId);
+
+            return Ok();
+        }
+
+        [HttpGet("groupposts/{groupId}")]
+        public async Task<ActionResult<IList<GetPostDto>>> GetAllGroupPosts(Guid groupId)
+        {
+            var result = await _groupPostService.GetAllGroupPosts(groupId);
+
+            return Ok(result);
+        }
     }
 }

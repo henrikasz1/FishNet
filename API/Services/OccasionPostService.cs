@@ -12,29 +12,29 @@ using static API.Models.Enums.PostEnum;
 
 namespace API.Services
 {
-    public class GroupPostService : IGroupPostService
+    public class OccasionPostService : IOccasionPostService
     {
         private readonly IUserAccessorService _userAccessorService;
         private readonly IPostPhotoService _postPhotoService;
         private readonly DataContext _dataContext;
 
-        public GroupPostService(IUserAccessorService userAccessorService, IPostPhotoService postPhotoService, DataContext dataContext)
+        public OccasionPostService(IUserAccessorService userAccessorService, IPostPhotoService postPhotoService, DataContext dataContext)
         {
             _userAccessorService = userAccessorService;
             _postPhotoService = postPhotoService;
             _dataContext = dataContext;
         }
 
-        public async Task AddGroupPost(List<IFormFile> files, Guid groupId, AddPostDto post)
+        public async Task AddOccasionPost(List<IFormFile> files, Guid occasionId, AddPostDto post)
         {
             var user = Guid.Parse(_userAccessorService.GetCurrentUserId());
-            var group = await _dataContext.Groups
-                .Include(x => x.Members)
-                .FirstOrDefaultAsync(x => x.GroupId == groupId);
+            var occasion = await _dataContext.Occasions
+                .Include(x => x.Participants)
+                .FirstOrDefaultAsync(x => x.OccasionId == occasionId);
 
-            if (group.Members.Any(x => x.UserId != user))
+            if (occasion.Participants.Any(x => x.UserId != user))
             {
-                throw new UnauthorizedAccessException("You are not a participant of this group");
+                throw new UnauthorizedAccessException("You are not a participant of this occasion");
             }
 
             var newPost = new Post()
@@ -43,13 +43,13 @@ namespace API.Services
                 Body = post.Body,
                 CreatedAt = DateTime.Now,
                 UserId = user,
-                postType = PostType.Group
+                postType = PostType.Occasion
             };
 
-            group.Posts = new List<GroupPost>();
-            group.Posts.Add(new GroupPost
+            occasion.Posts = new List<OccasionPost>();
+            occasion.Posts.Add(new OccasionPost
             {
-                GroupId = groupId,
+                OccasionId = occasionId,
                 PostId = newPost.PostId
             });
 
@@ -67,14 +67,14 @@ namespace API.Services
             }
         }
 
-        public async Task DeleteGroupPost(Guid postId)
+        public async Task DeleteOccasionPost(Guid postId)
         {
             var userId = Guid.Parse(_userAccessorService.GetCurrentUserId());
 
             var postToDelete = await _dataContext.Posts.Include(x => x.Photos)
                 .FirstOrDefaultAsync(y => y.PostId == postId);
 
-            var groupPost = await _dataContext.GroupPosts.FirstOrDefaultAsync(x => x.PostId == postId);
+            var occasionPost = await _dataContext.OccasionPosts.FirstOrDefaultAsync(x => x.PostId == postId);
 
             if (postToDelete.UserId != userId)
             {
@@ -87,7 +87,7 @@ namespace API.Services
             }
 
             _dataContext.Posts.Remove(postToDelete);
-            _dataContext.GroupPosts.Remove(groupPost);
+            _dataContext.OccasionPosts.Remove(occasionPost);
 
             var result = await _dataContext.SaveChangesAsync() > 0;
 
@@ -97,25 +97,25 @@ namespace API.Services
             }
         }
 
-        public async Task<IList<GetPostDto>> GetAllGroupPosts(Guid groupId)
+        public async Task<IList<GetPostDto>> GetAllOccasionPosts(Guid occasionId)
         {
             var postsDtoList = new List<GetPostDto>();
             var observer = Guid.Parse(_userAccessorService.GetCurrentUserId());
-            var group = await _dataContext.Groups.Include(x => x.Members).FirstOrDefaultAsync(x => x.GroupId == groupId);
+            var occasion = await _dataContext.Occasions.Include(x => x.Participants).FirstOrDefaultAsync(x => x.OccasionId == occasionId);
 
-            if (group.Members.Any(x => x.UserId != observer))
+            if (occasion.Participants.Any(x => x.UserId != observer))
             {
-                    throw new UnauthorizedAccessException("You are not a participant of this group");
+                throw new UnauthorizedAccessException("You are not a participant of this group");
             }
 
-            var groupPosts = await _dataContext.GroupPosts.Where(x => x.GroupId == groupId).ToListAsync();
+            var occasionPosts = await _dataContext.OccasionPosts.Where(x => x.OccasionId == occasionId).ToListAsync();
 
             var posts = await _dataContext.Posts
                 .Select(x => x)
                 .Include(y => y.Photos)
                 .ToListAsync();
 
-            foreach (var groupPost in groupPosts)
+            foreach (var groupPost in occasionPosts)
             {
                 var post = await _dataContext.Posts.Include(x => x.Photos).FirstOrDefaultAsync(x => x.PostId == groupPost.PostId);
 

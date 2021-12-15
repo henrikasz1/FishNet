@@ -20,7 +20,7 @@ namespace API.Controllers
         }
         
         [HttpPost("upload/{occasionId}")]
-        public async Task<IActionResult> AddPostPhoto(IFormFile file, Guid occasionId)
+        public async Task<IActionResult> AddOccasionPhoto(IFormFile file, Guid occasionId)
         {
             await _occasionPhotoService.SaveOccasionPhoto(file, occasionId);
 

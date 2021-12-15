@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class Initialmigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,6 +61,24 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommentLikes", x => new { x.ObjectId, x.LoverId });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Occasions",
+                columns: table => new
+                {
+                    OccasionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    HostId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: false),
+                    StartsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ParticipantsCount = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Occasions", x => x.OccasionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -236,31 +254,6 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Occasions",
-                columns: table => new
-                {
-                    OccasionId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    HostId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Location = table.Column<string>(type: "TEXT", nullable: false),
-                    StartsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndsAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ParticipantsCount = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Occasions", x => x.OccasionId);
-                    table.ForeignKey(
-                        name: "FK_Occasions_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -269,6 +262,7 @@ namespace API.Migrations
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<Guid>(type: "TEXT", nullable: false),
                     LikesCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    postType = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId1 = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -332,39 +326,20 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupPhoto",
+                name: "OccasionPosts",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", nullable: true),
-                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OccasionId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupPhoto", x => x.Id);
+                    table.PrimaryKey("PK_OccasionPosts", x => new { x.PostId, x.OccasionId });
                     table.ForeignKey(
-                        name: "FK_GroupPhoto_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GroupUsers",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupUsers", x => new { x.UserId, x.GroupId });
-                    table.ForeignKey(
-                        name: "FK_GroupUsers_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId",
+                        name: "FK_OccasionPosts_Occasions_OccasionId",
+                        column: x => x.OccasionId,
+                        principalTable: "Occasions",
+                        principalColumn: "OccasionId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -410,6 +385,61 @@ namespace API.Migrations
                         column: x => x.OccasionId,
                         principalTable: "Occasions",
                         principalColumn: "OccasionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPhoto",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: true),
+                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPhoto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupPhoto_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPosts",
+                columns: table => new
+                {
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPosts", x => new { x.PostId, x.GroupId });
+                    table.ForeignKey(
+                        name: "FK_GroupPosts_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupUsers", x => new { x.UserId, x.GroupId });
+                    table.ForeignKey(
+                        name: "FK_GroupUsers_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -540,6 +570,11 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_GroupPosts_GroupId",
+                table: "GroupPosts",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_UserId",
                 table: "Groups",
                 column: "UserId");
@@ -550,9 +585,9 @@ namespace API.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Occasions_UserId",
-                table: "Occasions",
-                column: "UserId");
+                name: "IX_OccasionPosts_OccasionId",
+                table: "OccasionPosts",
+                column: "OccasionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OccasionsPhotos_OccasionId",
@@ -625,7 +660,13 @@ namespace API.Migrations
                 name: "GroupPhoto");
 
             migrationBuilder.DropTable(
+                name: "GroupPosts");
+
+            migrationBuilder.DropTable(
                 name: "GroupUsers");
+
+            migrationBuilder.DropTable(
+                name: "OccasionPosts");
 
             migrationBuilder.DropTable(
                 name: "OccasionsPhotos");

@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace API.Models
 {
-    public class GroupPost
+    public class OccasionPost
     {
         public Guid PostId { get; set; }
         [JsonIgnore]
-        public Guid GroupId { get; set; }
+        public Guid OccasionId { get; set; }
     }
 }
