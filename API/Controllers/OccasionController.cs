@@ -61,7 +61,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("userOccasions/{hostId}")]
+        [HttpGet("hostOccasions/{hostId}")]
         public async Task<ActionResult<GetOccasionDto>> GetOccasionsByHostId(Guid hostId)
         {
             var result = await _occasionService.GetOccasionsByHostId(hostId);

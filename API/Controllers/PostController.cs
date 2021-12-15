@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Controllers
 {
@@ -29,6 +30,14 @@ namespace API.Controllers
             await _postService.AddPost(files, post);
 
             return Ok();
+        }
+
+        [HttpGet("likedby/{postid}")]
+        public async Task<ActionResult<GetLikesDto>> GetLikesByPostId(Guid postId)
+        {
+            var result = await _postService.GetPostLikesById(postId);
+
+            return Ok(result);
         }
 
         [HttpGet("post/{id}")]
