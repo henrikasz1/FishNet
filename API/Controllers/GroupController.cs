@@ -23,7 +23,7 @@ namespace API.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> AddOccasion([FromForm]IFormFile file, [FromForm]AddGroupDto groupDto) 
+        public async Task<IActionResult> AddGroup([FromForm]IFormFile file, [FromForm]AddGroupDto groupDto) 
         {
             await _groupService.AddGroup(file, groupDto);
 

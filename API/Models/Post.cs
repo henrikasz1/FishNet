@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using static API.Models.Enums.PostEnum;
 
 namespace API.Models
 {
@@ -17,5 +18,6 @@ namespace API.Models
         public List<Comment> Comments { get; set; }
         public List<PostPhoto> Photos { get; set; }
         public int LikesCount { get; set; } = 0;
+        public PostType postType { get; set; } = PostType.Feed;
     }
 }

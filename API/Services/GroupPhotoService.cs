@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Infrastracture;
+﻿using API.Infrastracture;
 using API.Models;
 using API.Services.Interfaces;
 using Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace API.Services
 {
