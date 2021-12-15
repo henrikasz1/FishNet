@@ -101,7 +101,7 @@ namespace API.Services
                     .Url : string.Empty;
                 
                 usersDtoList.Add(
-                    new GetLikesDto
+                    new GetLikesDto()
                     {
                         UserId = like.LoverId,
                         MainPhotoUrl = userMainPhoto,
@@ -153,13 +153,13 @@ namespace API.Services
         public async Task<IList<GetPostDto>> GetAllPosts()
         {
             var postsDtoList = new List<GetPostDto>();
+            var observer = _userAccessorService.GetCurrentUserId();
 
             var posts = await _dataContext.Posts
                 .Select(x => x)
                 .Include(y => y.Photos)
+                .Where(x => x.UserId != Guid.Parse(observer))
                 .ToListAsync();
-
-            var observer = _userAccessorService.GetCurrentUserId();
 
             foreach (var post in posts)
             {
@@ -168,8 +168,7 @@ namespace API.Services
                     .FirstOrDefaultAsync(x => x.UserId == post.UserId);
 
                 if (postOwner.IsProfilePrivate == true && postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)) 
-                    || postOwner.IsProfilePrivate == false
-                    || postOwner.UserId == Guid.Parse(observer))
+                    || postOwner.IsProfilePrivate == false)
                 {
                     postsDtoList.Add(
                     new GetPostDto

@@ -1,6 +1,5 @@
 ﻿using API.Dtos.SearchDtos;
 using API.Services.Interfaces;
-using Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,9 +10,8 @@ namespace API.Services
         private readonly IOccasionService _occasionService;
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
-
-        public SearchService(IOccasionService occasionService, IUserService userService,
-            IGroupService groupService)
+        
+        public SearchService(IOccasionService occasionService, IUserService userService, IGroupService groupService)
         {
             _occasionService = occasionService;
             _userService = userService;
@@ -30,7 +28,6 @@ namespace API.Services
             foreach (var user in users)
             {
                 searchResultList.Add(user);
-
             }
 
             foreach (var occasion in occasions)

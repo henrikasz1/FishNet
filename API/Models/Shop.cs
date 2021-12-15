@@ -20,8 +20,8 @@ namespace API.Models
         public string Description { get; set; }
         public ProductType ProductType { get; set; }
         public DateTime CreatedAt { get; set; }
-        public User User { get; set; }
-        public List<Comment> Comments { get; set; }
+        public User User { get; set; }//?
+        //public List<Comment> Comments { get; set; }
         public List<ShopPhoto> Photos { get; set; }
         public int LikesCount { get; set; } = 0;
     }

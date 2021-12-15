@@ -69,7 +69,6 @@ namespace API.Services
                 response.Status = "You cannot send fiend request to yourself";
                 return response;
             }
-            
             else
             {
                 user.Friends.Add(userRecord);

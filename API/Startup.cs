@@ -86,6 +86,7 @@ namespace API
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupPhotoService, GroupPhotoService>();
             services.AddScoped<IFriendsService, FriendsService>();
+            services.AddScoped<ICommentService, CommentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

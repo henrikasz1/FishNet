@@ -26,6 +26,7 @@ namespace Data
         public DbSet<GroupUser> GroupUsers { get; set; }
         public DbSet<GroupPhoto> GroupPhoto { get; set; }
         public DbSet<Friendship> Friends { get; set; }
+        public DbSet<CommentLikes> CommentLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -33,6 +34,7 @@ namespace Data
 
             builder.Entity<PostLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
             builder.Entity<PhotoLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
+            builder.Entity<CommentLikes>().HasKey(pk => new { pk.ObjectId, pk.LoverId });
             builder.Entity<OccasionUser>().HasKey(pk => new {pk.UserId, pk.OccasionId});
             builder.Entity<GroupUser>().HasKey(pk => new {pk.UserId, pk.GroupId});
             builder.Entity<Friendship>().HasKey(pk => new { pk.UserId, pk.FriendId });

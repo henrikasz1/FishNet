@@ -32,14 +32,6 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpGet("likedby/{postid}")]
-        public async Task<ActionResult<GetLikesDto>> GetLikesByPostId(Guid postId)
-        {
-            var result = await _postService.GetPostLikesById(postId);
-
-            return Ok(result);
-        }
-
         [HttpGet("post/{id}")]
         public async Task<ActionResult<GetPostDto>> GetPostByPostId(Guid id)
         {

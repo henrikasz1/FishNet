@@ -22,36 +22,41 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Body")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("LikesCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("ParentId")
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ShopId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CommentId");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("ShopId");
-
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("API.Models.CommentLikes", b =>
+                {
+                    b.Property<Guid>("ObjectId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("LoverId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ObjectId", "LoverId");
+
+                    b.ToTable("CommentLikes");
                 });
 
             modelBuilder.Entity("API.Models.Friendship", b =>
@@ -604,19 +609,17 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Comment", b =>
                 {
-                    b.HasOne("API.Models.Post", null)
+                    b.HasOne("API.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
-                    b.HasOne("API.Models.Shop", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("ShopId");
+                    b.HasOne("API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
-                    b.HasOne("API.Models.User", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId1");
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Models.Friendship", b =>
@@ -799,15 +802,11 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Shop", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Friends");
 
                     b.Navigation("Occasions");
