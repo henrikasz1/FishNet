@@ -3,6 +3,7 @@ using API.Dtos.Responses;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Services.Interfaces
 {
@@ -12,5 +13,6 @@ namespace API.Services.Interfaces
         Task<IList<GetCommentDto>> GetAllPostComments(Guid postId);
         Task<CommentResponse> DeleteComment(Guid commentId);
         Task<CommentResponse> UpdateComment(Guid commentId, CommentDto newComment);
+        Task<IList<GetLikesDto>> GetCommentLikesById(Guid commentId);
     }
 }

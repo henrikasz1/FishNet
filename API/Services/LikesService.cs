@@ -18,16 +18,16 @@ namespace API.Services
             _userAccessorService = userAccessorService;
         }
 
-        public async Task LikePost(Guid postId, Guid loverId)
+        public async Task LikePost(Guid postId)
         {
             var post = await _dataContext.Posts.FirstOrDefaultAsync(x => x.PostId == postId);
-
+            var userId = _userAccessorService.GetCurrentUserId();
             post.LikesCount++;
 
             var newRecord = new PostLikes
             {
                 ObjectId = postId,
-                LoverId = loverId
+                LoverId = Guid.Parse(userId)
             };
 
             if (await _dataContext.PostLikes.AnyAsync(x => x.LoverId == newRecord.LoverId && x.ObjectId == newRecord.ObjectId))

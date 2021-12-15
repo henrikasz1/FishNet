@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Services
 {
@@ -80,6 +81,35 @@ namespace API.Services
             };
 
             return postDto;
+        }
+
+        public async Task<IList<GetLikesDto>> GetPostLikesById(Guid postId)
+        {
+            var usersDtoList = new List<GetLikesDto>();
+
+            var likes = await _dataContext.PostLikes
+                .Where(x => x.ObjectId == postId)
+                .ToListAsync();
+
+            foreach (var like in likes)
+            {
+                var user = await _dataContext.Users
+                    .Include(x => x.Photos)
+                    .FirstOrDefaultAsync(x => x.UserId == like.LoverId);
+                var userMainPhoto = user.Photos.Any() ? user.Photos
+                    .FirstOrDefault(x => x.IsMain == true)
+                    .Url : string.Empty;
+                
+                usersDtoList.Add(
+                    new GetLikesDto()
+                    {
+                        UserId = like.LoverId,
+                        MainPhotoUrl = userMainPhoto,
+                        FirstName= user.FirstName,
+                        LastName = user.LastName
+                    });
+            }
+            return usersDtoList;
         }
 
         public async Task<IList<GetPostDto>> GetPostsByUserId(Guid userId)
