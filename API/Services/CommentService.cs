@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Services
 {
@@ -141,6 +142,34 @@ namespace API.Services
             else response.Status = "Comment delete successfully";
 
             return response;
+        }
+        public async Task<IList<GetLikesDto>> GetCommentLikesById(Guid commentId)
+        {
+            var usersDtoList = new List<GetLikesDto>();
+
+            var likes = await _dataContext.CommentLikes
+                .Where(x => x.ObjectId == commentId)
+                .ToListAsync();
+
+            foreach (var like in likes)
+            {
+                var user = await _dataContext.Users
+                    .Include(x => x.Photos)
+                    .FirstOrDefaultAsync(x => x.UserId == like.LoverId);
+                var userMainPhoto = user.Photos.Any() ? user.Photos
+                    .FirstOrDefault(x => x.IsMain == true)
+                    .Url : string.Empty;
+                
+                usersDtoList.Add(
+                    new GetLikesDto()
+                    {
+                        UserId = like.LoverId,
+                        MainPhotoUrl = userMainPhoto,
+                        FirstName= user.FirstName,
+                        LastName = user.LastName
+                    });
+            }
+            return usersDtoList;
         }
     }
 }

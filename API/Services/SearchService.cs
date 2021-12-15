@@ -10,7 +10,7 @@ namespace API.Services
         private readonly IOccasionService _occasionService;
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
-
+        
         public SearchService(IOccasionService occasionService, IUserService userService, IGroupService groupService)
         {
             _occasionService = occasionService;

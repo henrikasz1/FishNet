@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Services.Interfaces
 {
@@ -15,5 +16,6 @@ namespace API.Services.Interfaces
         Task<GetUserPhotoDto> GetMainUserPhoto(Guid userId);
         Task<GetUserPhotoDto> GetSelectedUserPhoto(Guid userId, string photoId);
         Task<string> ChangeMainUserPhoto(string newMainPhotoId);
+        Task<IList<GetLikesDto>> GetPhotoLikesById(string photoId);
     }
 }

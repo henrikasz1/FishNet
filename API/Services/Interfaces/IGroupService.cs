@@ -21,5 +21,6 @@ namespace API.Services.Interfaces
         Task EditGroup(Guid groupId, EditGroupDto newGroup);
         Task DeleteGroupById(Guid groupId);
         Task GiveOwnership(Guid groupId, Guid userId, EditOwnershipDto newOwner);
+        
     }
 }

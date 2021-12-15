@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Dtos.LikesDto;
 
 namespace API.Services
 {
@@ -14,5 +15,6 @@ namespace API.Services
         Task<IList<GetPostDto>> GetAllPosts();
         Task DeletePostById(string id);
         Task UpdatePostById(Guid postId, EditPostDto newPost);
+        Task<IList<GetLikesDto>> GetPostLikesById(Guid postId);
     }
 }

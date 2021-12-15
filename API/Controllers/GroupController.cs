@@ -61,6 +61,7 @@ namespace API.Controllers
 
             return Ok();
         }
+        
         [HttpGet("{groupId}")]
         public async Task<ActionResult<GetOccasionDto>> GetGroupById(Guid groupId)
         {
