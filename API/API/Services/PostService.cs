@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos.LikesDto;
+using static API.Models.Enums.PostEnum;
 
 namespace API.Services
 {
@@ -158,7 +159,7 @@ namespace API.Services
             var posts = await _dataContext.Posts
                 .Select(x => x)
                 .Include(y => y.Photos)
-                .Where(x => x.UserId != Guid.Parse(observer))
+                .Where(x => x.UserId != Guid.Parse(observer) && x.postType == PostType.Feed)
                 .ToListAsync();
 
             foreach (var post in posts)
