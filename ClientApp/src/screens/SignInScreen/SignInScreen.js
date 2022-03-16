@@ -3,23 +3,25 @@ import React, {useState} from 'react';
 import Logo from '../../../assets/images/FishNetLogo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
+import { useNavigation } from '@react-navigation/native';
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const {height} = useWindowDimensions();
+  const navigation = useNavigation();
 
   const onSignInPressed = () => {
-      console.warn("signed in")
+      console.warn("signed in");
   }
 
   const onForgotPasswordPressed = () => {
-      console.warn("you forgot password")
+      console.warn("you forgot password");
   }
 
   const onSignUpPressed = () => {
-      console.warn("signing up")
+      navigation.navigate('SignUp');
   }
 
   return (

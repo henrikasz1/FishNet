@@ -1,15 +1,17 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
 
 const CustomInput = ({value, setValue, placeholder, iconType, secureTextEntry}) => {
   return (
     <View style={styles.root}>
-      <Icon
-        style={styles.icon}
-        name={iconType}
-        size={30}
-      />
+      <View style={styles.icon}>
+        <Icon
+            // style={styles.icon}
+            name={iconType}
+            size={30}
+        />
+      </View>
       <TextInput
         value={value}
         onChangeText={setValue}
@@ -33,15 +35,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 20,
-        width: '88%',
+        width: '85%',
     },
     icon: {
         padding: 10,
-        paddingLeft: 12,
         borderColor: '#E8E8E8',
         borderWidth: 1,
         borderRadius: 5,
-        width: '12%',
+        width: '15%',
         height: '100%',
         alignItems: 'center',
     }
