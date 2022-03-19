@@ -69,7 +69,7 @@ namespace API.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    UserName = user.UserName,
+                    UserName = user.Email,
                     IsProfilePrivate = user.IsProfilePrivate
                 };
 
