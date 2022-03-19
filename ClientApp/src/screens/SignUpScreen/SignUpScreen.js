@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, useWindowDimensions, ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import { Switch } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
+import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
 
 const SignUpScreen = () => {
   const [firstName, setFirstName] = useState('')
@@ -13,18 +15,28 @@ const SignUpScreen = () => {
   const [isProfilePrivate, setIsProfilePrivate] = useState(false)
 
   const {height} = useWindowDimensions();
+  const navigation = useNavigation();
 
   const onRegisterPressed = () => {
-      console.warn("good boy!")
+      console.warn("registered")
+  }
+  const onGoBackPressed = () => {
+      navigation.goBack();
   }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.root}>
 
-            
-
-            <Text style={styles.title}> Create new account </Text>
+            <View style={styles.header}>
+                <Icon
+                    onPress={onGoBackPressed}
+                    style={styles.icon}
+                    name={"arrow-left"}
+                    size={20}
+                />
+                <Text style={styles.title}> Create new account </Text>
+             </View>
 
             <CustomInput
                 placeholder="First Name"
@@ -95,16 +107,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
-    logo: {
-        width: '70%',
-        maxWidth: 200,
-        maxHeight: 200,
+    header: {
+        width: "100%",
+        flex: 1,
+        flexDirection: "row",
+        marginBottom: 25,
+        textAlign: "center"
+    },
+    icon: {
+        marginTop: "1.5%",
+        width: "20%",
     },
     title: {
+        width: "85%",
         fontSize: 24,
         fontWeight: 'bold',
         color: '#051C60',
-        margin: 25,
+        textAlign: "left",
     },
     toggle: {
         transform: [{ scaleX: 1.6}, {scaleY: 1.6}],
