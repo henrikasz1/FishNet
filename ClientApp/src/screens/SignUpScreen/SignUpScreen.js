@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, useWindowDimensions, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useState} from 'react';
 import { Switch } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
+import CustomMsgBox from '../../components/CustomMessageBox';
 import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
+import axios from 'axios';
 
 const SignUpScreen = () => {
   const [firstName, setFirstName] = useState('')
@@ -13,15 +15,58 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('')
   const [passwordRepeat, setPasswordRepeat] = useState('')
   const [isProfilePrivate, setIsProfilePrivate] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState('')
 
   const {height} = useWindowDimensions();
   const navigation = useNavigation();
 
   const onRegisterPressed = () => {
-      console.warn("registered")
+      setIsSubmitting(true)
+      handleMessage('')
+      if (email == '' || password == '' || firstName == '', lastName == '', passwordRepeat == '') {
+          handleMessage('Please fill in all fields');
+          setIsSubmitting(false);
+      }
+      else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email))
+      {
+         handleMessage('Invalid email address')
+         setIsSubmitting(false)
+      }
+      else if (password !== passwordRepeat)
+      {
+          handleMessage('Passwords do not match')
+          setIsSubmitting(false)
+      }
+      else {
+          handleRegister({firstName, lastName, email, password, isProfilePrivate});
+      }
   }
   const onGoBackPressed = () => {
       navigation.goBack();
+  }
+
+  const handleRegister = (credentials) => {
+    const url = "http://10.0.2.2:5000/api/user/register";
+
+    axios
+        .post(url, credentials)
+        .then((response) => {
+            const result = response.data;
+            const {token, success, errors} = result;
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+            navigation.navigate('MainScreen');
+            console.warn("success")
+        })
+        .catch(error => {
+            setIsSubmitting(false)
+            console.warn(error.response.data.errors)
+            handleMessage(error.response.data.errors)
+        })
+  }
+
+  const handleMessage = (message) => {
+      setMessage(message);
   }
 
   return (
@@ -85,11 +130,19 @@ const SignUpScreen = () => {
                 <Text> Make your profile private </Text>
             </View>
 
-            <CustomButton 
+            <CustomMsgBox text={message} />
+
+            {!isSubmitting ?
+                <CustomButton 
                 text="Register"
                 onPress={onRegisterPressed}
                 type="primary"
             />
+            :
+            <CustomButton
+                text={<ActivityIndicator size="small" color="white" />}>
+            </CustomButton>
+            }
 
             <Text style={styles.policy}>
                 By registering, you confirm that you accept our 
@@ -128,7 +181,7 @@ const styles = StyleSheet.create({
     toggle: {
         transform: [{ scaleX: 1.6}, {scaleY: 1.6}],
         marginRight: "5%",
-        marginBottom: "10%"
+        marginBottom: "5%"
     },
     private: {
         marginTop: '7%',

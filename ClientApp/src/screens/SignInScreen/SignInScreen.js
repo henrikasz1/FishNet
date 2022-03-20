@@ -11,7 +11,6 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
-  const [messageType, setMessageType] = useState()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {height} = useWindowDimensions();
@@ -54,9 +53,8 @@ const SignInScreen = () => {
         })
   }
 
-  const handleMessage = (message, success = false) => {
+  const handleMessage = (message) => {
       setMessage(message);
-      setMessageType(success);
   }
 
   return (
