@@ -55,12 +55,10 @@ const SignUpScreen = () => {
             const result = response.data;
             const {token, success, errors} = result;
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-            navigation.navigate('MainScreen');
-            console.warn("success")
+            navigation.navigate('InitialPhotoScreen');
         })
         .catch(error => {
             setIsSubmitting(false)
-            console.warn(error.response.data.errors)
             handleMessage(error.response.data.errors)
         })
   }
