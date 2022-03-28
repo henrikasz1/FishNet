@@ -10,7 +10,7 @@ export default function CaptionComponent({ contents }){
 
   return (
     <TouchableWithoutFeedback onPress={toggleExpansion}>
-      <View>
+      <View style={styles.captionItself}>
         <Text numberOfLines={expanded ? 30 : 2} ellipsizeMode="tail">
           {contents}
         </Text>
@@ -28,5 +28,8 @@ const styles = StyleSheet.create({
   },
   actionable: {
     color: 'darkgray'
+  },
+  captionItself: {
+    paddingHorizontal: 6
   }
 });
