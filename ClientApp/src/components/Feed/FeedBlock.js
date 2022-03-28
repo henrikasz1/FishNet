@@ -2,21 +2,23 @@ import React from 'react';
 import { View, Image, StatusBar, Text, TouchableOpacity } from 'react-native';
 import CaptionComponent from './CaptionComponent';
 
-export default function Block({ title, photo, caption, onClick }) {
+export default function Block({ title, photo, caption }) {
   const styles = {
     container: {
       flex: 1,
       marginTop: StatusBar.currentHeight || 0,
     },
     item: {
-      backgroundColor: '#c9fffd',
-      padding: 20,
+      backgroundColor: 'lightgray',
+      paddingTop: 6,
+      paddingBottom: 6,
       marginVertical: 8,
-      marginHorizontal: 16,
     },
     title: {
       fontSize: 19,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      paddingBottom: 4,
+      textAlign: 'center'
     },
     caption: {
       fontSize: 14,
@@ -24,15 +26,16 @@ export default function Block({ title, photo, caption, onClick }) {
     },
     cardImage: {
       width: '100%',
-      minHeight: '30%'
+      aspectRatio: 1
     }
   };
 
-  console.log(photo);
   return (
-    <View style={styles.item} onPress={onClick}>
+    <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
-      {photo && <Image source={photo} style={styles.cardImage}/>}
+      {photo && (
+        <Image source={photo} style={styles.cardImage}/>
+      )}
       <CaptionComponent contents={caption} />
     </View>
   );
