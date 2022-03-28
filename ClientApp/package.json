@@ -12,9 +12,11 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
-    "axios": "0.26.1",
+    "axios": "^0.21.4",
+    "form-data": "^4.0.0",
     "react": "17.0.2",
     "react-native": "0.67.3",
+    "react-native-image-picker": "^4.7.3",
     "react-native-paper": "4.11.2",
     "react-native-safe-area-context": "^4.2.1",
     "react-native-screens": "^3.13.1",
@@ -26,6 +28,7 @@
     "@react-native-community/eslint-config": "2.0.0",
     "babel-jest": "26.6.3",
     "eslint": "7.14.0",
+    "install-peers": "^1.0.3",
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.66.2",
     "react-test-renderer": "17.0.2"
