@@ -12,7 +12,7 @@ export default function Block({ title, photo, caption }) {
       backgroundColor: 'lightgray',
       paddingTop: 6,
       paddingBottom: 6,
-      marginVertical: 8,
+      marginVertical: 8
     },
     title: {
       fontSize: 19,
