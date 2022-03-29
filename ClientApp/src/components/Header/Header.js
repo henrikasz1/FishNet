@@ -15,14 +15,16 @@ const Header = () => {
 
 const styles = StyleSheet.create({
     header: {
-        paddingTop: '1%',
+        paddingTop: '2%',
         paddingRight: '3%',
-        height: '23%',
+        paddingBottom: '2%',
+        height: 60,
         backgroundColor: 'white',
+        alignItems: 'center',
         borderBottomWidth: 0.2,
         borderColor: 'grey',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around'
     },
     logo: {
         width: '40%',
@@ -30,4 +32,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Header
+export default Header;
