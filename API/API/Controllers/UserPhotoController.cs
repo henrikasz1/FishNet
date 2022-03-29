@@ -64,7 +64,7 @@ namespace API.Controllers
 
             if (result == null)
             {
-                return Ok("User does not have main photo");
+                return Ok();
             }
 
             return Ok(result);

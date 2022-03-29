@@ -4,39 +4,42 @@ import CaptionComponent from './CaptionComponent';
 
 export default function Block({ title, photo, caption }) {
   const styles = {
-    container: {
-      flex: 1,
-      marginTop: StatusBar.currentHeight || 0,
-    },
+    // container: {
+    //   flex: 1,
+    //   marginTop: StatusBar.currentHeight || 0,
+    // },
     item: {
-      backgroundColor: 'lightgray',
-      paddingTop: 6,
-      paddingBottom: 6,
-      marginVertical: 8
+      color: 'black',
+      backgroundColor: 'white',
+      paddingVertical: 6,
+      marginBottom: 5,
     },
     title: {
+      color: '#353839',
       fontSize: 19,
       fontWeight: 'bold',
       paddingBottom: 4,
-      textAlign: 'center'
-    },
-    caption: {
-      fontSize: 14,
-      padding: '1%'
+      textAlign: 'left'
     },
     cardImage: {
       width: '100%',
       aspectRatio: 1
+    },
+    text: {
+      paddingHorizontal: '3%',
+      marginBottom: '3%'
     }
   };
 
   return (
     <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.text}>
+        <Text style={styles.title}>{title}</Text>
+        <CaptionComponent contents={caption} />
+      </View>
       {photo && (
         <Image source={photo} style={styles.cardImage}/>
       )}
-      <CaptionComponent contents={caption} />
     </View>
   );
 }

@@ -6,6 +6,7 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import FormData from 'form-data'
 import { useNavigation } from '@react-navigation/native';
+import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
 
 
@@ -37,11 +38,11 @@ const InitialPhotoScreen = () => {
       }
     })
 
-    setIsSubmitting(false);
+    setIsSubmitting(false)
   }
 
   const handleSavePhoto = () => {
-    const url = "http://10.0.2.2:5000/api/userphoto/upload";
+    const url = `${BaseUrl}/api/userphoto/upload`;
 
     setIsSubmitting(true);
 

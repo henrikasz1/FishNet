@@ -6,6 +6,7 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import CustomMsgBox from '../../components/CustomMessageBox';
 import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
+import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
 
 const SignUpScreen = () => {
@@ -47,7 +48,7 @@ const SignUpScreen = () => {
   }
 
   const handleRegister = (credentials) => {
-    const url = "http://10.0.2.2:5000/api/user/register";
+    const url = `${BaseUrl}/api/user/register`;
 
     axios
         .post(url, credentials)

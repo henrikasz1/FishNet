@@ -5,6 +5,7 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import CustomMsgBox from '../../components/CustomMessageBox';
 import { useNavigation } from '@react-navigation/native';
+import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
 
 const SignInScreen = () => {
@@ -37,7 +38,7 @@ const SignInScreen = () => {
   }
 
   const handleLogin = (credentials) => {
-    const url = "http://10.0.2.2:5000/api/user/login";
+    const url = `${BaseUrl}/api/user/login`;
 
     axios
         .post(url, credentials)

@@ -11,10 +11,10 @@ export default function CaptionComponent({ contents }){
   return (
     <TouchableWithoutFeedback onPress={toggleExpansion}>
       <View style={styles.captionItself}>
-        <Text numberOfLines={expanded ? 30 : 2} ellipsizeMode="tail">
+        <Text numberOfLines={expanded ? 30 : 2} ellipsizeMode="tail" style={styles.content}>
           {contents}
         </Text>
-        {!expanded && <Text style={styles.actionable}>...read more</Text>}
+        {!expanded && <Text style={styles.actionable}>...See more</Text>}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -29,7 +29,10 @@ const styles = StyleSheet.create({
   actionable: {
     color: 'darkgray'
   },
-  captionItself: {
-    paddingHorizontal: 6
+  // captionItself: {
+  //   // paddingHorizontal: 6
+  // },
+  content: {
+    color: '#353839'
   }
 });

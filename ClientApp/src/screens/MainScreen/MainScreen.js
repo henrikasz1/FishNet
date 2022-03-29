@@ -4,14 +4,9 @@ import React from 'react'
 import axios from 'axios';
 import NoMorePostsComponent from '../../components/Feed/NoMorePostsComponent';
 import Block from '../../components/Feed/FeedBlock';
+import { BaseUrl } from '../../components/Common/BaseUrl'
 
 const MainScreen = () => {
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1
-    },
-  });
-
   //PREPARE TEST DATA FOR FRONT-END
   let data = [];
   for (let i = 0; i < 10; i++){
@@ -33,9 +28,6 @@ const MainScreen = () => {
   return (
     <View style={styles.container}>
       <Header/>
-      {/* <Text>
-        {axios.defaults.headers.common.Authorization}
-      </Text> */}
       <ScrollView style={styles.container}>
         {data.map(({ title, photo, caption }, index) => (
           <Block
@@ -49,5 +41,12 @@ const MainScreen = () => {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#e0e0e0'
+  },
+});
 
 export default MainScreen;

@@ -23,9 +23,10 @@ namespace API.Controllers
     {
         private readonly IAuthManagementService _authManagementService;
         private readonly UserManager<User> _userManager;
-        private readonly IUserAccessorService _userAccessorService;
+        //private readonly IUserAccessorService _userAccessorService;
         private readonly DataContext _dataContext;
         private readonly IUserService _userService;
+        private readonly string CurrentUserId;
 
         public UserController(
             IAuthManagementService authManagementService,
@@ -36,9 +37,9 @@ namespace API.Controllers
         {
             _authManagementService = authManagementService;
             _userManager = userManager;
-            _userAccessorService = userAccessorService;
             _dataContext = dataContext;
             _userService = userService;
+            CurrentUserId = userAccessorService.GetCurrentUserId();
         }
 
         [HttpPost]
@@ -160,12 +161,11 @@ namespace API.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        //[Route("Update/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateUserAccount(Guid id, [FromBody] UpdateUserAccountDto userUpdate)
         {
             var user = await _dataContext.Users.SingleOrDefaultAsync(
-                x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
+                x => x.UserId == Guid.Parse(CurrentUserId));
 
             if (id != user.UserId)
             {
@@ -200,6 +200,13 @@ namespace API.Controllers
             var result = await _userService.GetUserByName(filter);
 
             return Ok(result);
+        }
+
+        [HttpGet("getuserid")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public string GetUserId()
+        {
+            return CurrentUserId;
         }
     }
 }
