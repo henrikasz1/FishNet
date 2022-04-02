@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const Header = () => {
 
-  const [profileImage, setProfileImage] = useState('');
+  const [profileImage, setProfileImage] = useState(undefined);
   const [userId, setUserId] = useState('');
   const userIdUrl = `${BaseUrl}/api/user/getuserid`;
 
@@ -36,7 +36,7 @@ const Header = () => {
             <Icon name="search" size={23}/>
           </View>
 
-          {profileImage !== '' ?
+          {profileImage !== undefined ?
           <Image
             source={{ uri: profileImage }}
             style={styles.image}
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         height: 60,
         backgroundColor: 'white',
         alignItems: 'center',
-        borderBottomWidth: 0.7,
+        borderBottomWidth: 0.8,
         borderColor: '#d3d3d3',
         flexDirection: 'row',
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     image: {
-      marginLeft: '10%',
+      marginLeft: '5%',
       height: 40,
       width: 40,
       borderRadius: 100

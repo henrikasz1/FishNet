@@ -6,6 +6,10 @@ import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import MainScreen from '../screens/MainScreen';
 import InitialPhotoScreen from '../screens/InitialPhotoScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import ShopScreen from '../screens/ShopScreen';
+import EventScreen from '../screens/EventScreen';
+import GroupScreen from '../screens/GroupScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +21,10 @@ const Navigation = () => {
           <Stack.Screen name='SignUp' component={SignUpScreen} />
           <Stack.Screen name='MainScreen' component={MainScreen} />
           <Stack.Screen name='InitialPhotoScreen' component={InitialPhotoScreen} />
+          <Stack.Screen name='ProfileScreen' component={ProfileScreen} />
+          <Stack.Screen name='ShopScreen' component={ShopScreen} />
+          <Stack.Screen name='EventScreen' component={EventScreen} />
+          <Stack.Screen name='GroupScreen' component={GroupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

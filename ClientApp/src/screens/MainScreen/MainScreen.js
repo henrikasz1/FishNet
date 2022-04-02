@@ -1,12 +1,41 @@
 import { View, Text, Appearance, ScrollView, StyleSheet } from 'react-native'
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import React from 'react'
 import axios from 'axios';
 import NoMorePostsComponent from '../../components/Feed/NoMorePostsComponent';
 import Block from '../../components/Feed/FeedBlock';
 import { BaseUrl } from '../../components/Common/BaseUrl'
+import { useNavigation } from '@react-navigation/native';
 
 const MainScreen = () => {
+
+  const scrollRef = React.useRef(null);
+  const navigation = useNavigation();
+
+  const onPressHome = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  }
+
+  const onPressProfile = () => {
+    navigation.navigate("ProfileScreen")
+  }
+
+  const onPressShop = () => {
+    navigation.navigate("ShopScreen")
+  }
+
+  const onPressEvent = () => {
+    navigation.navigate("EventScreen")
+  }
+
+  const onPressGroup = () => {
+    navigation.navigate("GroupScreen")
+  }
+
   //PREPARE TEST DATA FOR FRONT-END
   let data = [];
   for (let i = 0; i < 10; i++){
@@ -28,7 +57,7 @@ const MainScreen = () => {
   return (
     <View style={styles.container}>
       <Header/>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} ref={scrollRef}>
         {data.map(({ title, photo, caption }, index) => (
           <Block
             title={title}
@@ -38,6 +67,17 @@ const MainScreen = () => {
           />
         ))}
       </ScrollView>
+
+      <Footer
+        style={styles.footer}
+        homeC="#3B71F3"
+        onPressProfile={onPressProfile}
+        onPressHome={onPressHome}
+        onPressShop={onPressShop}
+        onPressEvent={onPressEvent}
+        onPressGroup={onPressGroup}
+      />
+
     </View>
   );
 }
