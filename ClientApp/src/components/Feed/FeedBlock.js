@@ -59,8 +59,8 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     },
     profileImage: {
       marginLeft: '5%',
-      height: 40,
-      width: 40,
+      height: 30,
+      width: 30,
       borderRadius: 100
     },
     firstBlock: {
@@ -72,10 +72,9 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       paddingBottom: '1%'
     },
     profile: {
-      paddingTop: '1%',
       paddingRight: '3%',
-      paddingHorizontal: '2%',
-      height: 60,
+      paddingHorizontal: '1%',
+      height: 50,
       backgroundColor: 'white',
       alignItems: 'center',
       borderBottomWidth: 0.8,
