@@ -46,5 +46,15 @@ namespace API.Services
                 ? throw new Exception("Could not find anything")
                 : userDto;
         }
+
+        public async Task<string> GetUserName(Guid uid){
+
+            var user = await _dataContext.Users.SingleOrDefaultAsync(
+                x => x.UserId == uid);
+
+            var profileName = user.FirstName + " " + user.LastName;
+
+            return profileName;
+        }
     }
 }

@@ -9,6 +9,9 @@ import fishImage from '../../../assets/images/plentymorefish.png';
 import InterjectComponent from '../../components/Feed/InterjectComponent';
 import { useNavigation } from '@react-navigation/native';
 
+//BUG
+//dubliuojasi
+//todo fix
 const mergeWithUID = (source, obj) => {
   const sourcePostIds = source.map(m => m.postId);
   let dest = [...source];
@@ -53,11 +56,9 @@ const MainScreen = () => {
 
   //FETCH REAL DATA FROM DOT NET
   const handleLoad = () => {
-    const url =  `${BaseUrl}/api/post/${isPublicPosts? 'remainingposts' : 'allfriendposts'}?batchsize=${batchNumber}`
-    console.log("EXEC LOAD " + url);
+    const url =  `${BaseUrl}/api/post/${isPublicPosts ? 'remainingposts' : 'allfriendposts'}?batchsize=${batchNumber}`;
     axios.get(url).then((response) => {
       setLoaded(false);
-      console.log("Responded" + response.status);
       if (response.status == '200') {
         if (response.data.length === 0){
           setBatchNum(batchNumber - 1);
@@ -68,7 +69,6 @@ const MainScreen = () => {
             post.isFriendPost = true;
           }
         });
-        console.log(response.data);
         setData(mergeWithUID(data, response.data));
       } else {
         throw new Error(response.status);
@@ -77,7 +77,6 @@ const MainScreen = () => {
       setLoaded(false);
       setError(e);
     });
-    console.log(JSON.stringify(data));
   }
 
   const handleLoadMore = () => {
@@ -133,9 +132,9 @@ const MainScreen = () => {
               caption="Catch some fish tommorrow!"
             />
           )}
-        <InterjectComponent text={"Public posts"} />
+        {isPublicPosts && <InterjectComponent text={"Public posts"} />}
         {data.length ? data
-            // .filter(post => !post.isFriendPost)
+            .filter(post => !post.isFriendPost)
             .map(({ title, photos, postId, userId, likesCount, body }, index) => (
           <Block
             title={title}
