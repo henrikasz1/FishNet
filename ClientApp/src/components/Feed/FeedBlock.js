@@ -59,15 +59,15 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     },
     profileImage: {
       marginLeft: '5%',
-      height: 30,
-      width: 30,
+      height: 35,
+      width: 35,
       borderRadius: 100
     },
     firstBlock: {
       width: '85%',
     },
     secondBlock: {
-      width: '15%',
+      // width: '15%',
       flexDirection: 'row',
       paddingBottom: '1%'
     },
@@ -90,11 +90,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   return (
     <View style={styles.item}>
       <View style={styles.profile}>
-        <View style={styles.firstBlock}>
-          <Text style={styles.title}>
-            {userName || "State not set..."}
-          </Text>
-        </View>
+
         <View style={styles.secondBlock}>
           {profilePicture !== undefined ?
             <Image
@@ -107,6 +103,11 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
               style={styles.profileImage}
             />
           }
+        </View>
+        <View style={styles.firstBlock}>
+          <Text style={styles.title}>
+            {userName || "State not set..."}
+          </Text>
         </View>
       </View>
       {photo === undefined ? <View></View> : (
