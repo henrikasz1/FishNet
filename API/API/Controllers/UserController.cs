@@ -208,5 +208,14 @@ namespace API.Controllers
         {
             return CurrentUserId;
         }
+
+        [HttpGet("getname/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<string>> GetUserName(Guid id)
+        {
+            var result = await _userService.GetUserName(id);
+
+            return Ok(result);
+        }
     }
 }
