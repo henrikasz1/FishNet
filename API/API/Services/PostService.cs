@@ -187,6 +187,82 @@ namespace API.Services
             return postsDtoList;
         }
 
+        //the idea discussed is fetching friends posts from one endpoint and if theres no more left we fetch public posts excluding our friends
+        //this endpoint handles the posts from friends
+        public async Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber)
+        {
+            var postsDtoList = new List<GetPostDto>();
+            var observer = _userAccessorService.GetCurrentUserId();
+
+            var posts = await _dataContext.Posts
+                .Select(x => x)
+                .Include(y => y.Photos)
+                .Where(x => x.UserId != Guid.Parse(observer) && x.postType == PostType.Feed)
+                .Skip(5*batchNumber)
+                .Take(5)
+                .ToListAsync();
+
+            foreach (var post in posts)
+            {
+                var postOwner = await _dataContext.Users
+                    .Include(x => x.Friends)
+                    .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+
+                if (postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+                {
+                    postsDtoList.Add(
+                    new GetPostDto
+                    {
+                        PostId = post.PostId,
+                        UserId = post.UserId,
+                        Body = post.Body,
+                        CreatedAt = post.CreatedAt,
+                        LikesCount = post.LikesCount,
+                        Photos = post.Photos
+                    });
+                }
+            }
+
+            return postsDtoList;
+        }
+
+        public async Task<IList<GetPostDto>> GetRemainingPublicPosts(int batchNumber)
+        {
+            var postsDtoList = new List<GetPostDto>();
+            var observer = _userAccessorService.GetCurrentUserId();
+
+            var posts = await _dataContext.Posts
+                .Select(x => x)
+                .Include(y => y.Photos)
+                .Where(x => x.UserId != Guid.Parse(observer) && x.postType == PostType.Feed)
+                .Skip(5*batchNumber)
+                .Take(5)
+                .ToListAsync();
+
+            foreach (var post in posts)
+            {
+                var postOwner = await _dataContext.Users
+                    .Include(x => x.Friends)
+                    .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+
+                if (postOwner.IsProfilePrivate == false && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+                {
+                    postsDtoList.Add(
+                    new GetPostDto
+                    {
+                        PostId = post.PostId,
+                        UserId = post.UserId,
+                        Body = post.Body,
+                        CreatedAt = post.CreatedAt,
+                        LikesCount = post.LikesCount,
+                        Photos = post.Photos
+                    });
+                }
+            }
+
+            return postsDtoList;
+        }
+
         public async Task DeletePostById(string id)
         {
             var userId = _userAccessorService.GetCurrentUserId();

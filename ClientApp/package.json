@@ -13,6 +13,7 @@
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
+    "@wecraftapps/react-native-simple-carousel": "^0.2.6",
     "axios": "^0.21.4",
     "form-data": "^4.0.0",
     "react": "17.0.2",
