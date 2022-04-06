@@ -1,16 +1,12 @@
 import { View, Text, StyleSheet, Button, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import * as ImagePicker from 'react-native-image-picker'
-import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
-import CustomInput from '../../components/CustomInput';
-import CustomButton from '../../components/CustomButton';
-import FormData from 'form-data'
 import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Comment from '../../components/Comments/CommentComponent';
+import CommentWriteComponent from '../../components/Comments/CommentWriteComponent';
 
 const styles = StyleSheet.create({
   container: {
@@ -53,9 +49,6 @@ export default function CommentsScreen({ route }) {
     setComments(commentsData);
   };
 
-  // console.log(postId);
-  // console.log(commentWriterId);
-
   if (loading) {
     handleLoad().then(() => setLoading(false));
   }
@@ -80,7 +73,7 @@ export default function CommentsScreen({ route }) {
           />
         )}
       </ScrollView>
-      {/* WriteCommentComponent */}
+      <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} />
       <Footer
         style={styles.footer}
         onPressHome={onPressHome}
@@ -89,7 +82,6 @@ export default function CommentsScreen({ route }) {
         onPressEvent={onPressEvent}
         onPressGroup={onPressGroup}
       />
-
     </View>
   )
 }
