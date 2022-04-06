@@ -27,6 +27,7 @@ const MainScreen = () => {
   const [error, setError] = useState(null);
   const [batchNumber, setBatchNum] = useState(0);
   const [isPublicPosts, setFetchingPublic] = useState(false);
+  const [likerId, setUserId] = useState('');
 
   const scrollRef = React.useRef(null);
   const navigation = useNavigation();
@@ -56,6 +57,10 @@ const MainScreen = () => {
 
   //FETCH REAL DATA FROM DOT NET
   const handleLoad = () => {
+
+    const userIdUrl = `${BaseUrl}/api/user/getuserid`;
+    axios.get(userIdUrl).then(res => setUserId(res.data));
+
     const url =  `${BaseUrl}/api/post/${isPublicPosts ? 'remainingposts' : 'allfriendposts'}?batchsize=${batchNumber}`;
     axios.get(url).then((response) => {
       setLoaded(false);
@@ -124,6 +129,7 @@ const MainScreen = () => {
             postId={postId}
             userId={userId}
             likesCount={likesCount}
+            likerId={likerId}
           />
         )) : (
             <Block
