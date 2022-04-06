@@ -49,13 +49,12 @@ export default function CommentsScreen({ route }) {
 
   const handleLoad = async () => {
     const url = `${BaseUrl}/api/comments/getall/${postId}`;
-    console.log(url);
     const commentsData = (await axios.get(url)).data;
     setComments(commentsData);
   };
 
-  console.log(postId);
-  console.log(commentWriterId);
+  // console.log(postId);
+  // console.log(commentWriterId);
 
   if (loading) {
     handleLoad().then(() => setLoading(false));
@@ -66,7 +65,7 @@ export default function CommentsScreen({ route }) {
     <View style={styles.container}>
       <Header/>
       <ScrollView style={styles.container} ref={scrollRef}>
-        {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }) => 
+        {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) => 
           <Comment 
             id={commentId}
             userId={userId}
@@ -77,6 +76,7 @@ export default function CommentsScreen({ route }) {
             commentLiker={commentWriterId}
             postId={postId}
             userName={userName}
+            key={key}
           />
         )}
       </ScrollView>
