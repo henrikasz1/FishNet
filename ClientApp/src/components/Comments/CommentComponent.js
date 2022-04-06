@@ -82,7 +82,6 @@ export default function Comment({
 
   const changeCommentLikes = async () => {
     const url = `${BaseUrl}/api/likes/${haveThisCommentLiked ? 'un' : ''}likecomment/${id}`;
-    console.log("POST REQ " + url);
     await axios.post(url);
     await fetchCommentLikes();
   }
@@ -94,14 +93,11 @@ export default function Comment({
     if (usersLiked && Array.isArray(usersLiked)) {
       setLikeCount(usersLiked.length);
       const likers = usersLiked.map(({ userId }) => userId);
-      console.log("EXEC SET")
-      console.log(likers);
       setHaveLikedComment(likers.includes(commentLiker));
     }
   }
 
   if (loading) {
-    console.log("EXEC LOAD");
     handleLoad().then(() => setLoading(false));
   }
 
@@ -109,7 +105,8 @@ export default function Comment({
     <View style={{...styles.container, ...styles.comment}}>
       <View style={styles.profile}>
         <View style={styles.secondBlock}>
-          {userMainPhoto !== undefined ?
+          {
+          userMainPhoto !== undefined && userMainPhoto.includes('http') ?
             <Image
               source={{ uri: userMainPhoto }}
               style={styles.profileImage}
@@ -123,14 +120,14 @@ export default function Comment({
         </View>
         <View style={styles.firstBlock}>
           <Text style={styles.title}>
-            {userName || "//TODO import user name"}
+            {userName}
           </Text>
           <TouchableWithoutFeedback onPress={changeCommentLikes}>
             <View style={styles.icon}>
               <Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "black"} />
             </View>
           </TouchableWithoutFeedback>
-            <Text>{likeCount} </Text>
+            <Text>{likeCount}</Text>
         </View>
       </View>
       <Text>{body}</Text>
