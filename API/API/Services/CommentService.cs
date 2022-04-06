@@ -84,6 +84,7 @@ namespace API.Services
                 {
                     CommentId = comment.CommentId,
                     UserId = comment.User.UserId,
+                    UserName = comment.User.FirstName + ' ' + comment.User.LastName,
                     UserMainPhoto = userMainPhoto,
                     Body = comment.Body,
                     LikesCount = comment.LikesCount,

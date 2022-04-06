@@ -10,6 +10,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ShopScreen from '../screens/ShopScreen';
 import EventScreen from '../screens/EventScreen';
 import GroupScreen from '../screens/GroupScreen';
+import CommentsScreen from '../screens/CommentsScreen';
 import SearchScreen from '../screens/SearchScreen';
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ const Navigation = () => {
           <Stack.Screen name='ShopScreen' component={ShopScreen} />
           <Stack.Screen name='EventScreen' component={EventScreen} />
           <Stack.Screen name='GroupScreen' component={GroupScreen} />
+          <Stack.Screen name='CommentsScreen' component={CommentsScreen} />
           <Stack.Screen name='SearchScreen' component={SearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
