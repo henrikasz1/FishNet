@@ -55,6 +55,10 @@ const MainScreen = () => {
     navigation.navigate("GroupScreen")
   }
 
+  const onPressSearch = () => {
+    navigation.navigate("SearchScreen", {backScreen: "MainScreen"})
+  }
+
   //FETCH REAL DATA FROM DOT NET
   const handleLoad = () => {
 
@@ -106,7 +110,11 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header/>
+      <Header
+        first={onPressSearch}
+        second={onPressProfile}
+      />
+
       { loading ? (
         <View style={styles.cc}>
           <ActivityIndicator size="large" />

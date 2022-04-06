@@ -53,7 +53,10 @@ namespace API.Services
                 _dataContext.Occasions.Add(newOccasion);
                 var result = await _dataContext.SaveChangesAsync() > 0;
 
-                await _occasionPhotoService.SaveOccasionPhoto(file, newOccasion.OccasionId);
+                if (file != null)
+                {
+                    await _occasionPhotoService.SaveOccasionPhoto(file, newOccasion.OccasionId);
+                }
 
                 if (!result)
                 {
