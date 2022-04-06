@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
 
 function Footer({
     homeC,
@@ -14,8 +13,6 @@ function Footer({
     onPressShop,
     onPressEvent,
     onPressGroup}) {
-
-  const navigation = useNavigation();
 
   return (
     <View style={styles.footer}>

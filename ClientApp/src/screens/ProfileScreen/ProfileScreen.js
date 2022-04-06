@@ -32,10 +32,16 @@ const ProfileScreen = () => {
       navigation.navigate("GroupScreen")
   }
 
+  const onPressSearch = () => {
+    navigation.navigate("SearchScreen", {backScreen: "ProfileScreen"})
+  }
+
   return (
 
     <View style={styles.container}>
-      <Header/>
+      <Header
+        first={onPressSearch}
+      />
       <ScrollView style={styles.container} ref={scrollRef}>
         <Text> Profile Screen </Text>
       </ScrollView>

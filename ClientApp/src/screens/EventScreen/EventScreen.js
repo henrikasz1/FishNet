@@ -32,11 +32,17 @@ const EventScreen = () => {
       navigation.navigate("GroupScreen")
   }
 
+  const onPressSearch = () => {
+    navigation.navigate("SearchScreen", {backScreen: "EventScreen"})
+  }
 
   return (
 
     <View style={styles.container}>
-      <Header/>
+      <Header
+        first={onPressSearch}
+        second={onPressProfile}
+      />
       <ScrollView style={styles.container} ref={scrollRef}>
         <Text> Event Screen </Text>
       </ScrollView>

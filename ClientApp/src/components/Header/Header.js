@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableWithoutFeedback} from 'react-native'
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Logo from '../../../assets/images/FishNetLogo.png';
 import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
@@ -6,7 +6,7 @@ import React, {useState, useEffect } from 'react'
 import { BaseUrl } from '../Common/BaseUrl'
 import axios from 'axios';
 
-const Header = () => {
+function Header({first, second}) {
 
   const [profileImage, setProfileImage] = useState(undefined);
   const [userId, setUserId] = useState('');
@@ -26,27 +26,31 @@ const Header = () => {
   return (
     <View style={styles.header}>
 
-        <View style={styles.firstBlock}>
+        <View style={styles.firstBlock} >
           <Image source={Logo} style={styles.logo} />
         </View>
 
         <View style={styles.secondBlock}>
 
           <View style={styles.icon}>
-            <Icon name="search" size={23}/>
+            <Icon name="search" size={23} onPress={first}/>
           </View>
 
           {profileImage !== undefined ?
-          <Image
-            source={{ uri: profileImage }}
-            style={styles.image}
-          />
+          <TouchableWithoutFeedback onPress={second}>
+            <Image
+              source={{ uri: profileImage }}
+              style={styles.image}
+            />
+          </TouchableWithoutFeedback>
           :
-          <Image
-            source={DefaultUserPhoto}
-            style={styles.image}
-          />}
-
+          <TouchableWithoutFeedback onPress={second}>
+            <Image
+              source={DefaultUserPhoto}
+              style={styles.image}
+              onPress={second}
+            />
+          </TouchableWithoutFeedback>}
         </View>
 
     </View>

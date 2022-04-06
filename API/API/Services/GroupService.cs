@@ -48,7 +48,10 @@ namespace API.Services
             _dataContext.Groups.Add(newGroup);
             var result = await _dataContext.SaveChangesAsync() > 0;
 
-            await _groupPhotoService.SaveGroupPhoto(file, newGroup.GroupId);
+            if (file != null)
+            {
+                await _groupPhotoService.SaveGroupPhoto(file, newGroup.GroupId);
+            }
 
             if (!result)
             {
@@ -227,6 +230,7 @@ namespace API.Services
         
         public async Task<List<GetSearchResultsDto>> GetGroupByName(string filter)
         {
+            string photo;
             var groupsList = new List<GetSearchResultsDto>();
             var groups = await _dataContext.Groups
                 .Include(y => y.Photo)
@@ -235,10 +239,19 @@ namespace API.Services
             
             foreach (var group in groups)
             {
+                if (group.Photo == null)
+                {
+                    photo = null;
+                }
+                else
+                {
+                    photo = group.Photo.Url;
+                }
+
                 groupsList.Add( new GetSearchResultsDto
                 {
                     EntityId = group.OwnerId,
-                    EntityMainPhotoUrl = group.Photo.Url,
+                    EntityMainPhotoUrl = photo,
                     EntityName = group.Title,
                     EntityType = SearchResultEnum.SearchResultType.Group
                 });
