@@ -63,7 +63,6 @@ const ShopScreen = () => {
         second={onPressProfile}
       />
       <ScrollView ref={scrollRef}>
-        <Text>Filters</Text> {/*todo filters*/}
         <View style={{...styles.container, ...styles.shop}}>{data.map((shopItem, key) => { 
           console.log(shopItem);
           return <Product
