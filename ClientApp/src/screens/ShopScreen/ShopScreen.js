@@ -1,13 +1,28 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 import Header from '../../components/Header';
+import SearchHeader from '../../components/SearchHeader';
 import Footer from '../../components/Footer';
 import { useNavigation } from '@react-navigation/native';
+import { BaseUrl } from '../../components/Common/BaseUrl';
+import axios from 'axios';
+import Product from '../../components/Product';
 
 const ShopScreen = () => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
+
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const handleLoad = async() => {
+    const url = `${BaseUrl}/api/shop/allshopads`
+    const shopItems = (await axios.get(url)).data
+    setData(shopItems)
+    setLoading(false)
+    console.log(shopItems)
+  }
 
   const onPressHome = () => {
     navigation.navigate("MainScreen")
@@ -36,6 +51,10 @@ const ShopScreen = () => {
     navigation.navigate("SearchScreen", {backScreen: "ShopScreen"})
   }
 
+  if (loading) {
+    handleLoad()
+  }
+
   return (
 
     <View style={styles.container}>
@@ -43,8 +62,20 @@ const ShopScreen = () => {
         first={onPressSearch}
         second={onPressProfile}
       />
-      <ScrollView style={styles.container} ref={scrollRef}>
-        <Text> Shop Screen </Text>
+      <ScrollView ref={scrollRef}>
+        <Text>Filters</Text> {/*todo filters*/}
+        <View style={{...styles.container, ...styles.shop}}>{data.map((shopItem, key) => { 
+          console.log(shopItem);
+          return <Product
+            description={shopItem.description}
+            title={shopItem.productName}
+            photos={shopItem.photos}
+            price={shopItem.price}
+            location={shopItem.location}
+            shopId={shopItem.shopId}
+            key={key}
+          />
+        })}</View>
       </ScrollView>
 
       <Footer
@@ -62,9 +93,13 @@ const ShopScreen = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
+    container: {        
+      flex: 1
     },
+    shop: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    }
 })
 
 export default ShopScreen
