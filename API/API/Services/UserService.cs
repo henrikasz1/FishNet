@@ -22,9 +22,11 @@ namespace API.Services
 
         public async Task<IList<GetSearchResultsDto>> GetUserByName(string filter)
         {
+            filter = filter.Replace('%', ' ');
+
             var users = await _dataContext.Users
                 .Include(x => x.Photos)
-                .Where(x => x.FirstName.ToLower().Contains(filter.ToLower()) || x.LastName.ToLower().Contains(filter.ToLower()))
+                .Where(x => (x.FirstName.ToLower() + " " + x.LastName.ToLower()).Contains(filter.ToLower()))
                 .ToListAsync();
 
             var userDto = new List<GetSearchResultsDto>();

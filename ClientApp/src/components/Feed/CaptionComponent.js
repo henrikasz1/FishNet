@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Animated, TouchableWithoutFeedback } from "react-native";
+import ReadMore from 'react-native-read-more-text';
 
 export default function CaptionComponent({ contents }){
   const [expanded, setExpanded] = useState(false);
@@ -9,30 +10,18 @@ export default function CaptionComponent({ contents }){
   };
 
   return (
-    <TouchableWithoutFeedback onPress={toggleExpansion}>
-      <View style={styles.captionItself}>
-        <Text numberOfLines={expanded ? 30 : 2} ellipsizeMode="tail" style={styles.content}>
+    <View>
+      <ReadMore numberOfLines={3}>
+        <Text style={styles.text}>
           {contents}
         </Text>
-        {!expanded && <Text style={styles.actionable}>...See more</Text>}
-      </View>
-    </TouchableWithoutFeedback>
+      </ReadMore>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  actionable: {
-    color: 'darkgray'
-  },
-  // captionItself: {
-  //   // paddingHorizontal: 6
-  // },
-  content: {
+  text: {
     color: '#353839'
   }
 });

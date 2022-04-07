@@ -8,8 +8,7 @@ namespace API.Dtos.CommentsDtos
         public Guid UserId { get; set; }
         public string UserMainPhoto { get; set; }
         public string Body { get; set; }
-
-        public string? UserName { get; set; }
+        public string UserName { get; set; }
         public int LikesCount { get; set; }
         public DateTime CreatedAt { get; set; }
     }

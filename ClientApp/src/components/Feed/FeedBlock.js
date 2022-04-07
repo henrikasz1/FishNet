@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, StatusBar, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, StatusBar, Text, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +16,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   const [loading, setLoading] = useState(true);
   const [hasMyLike, setHasMyLike] = useState(false);
   const [selfLikesCount, setLikesCount] = useState(likesCount);
+  const [lastTap, setLastTap] = useState(null);
   const navigation = useNavigation();
 
   const loadLikes = async () => {
@@ -64,6 +65,19 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     });
   }
 
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    if (lastTap && (now - lastTap) < DOUBLE_PRESS_DELAY) {
+      setLastTap(null);
+      changePostLikes();
+    }
+    else
+    {
+      setLastTap(now);
+    }
+  }
+
   const styles = {
     item: {
       color: 'black',
@@ -74,7 +88,6 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     title: {
       color: 'black',
       fontSize: 19,
-      // fontWeight: 'bold',
       paddingBottom: 4,
       paddingHorizontal: 8,
       textAlign: 'left'
@@ -84,8 +97,9 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       aspectRatio: 1
     },
     text: {
+      marginTop: '3%',
       paddingHorizontal: '3%',
-      marginBottom: '3%'
+      marginBottom: '3%',
     },
     profileImage: {
       marginLeft: '5%',
@@ -97,7 +111,6 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       width: '85%',
     },
     secondBlock: {
-      // width: '15%',
       flexDirection: 'row',
       paddingBottom: '1%'
     },
@@ -110,24 +123,22 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       borderBottomWidth: 0.8,
       borderColor: '#d3d3d3',
       flexDirection: 'row',
-
       width: '100%',
     },
     row: {
       flexDirection: 'row',
       width: '100%',
-      alignItems: 'center'
+      height: 40
     },
     icon: {
-      // borderRadius: 100,
-      height: 40,
-      width: 40,
-      alignItems: 'center',
-      justifyContent: 'center'
+      paddingLeft: '3%',
+      paddingRight: '3%',
+      alignItems: 'center'
     },
+    commentIcon: {
+      top: -2
+    }
   };
-
-  //todo make post work without photo
 
   return (
     <View style={styles.item}>
@@ -152,28 +163,43 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
           </Text>
         </View>
       </View>
-      {photo === undefined ? <View></View> : (
-        <View style={{ width: '100%' }}>
-          <CarouselComponent pics={photo} style={styles.cardImage}/>
-        </View>
-      )}
-      <View styles={styles.row}>
-        <TouchableWithoutFeedback onPress={changePostLikes}>
-          <View style={styles.icon}>
-            <Icon name="heart" size={23} color={hasMyLike ? "crimson" : "black"} />
-            <Text>{selfLikesCount} </Text>
+
+      <TouchableWithoutFeedback onPress={() => handleDoubleTap()}>
+        {photo === undefined ? <View></View> : (
+          <View style={{ width: '100%' }}>
+              <CarouselComponent pics={photo} style={styles.cardImage}/>
           </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={goToComments}>
-          <View style={styles.icon}>
-            <Icon name="comment" size={23} color="black"/>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+        )}
+      </TouchableWithoutFeedback>
+
       <View style={styles.text}>
-        <Text style={styles.title}>{title}</Text>
         <CaptionComponent contents={caption} />
       </View>
+
+      <View style={styles.row}>
+
+        <TouchableWithoutFeedback onPress={changePostLikes}>
+          {hasMyLike ?
+            <View style={styles.icon}>
+              <Icon name="heart" size={22} color={"crimson"} />
+              <Text>{selfLikesCount} </Text>
+            </View>
+            :
+            <View style={styles.icon}>
+              <Icon name="heart-o" size={22} color={"black"} />
+              <Text>{selfLikesCount} </Text>
+            </View>
+          }
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback onPress={goToComments}>
+          <View style={[styles.icon, styles.commentIcon]}>
+            <Icon name="comment-o" size={22} color="black"/>
+          </View>
+        </TouchableWithoutFeedback>
+
+      </View>
+
     </View>
   );
 }

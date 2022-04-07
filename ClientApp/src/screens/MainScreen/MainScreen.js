@@ -64,7 +64,7 @@ const MainScreen = () => {
 
     const userIdUrl = `${BaseUrl}/api/user/getuserid`;
     axios.get(userIdUrl).then(res => setUserId(res.data));
-
+    
     const url =  `${BaseUrl}/api/post/${isPublicPosts ? 'remainingposts' : 'allfriendposts'}?batchsize=${batchNumber}`;
     axios.get(url).then((response) => {
       setLoaded(false);
@@ -125,7 +125,6 @@ const MainScreen = () => {
             handleLoadMore();
           }
         }}  ref={scrollRef}>
-          <InterjectComponent text={"Friend's posts"} />
           {data.length ? data
             .filter(post => post.isFriendPost == true)
             .map(({ title, photos, postId, userId, likesCount, body }, index) => (
@@ -141,7 +140,7 @@ const MainScreen = () => {
           />
         )) : (
             <Block
-              title="You've viewed all your friend's posts"
+              title="You've viewed all of your friends' posts"
               photo={fishImage}
               caption="Catch some fish tommorrow!"
             />
@@ -158,6 +157,7 @@ const MainScreen = () => {
             postId={postId}
             userId={userId}
             likesCount={likesCount}
+            likerId={likerId}
           />
         )) : (
             <Block
