@@ -11,9 +11,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   comment: {
-    border: '1px solid black',
-    borderBottomWidth: 1,
-    borderColor: '#d3d3d3',
+    // borderBottomWidth: 1.5,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 25,
     paddingBottom: 10
   },
   title: {
@@ -44,8 +45,7 @@ const styles = StyleSheet.create({
     height: 50,
     // backgroundColor: 'white',
     alignItems: 'center',
-    borderBottomWidth: 0.8,
-    borderColor: '#d3d3d3',
+
     flexDirection: 'row',
     // backgroundColor: 'red',
     width: '100%',
@@ -65,7 +65,10 @@ const styles = StyleSheet.create({
   },
   commentBody: {
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    borderColor: '#d3d3d3',
+    borderTopWidth: 1,
+    paddingBottom: 5
   },
   floatRight: {
     float: 'right'
@@ -138,7 +141,9 @@ export default function Comment({
               <Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "black"} />
             </View>
           </TouchableWithoutFeedback>
+          <View style={styles.textBody}>
               <Text>{likeCount}</Text>
+          </View>
         </View>
       </View>
       <View style={styles.commentBody}>
