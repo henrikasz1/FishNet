@@ -9,7 +9,7 @@ import { BaseUrl } from '../Common/BaseUrl';
 
 import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
 
-export default function Block({ title, photo, caption, userId, postId, likesCount, likerId }) {
+export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount }) {
 
   const [profilePicture, setProfilePicture] = useState(null);
   const [userName, setUserName] = useState('');
@@ -18,6 +18,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   const [selfLikesCount, setLikesCount] = useState(likesCount);
   const [lastTap, setLastTap] = useState(null);
   const navigation = useNavigation();
+  const isOwnPost = userId == likerId;
 
   const loadLikes = async () => {
     const haveLikedUrl = `${BaseUrl}/api/likes/postlikedby/${postId}`;
@@ -76,6 +77,23 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     {
       setLastTap(now);
     }
+  }
+
+  const handleDeleteOwnPost = async () => {
+    const url = `${BaseUrl}/api/post/delete/${postId}`;
+    await axios.delete(url);
+    //reload parent state
+    onDelete(postId);
+  }
+
+  const handleAddFriend = async () => {
+    const url = `${BaseUrl}/api/friends/request/${userId}`;
+    await axios.put(url);
+  }
+
+  const handleUnfriend = async () => {
+    const url = `${BaseUrl}//api/friends/unfriend/${userId}`;
+    await axios.delete(url);
   }
 
   const styles = {
@@ -195,8 +213,31 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
         <TouchableWithoutFeedback onPress={goToComments}>
           <View style={[styles.icon, styles.commentIcon]}>
             <Icon name="comment-o" size={22} color="black"/>
+            <Text>{commentsCount}</Text>
           </View>
         </TouchableWithoutFeedback>
+
+        {isOwnPost ? (
+          //problema yra kad savo posto niekad nepamatysim. Sita handleri galima reusinti kitam feede, tarkim savo profilyje
+          <TouchableWithoutFeedback onPress={handleDeleteOwnPost}>
+            <View style={[styles.icon, styles.commentIcon]}>
+              <Icon name="hexagon-minus-o" size={22} color="black"/>
+            </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          //add friends logic
+          isFriendPost ?
+          <TouchableWithoutFeedback onPress={handleUnfriend}>
+            <View style={[styles.icon, styles.commentIcon]}>
+              <Icon name="user-times" size={22} color="black"/>
+            </View>
+          </TouchableWithoutFeedback> :
+          <TouchableWithoutFeedback onPress={handleAddFriend}>
+          <View style={[styles.icon, styles.commentIcon]}>
+            <Icon name="user-plus" size={22} color="black"/>
+          </View>
+        </TouchableWithoutFeedback>
+        )}
 
       </View>
 

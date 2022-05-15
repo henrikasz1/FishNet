@@ -15,6 +15,8 @@ namespace API.Dtos
         public DateTime CreatedAt { get; set; }
 
         public int LikesCount { get; set; }
+        
+        public int CommentsCount { get; set; }
 
         public List<PostPhoto> Photos { get; set; }
     }
