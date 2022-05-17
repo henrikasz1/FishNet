@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Button, Image, TextInput, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
 import React, { useState } from 'react'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
-import Header from '../../components/Header';
+import GoBackHeader from '../../components/GoBackHeader';
 import Footer from '../../components/Footer';
 import Comment from '../../components/Comments/CommentComponent';
 import CommentWriteComponent from '../../components/Comments/CommentWriteComponent';
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 export default function CommentsScreen({ route }) {
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-  const { postId, commentWriterId } = route.params;
+  const { postId, commentWriterId, backScreen } = route.params;
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const {height} = useWindowDimensions();
@@ -63,7 +63,10 @@ export default function CommentsScreen({ route }) {
   return (
 
     <View style={styles.container}>
-      <Header/>
+      <GoBackHeader
+        onPressBack={() => navigation.navigate(backScreen)}
+        text="Comments"
+      />
       {comments.length > 0 ? 
         <ScrollView style={styles.container} ref={scrollRef}>
           {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) => 
@@ -88,14 +91,14 @@ export default function CommentsScreen({ route }) {
         </View >
       }
       <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} />
-      <Footer
+      {/* <Footer
         style={styles.footer}
         onPressHome={onPressHome}
         onPressProfile={onPressProfile}
         onPressShop={onPressShop}
         onPressEvent={onPressEvent}
         onPressGroup={onPressGroup}
-      />
+      /> */}
     </View>
   )
 }

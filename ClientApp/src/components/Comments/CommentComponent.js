@@ -12,27 +12,30 @@ const styles = StyleSheet.create({
   },
   comment: {
     // borderBottomWidth: 1.5,
-    borderColor: 'grey',
     borderWidth: 1,
-    borderRadius: 25,
-    paddingBottom: 10
+    borderColor: '#ededed',
+    marginHorizontal: 5,
+    borderRadius: 7,
+    paddingBottom: 3,
+    backgroundColor: 'white',
+    marginVertical: 2
   },
   title: {
     color: 'black',
-    fontSize: 19,
-    // fontWeight: 'bold',
+    fontSize: 15,
     paddingBottom: 4,
     paddingHorizontal: 8,
     textAlign: 'left'
   },
   firstBlock: {
-    width: '85%',
+    width: '20%',
+    flex: 1,
     flexDirection: 'row',
-    // backgroundColor: 'yellow',
     alignItems: 'center',
+    left: '8%'
   },
   secondBlock: {
-    // width: '15%',
+    width: '80%',
     flexDirection: 'row',
     paddingBottom: '1%',
     alignItems: 'center',
@@ -51,9 +54,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   profileImage: {
-    marginLeft: '5%',
-    height: 35,
-    width: 35,
+    marginLeft: '1%',
+    height: 30,
+    width: 30,
     borderRadius: 100
   },
   icon: {
@@ -66,8 +69,6 @@ const styles = StyleSheet.create({
   commentBody: {
     paddingLeft: 10,
     paddingRight: 10,
-    borderColor: '#d3d3d3',
-    borderTopWidth: 1,
     paddingBottom: 5
   },
   floatRight: {
@@ -131,19 +132,25 @@ export default function Comment({
               style={styles.profileImage}
             />
           }
-        </View>
-        <View style={styles.firstBlock}>
-          <Text style={styles.title}>
+
+           <Text style={styles.title}>
             {userName}
           </Text>
+        </View>
+
+        <View style={styles.firstBlock}>
           <TouchableWithoutFeedback onPress={changeCommentLikes}>
+
             <View style={{...styles.icon, ...styles.floatRight}}>
-              <Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "black"} />
+              <Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "#2d2d2d"} />
             </View>
+
           </TouchableWithoutFeedback>
+
           <View style={styles.textBody}>
               <Text>{likeCount}</Text>
           </View>
+
         </View>
       </View>
       <View style={styles.commentBody}>

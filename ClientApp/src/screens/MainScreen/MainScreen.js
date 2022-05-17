@@ -144,6 +144,7 @@ const MainScreen = () => {
             commentsCount={commentsCount}
             onDelete={handleRemovePostFromState}
             isFriendPost={true}
+            goBackComments="MainScreen"
           />
         )) : (
             <Block
@@ -168,6 +169,7 @@ const MainScreen = () => {
             commentsCount={commentsCount}
             onDelete={handleRemovePostFromState}
             isFriendPost={false}
+            goBackComments="MainScreen"
           />
         )) : (
             <Block

@@ -13,11 +13,11 @@ import CustomButton from '../../components/CustomButton';
 
 const CommentButton = ({onPress}) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.commentBtn}>
-      <View style={styles.icon}>
-        <Icon name="comment" size={24} color={'white'} />
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity onPress={onPress} style={styles.commentBtn}>
+        <View style={styles.icon}>
+          <Icon name="comment" size={25} color={'#2d2d2d'} />
+        </View>
+      </TouchableOpacity>
   )
 }
 
@@ -58,23 +58,24 @@ export default function CommentWriteComponent ({ postId, commentWriterId, reload
 
 const styles = StyleSheet.create({
   br25: {
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 25,
+    borderColor: '#d3d3d3',
+    borderTopWidth: 0.5,
   },
   container: {
     flex: 1
   },
   row: {
+    backgroundColor: 'white',
     width: '100%',
-    height: 40,
+    height: 55,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center'
   },
   firstBlock: {
-    width: '80%',
+    // backgroundColor: 'white',
+    width: '100%',
     flex: 1,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   secondBlock: {
     width: 40
@@ -88,11 +89,9 @@ const styles = StyleSheet.create({
   },
   input: {
     borderColor: '#E8E8E8',
+    paddingLeft: 20,
+    height: 40,
     borderWidth: 1,
     borderRadius: 25,
-  },
-  commentBtn: {
-    backgroundColor: '#2196F3',
-    borderRadius: 100
   }
 });

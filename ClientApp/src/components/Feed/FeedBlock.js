@@ -9,7 +9,7 @@ import { BaseUrl } from '../Common/BaseUrl';
 
 import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
 
-export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount }) {
+export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount, goBackComments }) {
 
   const [profilePicture, setProfilePicture] = useState(null);
   const [userName, setUserName] = useState('');
@@ -62,7 +62,8 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   const goToComments = () => {
     navigation.navigate('CommentsScreen', {
       postId,
-      commentWriterId: likerId
+      commentWriterId: likerId,
+      backScreen: goBackComments
     });
   }
 
@@ -193,12 +194,12 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
             isFriendPost ?
             <TouchableWithoutFeedback onPress={handleUnfriend}>
               <View style={[styles.icon, styles.commentIcon]}>
-                <Icon name="user-times" size={22} color="black"/>
+                <Icon name="user-times" size={22} color="#565656"/>
               </View>
             </TouchableWithoutFeedback> :
             <TouchableWithoutFeedback onPress={handleAddFriend}>
             <View style={[styles.icon, styles.commentIcon]}>
-              <Icon name="user-plus" size={22} color="black"/>
+              <Icon name="user-plus" size={22} color="#565656"/>
             </View>
           </TouchableWithoutFeedback>
         )}
