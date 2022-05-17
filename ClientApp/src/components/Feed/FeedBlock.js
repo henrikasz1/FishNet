@@ -17,6 +17,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   const [hasMyLike, setHasMyLike] = useState(false);
   const [selfLikesCount, setLikesCount] = useState(likesCount);
   const [lastTap, setLastTap] = useState(null);
+  const [commCount, setCommCount] = useState(commentsCount);
   const navigation = useNavigation();
   const isOwnPost = userId == likerId;
 
@@ -63,7 +64,8 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     navigation.navigate('CommentsScreen', {
       postId,
       commentWriterId: likerId,
-      backScreen: goBackComments
+      backScreen: goBackComments,
+      incrementCommentCount: incrementCommentCount
     });
   }
 
@@ -95,6 +97,11 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   const handleUnfriend = async () => {
     const url = `${BaseUrl}//api/friends/unfriend/${userId}`;
     await axios.delete(url);
+  }
+
+  const incrementCommentCount = () => {
+    console.log('Test if function passing works between screens');
+    setCommCount(commCount + 1);
   }
 
   const styles = {
@@ -241,7 +248,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
         <TouchableWithoutFeedback onPress={goToComments}>
           <View style={[styles.icon, styles.commentIcon]}>
             <Icon name="comment-o" size={22} color="black"/>
-            <Text>{commentsCount}</Text>
+            <Text>{commCount}</Text>
           </View>
         </TouchableWithoutFeedback>
 

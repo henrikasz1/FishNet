@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 export default function CommentsScreen({ route }) {
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-  const { postId, commentWriterId, backScreen } = route.params;
+  const { postId, commentWriterId, backScreen, incrementCommentCount } = route.params;
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const {height} = useWindowDimensions();
@@ -90,7 +90,7 @@ export default function CommentsScreen({ route }) {
           <Text> Write something smart! </Text>
         </View >
       }
-      <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} />
+      <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} onWriteSuccess={incrementCommentCount}/>
       {/* <Footer
         style={styles.footer}
         onPressHome={onPressHome}

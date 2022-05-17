@@ -21,7 +21,7 @@ const CommentButton = ({onPress}) => {
   )
 }
 
-export default function CommentWriteComponent ({ postId, commentWriterId, reloadFunction }) {
+export default function CommentWriteComponent ({ postId, commentWriterId, reloadFunction, onWriteSuccess }) {
 
   const [comment, setComment] = useState('');
   const handleSubmit = async () => {
@@ -32,6 +32,7 @@ export default function CommentWriteComponent ({ postId, commentWriterId, reload
     await reloadFunction();
     Keyboard.dismiss();
     setComment('');
+    onWriteSuccess();
   }
 
   const onChange = (value) => {
