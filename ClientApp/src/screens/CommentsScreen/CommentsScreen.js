@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TextInput, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
@@ -7,11 +7,16 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Comment from '../../components/Comments/CommentComponent';
 import CommentWriteComponent from '../../components/Comments/CommentWriteComponent';
+import Fish from '../../../assets/images/Fish.png';
 
 const styles = StyleSheet.create({
   container: {
       flex: 1
   },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })
 
 export default function CommentsScreen({ route }) {
@@ -20,6 +25,8 @@ export default function CommentsScreen({ route }) {
   const { postId, commentWriterId } = route.params;
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
+  const {height} = useWindowDimensions();
+
   const onPressHome = () => {
     navigation.navigate("MainScreen");
   }
@@ -57,22 +64,29 @@ export default function CommentsScreen({ route }) {
 
     <View style={styles.container}>
       <Header/>
-      <ScrollView style={styles.container} ref={scrollRef}>
-        {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) => 
-          <Comment 
-            id={commentId}
-            userId={userId}
-            userMainPhoto={userMainPhoto}
-            body={body}
-            likesCount={likesCount}
-            createdAt={createdAt}
-            commentLiker={commentWriterId}
-            postId={postId}
-            userName={userName}
-            key={key}
-          />
-        )}
-      </ScrollView>
+      {comments.length > 0 ? 
+        <ScrollView style={styles.container} ref={scrollRef}>
+          {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) => 
+            <Comment 
+              id={commentId}
+              userId={userId}
+              userMainPhoto={userMainPhoto}
+              body={body}
+              likesCount={likesCount}
+              createdAt={createdAt}
+              commentLiker={commentWriterId}
+              postId={postId}
+              userName={userName}
+              key={key}
+            />
+          )}
+        </ScrollView>
+      : 
+        <View style={{...styles.container, ...styles.center}}>
+          <Image source={Fish} style={{height: height * 0.25}} resizeMode="contain" />
+          <Text> Write something smart! </Text>
+        </View >
+      }
       <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} />
       <Footer
         style={styles.footer}

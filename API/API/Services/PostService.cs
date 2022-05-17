@@ -65,6 +65,11 @@ namespace API.Services
             var postOwner = await _dataContext.Users
                 .Include(x => x.Friends)
                 .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+            
+            
+            var commentsAmount = await _dataContext.Comments
+                .CountAsync(comm => comm.Post.PostId == post.PostId);
+
 
             if (postOwner.IsProfilePrivate == true && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
             {
@@ -78,6 +83,7 @@ namespace API.Services
                 Body = post.Body,
                 CreatedAt = post.CreatedAt,
                 LikesCount = post.LikesCount,
+                CommentsCount = commentsAmount,
                 Photos = post.Photos
             };
 
@@ -134,6 +140,10 @@ namespace API.Services
 
             foreach (var post in posts)
             {
+                
+                var commentsAmount = await _dataContext.Comments
+                    .CountAsync(comm => comm.Post.PostId == post.PostId);
+
                 postsDtoList.Add(
                     new GetPostDto
                     {
@@ -142,6 +152,7 @@ namespace API.Services
                         Body = post.Body,
                         CreatedAt = post.CreatedAt,
                         LikesCount = post.LikesCount,
+                        CommentsCount = commentsAmount,
                         Photos = post.Photos
                     });
             }
@@ -167,6 +178,9 @@ namespace API.Services
                 var postOwner = await _dataContext.Users
                     .Include(x => x.Friends)
                     .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+                
+                var commentsAmount = await _dataContext.Comments
+                    .CountAsync(comm => comm.Post.PostId == post.PostId);
 
                 if (postOwner.IsProfilePrivate == true && postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)) 
                     || postOwner.IsProfilePrivate == false)
@@ -179,6 +193,7 @@ namespace API.Services
                         Body = post.Body,
                         CreatedAt = post.CreatedAt,
                         LikesCount = post.LikesCount,
+                        CommentsCount = commentsAmount,
                         Photos = post.Photos
                     });
                 }
@@ -207,6 +222,11 @@ namespace API.Services
                 var postOwner = await _dataContext.Users
                     .Include(x => x.Friends)
                     .FirstOrDefaultAsync(x => x.UserId == post.UserId);
+                
+                
+                var commentsAmount = await _dataContext.Comments
+                    .CountAsync(comm => comm.Post.PostId == post.PostId);
+
 
                 if (postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
                 {
@@ -218,7 +238,8 @@ namespace API.Services
                         Body = post.Body,
                         CreatedAt = post.CreatedAt,
                         LikesCount = post.LikesCount,
-                        Photos = post.Photos
+                        Photos = post.Photos,
+                        CommentsCount = commentsAmount
                     });
                 }
             }
@@ -245,6 +266,9 @@ namespace API.Services
                     .Include(x => x.Friends)
                     .FirstOrDefaultAsync(x => x.UserId == post.UserId);
 
+                var commentsAmount = await _dataContext.Comments
+                    .CountAsync(comm => comm.Post.PostId == post.PostId);
+
                 if (postOwner.IsProfilePrivate == false && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
                 {
                     postsDtoList.Add(
@@ -255,6 +279,7 @@ namespace API.Services
                         Body = post.Body,
                         CreatedAt = post.CreatedAt,
                         LikesCount = post.LikesCount,
+                        CommentsCount = commentsAmount,
                         Photos = post.Photos
                     });
                 }

@@ -11,9 +11,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   comment: {
-    border: '1px black',
-    borderBottomWidth: 1,
-    borderColor: '#d3d3d3',
+    // borderBottomWidth: 1.5,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 25,
     paddingBottom: 10
   },
   title: {
@@ -26,13 +27,17 @@ const styles = StyleSheet.create({
   },
   firstBlock: {
     width: '85%',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    // backgroundColor: 'yellow',
+    alignItems: 'center',
   },
   secondBlock: {
     // width: '15%',
     flexDirection: 'row',
     paddingBottom: '1%',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingLeft: 5
+    // backgroundColor: 'orange'
   },
   profile: {
     paddingRight: '3%',
@@ -40,10 +45,9 @@ const styles = StyleSheet.create({
     height: 50,
     // backgroundColor: 'white',
     alignItems: 'center',
-    borderBottomWidth: 0.8,
-    borderColor: '#d3d3d3',
-    flexDirection: 'row',
 
+    flexDirection: 'row',
+    // backgroundColor: 'red',
     width: '100%',
   },
   profileImage: {
@@ -59,6 +63,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  commentBody: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderColor: '#d3d3d3',
+    borderTopWidth: 1,
+    paddingBottom: 5
+  },
+  floatRight: {
+    float: 'right'
+  }
 });
 
 export default function Comment({
@@ -123,14 +137,18 @@ export default function Comment({
             {userName}
           </Text>
           <TouchableWithoutFeedback onPress={changeCommentLikes}>
-            <View style={styles.icon}>
+            <View style={{...styles.icon, ...styles.floatRight}}>
               <Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "black"} />
             </View>
           </TouchableWithoutFeedback>
-            <Text>{likeCount}</Text>
+          <View style={styles.textBody}>
+              <Text>{likeCount}</Text>
+          </View>
         </View>
       </View>
-      <Text>{body}</Text>
+      <View style={styles.commentBody}>
+        <Text>{body}</Text>
+      </View>
     </View>
   );
 }

@@ -88,6 +88,10 @@ const MainScreen = () => {
     });
   }
 
+  const handleRemovePostFromState = (postId) => {
+    setData(data.filter(post => post.postId != postId));
+  }
+
   const handleLoadMore = () => {
     setBatchNum(batchNumber + 1);
     handleLoad();
@@ -127,7 +131,7 @@ const MainScreen = () => {
         }}  ref={scrollRef}>
           {data.length ? data
             .filter(post => post.isFriendPost == true)
-            .map(({ title, photos, postId, userId, likesCount, body }, index) => (
+            .map(({ title, photos, postId, userId, likesCount, body, commentsCount }, index) => (
           <Block
             title={title}
             photo={photos}
@@ -137,6 +141,9 @@ const MainScreen = () => {
             userId={userId}
             likesCount={likesCount}
             likerId={likerId}
+            commentsCount={commentsCount}
+            onDelete={handleRemovePostFromState}
+            isFriendPost={true}
           />
         )) : (
             <Block
@@ -148,7 +155,7 @@ const MainScreen = () => {
         {isPublicPosts && <InterjectComponent text={"Public posts"} />}
         {data.length ? data
             .filter(post => !post.isFriendPost)
-            .map(({ title, photos, postId, userId, likesCount, body }, index) => (
+            .map(({ title, photos, postId, userId, likesCount, body, commentsCount }, index) => (
           <Block
             title={title}
             photo={photos}
@@ -158,6 +165,9 @@ const MainScreen = () => {
             userId={userId}
             likesCount={likesCount}
             likerId={likerId}
+            commentsCount={commentsCount}
+            onDelete={handleRemovePostFromState}
+            isFriendPost={false}
           />
         )) : (
             <Block

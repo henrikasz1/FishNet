@@ -39,7 +39,7 @@ export default function CommentWriteComponent ({ postId, commentWriterId, reload
   }
 
   return (
-    <View style={{...styles.row}}>
+    <View style={{...styles.row, ...styles.br25}}>
       <View style={styles.firstBlock}>
         <TextInput
           multiline
@@ -57,6 +57,11 @@ export default function CommentWriteComponent ({ postId, commentWriterId, reload
 }
 
 const styles = StyleSheet.create({
+  br25: {
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 25,
+  },
   container: {
     flex: 1
   },
@@ -68,17 +73,26 @@ const styles = StyleSheet.create({
   },
   firstBlock: {
     width: '80%',
-    flex: 1
+    flex: 1,
+    paddingLeft: 10
   },
   secondBlock: {
     width: 40
   },
   icon: {
-    // borderRadius: 100,
+    borderRadius: 99,
     height: 40,
     width: 40,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  commentBtn: {backgroundColor: '#2196F3'}
+  input: {
+    borderColor: '#E8E8E8',
+    borderWidth: 1,
+    borderRadius: 25,
+  },
+  commentBtn: {
+    backgroundColor: '#2196F3',
+    borderRadius: 100
+  }
 });
