@@ -121,7 +121,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       marginBottom: '3%',
     },
     profileImage: {
-      marginLeft: '5%',
+      marginHorizontal: '2%',
       height: 35,
       width: 35,
       borderRadius: 100
@@ -133,7 +133,9 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     },
     secondBlock: {
       flexDirection: 'row',
-      paddingBottom: '1%'
+      paddingBottom: '1%',
+      width: '90%',
+      alignItems: 'center'
     },
     profile: {
       paddingRight: '3%',
@@ -177,32 +179,34 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
               style={styles.profileImage}
             />
           }
-        </View>
+
         <View style={styles.firstBlock}>
+
           <Text style={styles.title}>
             {userName || "State not set..."}
           </Text>
-          {isOwnPost ? (
-          //problema yra kad savo posto niekad nepamatysim. Sita handleri galima reusinti kitam feede, tarkim savo profilyje
-            <TouchableWithoutFeedback onPress={handleDeleteOwnPost}>
-              <View style={[styles.icon, styles.commentIcon]}>
-                <Icon name="hexagon-minus-o" size={22} color="black"/>
-              </View>
-            </TouchableWithoutFeedback>
-          ) : (
+
+        </View>
+            {isOwnPost ? (
+            //problema yra kad savo posto niekad nepamatysim. Sita handleri galima reusinti kitam feede, tarkim savo profilyje
+              <TouchableWithoutFeedback onPress={handleDeleteOwnPost}>
+                <View style={[styles.icon, styles.commentIcon]}>
+                  <Icon name="hexagon-minus-o" size={22} color="black"/>
+                </View>
+              </TouchableWithoutFeedback>
+          ) 
+          :
+          (
             //add friends logic
-            isFriendPost ?
-            <TouchableWithoutFeedback onPress={handleUnfriend}>
-              <View style={[styles.icon, styles.commentIcon]}>
-                <Icon name="user-times" size={22} color="#565656"/>
-              </View>
-            </TouchableWithoutFeedback> :
-            <TouchableWithoutFeedback onPress={handleAddFriend}>
-            <View style={[styles.icon, styles.commentIcon]}>
-              <Icon name="user-plus" size={22} color="#565656"/>
+            !isFriendPost &&
+            <View>
+              <TouchableWithoutFeedback onPress={handleAddFriend}>
+                <View style={[styles.icon, styles.commentIcon]}>
+                  <Icon name="user-plus" size={22} color="#565656"/>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </TouchableWithoutFeedback>
-        )}
+          )}
         </View>
       </View>
 
