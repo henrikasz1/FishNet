@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Button, Image, TextInput, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
@@ -16,7 +16,12 @@ const styles = StyleSheet.create({
   center: {
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  activityIndicator: {
+    height: '90%',
+    justifyContent: 'center',
+    alignItems: 'center'
+},
 })
 
 export default function CommentsScreen({ route }) {
@@ -60,45 +65,46 @@ export default function CommentsScreen({ route }) {
     handleLoad().then(() => setLoading(false));
   }
 
-  return (
 
+  return (
     <View style={styles.container}>
       <GoBackHeader
         onPressBack={() => navigation.navigate(backScreen)}
         text="Comments"
       />
-      {comments.length > 0 ? 
-        <ScrollView style={styles.container} ref={scrollRef}>
-          {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) => 
-            <Comment 
-              id={commentId}
-              userId={userId}
-              userMainPhoto={userMainPhoto}
-              body={body}
-              likesCount={likesCount}
-              createdAt={createdAt}
-              commentLiker={commentWriterId}
-              postId={postId}
-              userName={userName}
-              key={key}
-            />
-          )}
-        </ScrollView>
-      : 
-        <View style={{...styles.container, ...styles.center}}>
-          <Image source={Fish} style={{height: height * 0.25}} resizeMode="contain" />
-          <Text> Write something smart! </Text>
-        </View >
-      }
-      <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} onWriteSuccess={incrementCommentCount}/>
-      {/* <Footer
-        style={styles.footer}
-        onPressHome={onPressHome}
-        onPressProfile={onPressProfile}
-        onPressShop={onPressShop}
-        onPressEvent={onPressEvent}
-        onPressGroup={onPressGroup}
-      /> */}
-    </View>
-  )
+
+      {!loading ?
+        <View style={styles.container}>
+          {comments.length > 0 ?
+            <ScrollView style={styles.container} ref={scrollRef}>
+              {comments.map(({ commentId, userId, userMainPhoto, body, likesCount, createdAt, userName }, key) =>
+                <Comment
+                  id={commentId}
+                  userId={userId}
+                  userMainPhoto={userMainPhoto}
+                  body={body}
+                  likesCount={likesCount}
+                  createdAt={createdAt}
+                  commentLiker={commentWriterId}
+                  postId={postId}
+                  userName={userName}
+                  key={key}
+                />
+              )}
+            </ScrollView>
+            :
+            <View style={{...styles.container, ...styles.center}}>
+              <Image source={Fish} style={{height: height * 0.25}} resizeMode="contain" />
+              <Text> Write something smart! </Text>
+            </View>
+          }
+          <CommentWriteComponent postId={postId} commentWriterId={commentWriterId} reloadFunction={handleLoad} onWriteSuccess={incrementCommentCount}/>
+        </View>
+        :
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size="large" color="#3B71F3"/> 
+        </View>}
+
+  </View>
+    )
 }

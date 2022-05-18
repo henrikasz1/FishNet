@@ -190,7 +190,7 @@ const MainScreen = () => {
               caption="Catch some fish tommorrow!"
             />
           )}
-        {isPublicPosts && <InterjectComponent text={"Public posts"} />}
+        {/* {isPublicPosts && <InterjectComponent text={"Public posts"} />} */}
         {data.length ? data
             .filter(post => !post.isFriendPost)
             .map(({ title, photos, postId, userId, likesCount, body, commentsCount }, index) => (
