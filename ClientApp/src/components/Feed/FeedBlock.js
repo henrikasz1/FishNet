@@ -198,7 +198,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
             //problema yra kad savo posto niekad nepamatysim. Sita handleri galima reusinti kitam feede, tarkim savo profilyje
               <TouchableWithoutFeedback onPress={handleDeleteOwnPost}>
                 <View style={[styles.icon, styles.commentIcon]}>
-                  <Icon name="hexagon-minus-o" size={22} color="black"/>
+                  {/* <Icon name="hexagon-minus-o" size={22} color="black"/> */}
                 </View>
               </TouchableWithoutFeedback>
           ) 

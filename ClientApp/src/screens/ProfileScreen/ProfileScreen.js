@@ -2,6 +2,9 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import React from 'react'
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import axios from 'axios';
+import { BaseUrl } from '../../components/Common/BaseUrl';
+import DeadFish from '../../../assets/images/deadFish.png';
 import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {

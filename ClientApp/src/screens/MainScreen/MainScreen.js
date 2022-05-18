@@ -28,9 +28,11 @@ const MainScreen = () => {
   const [batchNumber, setBatchNum] = useState(0);
   const [isPublicPosts, setFetchingPublic] = useState(false);
   const [likerId, setUserId] = useState('');
+  const [isWarm, setIsWarm] = useState(false);
 
   const scrollRef = React.useRef(null);
   const navigation = useNavigation();
+  const userIdUrl = `${BaseUrl}/api/user/getuserid`;
 
   const onPressHome = () => {
     scrollRef.current?.scrollTo({
@@ -47,7 +49,7 @@ const MainScreen = () => {
     navigation.navigate("ShopScreen")
   }
 
-  const onPressEvent = () => {
+  const onPressEvent = () => {``
     navigation.navigate("EventScreen")
   }
 
@@ -59,15 +61,29 @@ const MainScreen = () => {
     navigation.navigate("SearchScreen", {backScreen: "MainScreen"})
   }
 
-  //FETCH REAL DATA FROM DOT NET
-  const handleLoad = () => {
+  const feedWarmUp = async () => {
+    
+    const url = `${BaseUrl}/api/post/allfriendposts?batchsize=${batchNumber}`;
 
-    const userIdUrl = `${BaseUrl}/api/user/getuserid`;
-    axios.get(userIdUrl).then(res => setUserId(res.data));
+    await axios.get(url).then((response) => {
+      if (response.status == '200') {
+        if (response.data.length === 0) {
+          setFetchingPublic(true);
+        }
+      }
+    })
+
+    await setIsWarm(true);
+  }
+
+  //FETCH REAL DATA FROM DOT NET
+  const handleLoad = async () => {
+
+    await axios.get(userIdUrl).then(res => setUserId(res.data));
     
     const url =  `${BaseUrl}/api/post/${isPublicPosts ? 'remainingposts' : 'allfriendposts'}?batchsize=${batchNumber}`;
-    axios.get(url).then((response) => {
-      setLoaded(false);
+    
+    await axios.get(url).then((response) => {
       if (response.status == '200') {
         if (response.data.length === 0){
           setBatchNum(batchNumber - 1);
@@ -83,7 +99,6 @@ const MainScreen = () => {
         throw new Error(response.status);
       }
     }).catch((e) => {
-      setLoaded(false);
       setError(e);
     });
   }
@@ -101,13 +116,35 @@ const MainScreen = () => {
   console.log(bearer);
 
   useEffect(() => {
-    if (loading) {
-      handleLoad();
-    }
-  }, [loading]);
+      // this is for solving react state update on an umounted component problem
+      let isMounted = true;
+
+      if (isMounted)
+      {
+        const GetResult = async () => {
+
+          if (isWarm)
+          {
+            if (loading)
+            {
+              await handleLoad();
+              setLoaded(false)
+            }
+          }
+          else
+          {
+            await feedWarmUp();
+          }
+        }
+  
+        GetResult();
+      }
+     
+      return () => { isMounted = false };
+  }, [isWarm, loading]);
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    const paddingToBottom = 40;
+    const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
   };
