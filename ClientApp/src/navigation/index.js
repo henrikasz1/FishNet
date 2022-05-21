@@ -12,6 +12,7 @@ import EventScreen from '../screens/EventScreen';
 import GroupScreen from '../screens/GroupScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import SearchScreen from '../screens/SearchScreen';
+import CreatePostScreen from '../screens/CreatePostScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ const Navigation = () => {
           <Stack.Screen name='GroupScreen' component={GroupScreen} />
           <Stack.Screen name='CommentsScreen' component={CommentsScreen} />
           <Stack.Screen name='SearchScreen' component={SearchScreen} />
+          <Stack.Screen name='CreatePostScreen' component={CreatePostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

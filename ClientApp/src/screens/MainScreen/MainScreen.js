@@ -1,4 +1,5 @@
-import { View, Text, Appearance, ScrollView, StyleSheet, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, Appearance, ScrollView, StyleSheet, ActivityIndicator, Alert, TouchableWithoutFeedback } from 'react-native'
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import React, { useState, useEffect } from 'react';
@@ -74,6 +75,10 @@ const MainScreen = () => {
     })
 
     await setIsWarm(true);
+  }
+
+  const onPressCreatePost = () => {
+    navigation.navigate("CreatePostScreen", {backScreen: "MainScreen"});
   }
 
   //FETCH REAL DATA FROM DOT NET
@@ -156,6 +161,18 @@ const MainScreen = () => {
         second={onPressProfile}
       />
 
+      <View style={styles.uploadSection} >
+        <View>
+          <TouchableWithoutFeedback onPress={onPressCreatePost}>
+            <View style={styles.createPostBtn}>
+              <Text>Create post</Text>
+              <View style={[styles.icon]}>
+                <Icon name="plus" size={22} color="#565656"/>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+            </View>
+      </View>
       { loading ? (
         <View style={styles.cc}>
           <ActivityIndicator size="large" />
@@ -248,6 +265,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e0e0e0',
     justifyContent: 'flex-end'
+  },
+  uploadSection: {
+    padding: 5,
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'white'
+  },
+  icon: {
+    paddingLeft: '3%',
+    paddingRight: '3%',
+    alignItems: 'center'
+  },
+  createPostBtn: {
+    flexDirection: 'row',
+    backgroundColor: 'lightgrey',
+    borderRadius: 5,
+    padding: 5
   }
 });
 
