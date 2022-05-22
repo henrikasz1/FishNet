@@ -100,7 +100,6 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
   }
 
   const incrementCommentCount = () => {
-    console.log('Test if function passing works between screens');
     setCommCount(commCount + 1);
   }
 
