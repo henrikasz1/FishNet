@@ -9,7 +9,7 @@ import { BaseUrl } from '../Common/BaseUrl';
 
 import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
 
-export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount, goBackComments, onPressPhoto }) {
+export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount, onPressPhoto }) {
 
   const [profilePicture, setProfilePicture] = useState(null);
   const [userName, setUserName] = useState('');
@@ -64,7 +64,6 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
     navigation.navigate('CommentsScreen', {
       postId,
       commentWriterId: likerId,
-      backScreen: goBackComments,
       incrementCommentCount: incrementCommentCount
     });
   }

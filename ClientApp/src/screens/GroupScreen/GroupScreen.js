@@ -1,13 +1,18 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { useNavigation } from '@react-navigation/native';
+import { BaseUrl } from '../../components/Common/BaseUrl';
+import axios from 'axios';
 
 const GroupScreen = () => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
+  const getCurrentUserId = `${BaseUrl}/api/user/getuserid`
+
+  const [currentUserId, setCurrentUserId] = useState("")
 
   const onPressHome = () => {
     navigation.navigate("MainScreen")
@@ -25,7 +30,7 @@ const GroupScreen = () => {
   }
 
   const onPressProfile = () => {
-      navigation.navigate("ProfileScreen")
+      navigation.navigate("ProfileScreen", {currentBackScreen: "GroupScreen", userId: currentUserId});
   }
 
   const onPressEvent = () => {
@@ -35,6 +40,18 @@ const GroupScreen = () => {
   const onPressSearch = () => {
     navigation.navigate("SearchScreen", {backScreen: "GroupScreen"})
   }
+
+  useEffect(() => {
+    axios
+      .get(getCurrentUserId)
+      .then(response => {
+        setCurrentUserId(response.data);
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    }, [])
 
   return (
 

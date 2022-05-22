@@ -126,6 +126,7 @@ namespace API.Services
             {
                 photosList.Add(new GetUserPhotoDto
                 {
+                    Id = photo.Id,
                     Url = photo.Url,
                     Body = photo.Body,
                     LikesCount = photo.LikesCount

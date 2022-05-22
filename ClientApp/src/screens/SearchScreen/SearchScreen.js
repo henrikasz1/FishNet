@@ -92,7 +92,6 @@ const SearchScreen = ({route}) => {
                 name={entityName}
                 photo={entityMainPhotoUrl}
                 type={renderType(entityType)}
-                // onPress={() => navigation.navigate("ProfileScreen", {})}
               />
             </TouchableOpacity>
           ))}
