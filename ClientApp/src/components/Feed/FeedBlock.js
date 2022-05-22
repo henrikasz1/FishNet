@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, StatusBar, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, StatusBar, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { BaseUrl } from '../Common/BaseUrl';
 
 import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
 
-export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount, goBackComments }) {
+export default function Block({ title, photo, caption, userId, postId, likesCount, likerId, onDelete, isFriendPost, commentsCount, goBackComments, onPressPhoto }) {
 
   const [profilePicture, setProfilePicture] = useState(null);
   const [userName, setUserName] = useState('');
@@ -175,17 +175,19 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
       <View style={styles.profile}>
 
         <View style={styles.secondBlock}>
-          {profilePicture !== undefined ?
-            <Image
-              source={{ uri: profilePicture }}
-              style={styles.profileImage}
-            />
-          :
-            <Image
-              source={DefaultUserPhoto}
-              style={styles.profileImage}
-            />
-          }
+          <TouchableWithoutFeedback onPress={onPressPhoto}>
+            {profilePicture !== undefined ?
+              <Image
+                source={{ uri: profilePicture }}
+                style={styles.profileImage}
+              />
+            :
+              <Image
+                source={DefaultUserPhoto}
+                style={styles.profileImage}
+              />
+            }
+          </TouchableWithoutFeedback>
 
         <View style={styles.firstBlock}>
 

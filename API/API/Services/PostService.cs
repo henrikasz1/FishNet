@@ -119,12 +119,14 @@ namespace API.Services
             return usersDtoList;
         }
 
-        public async Task<IList<GetPostDto>> GetPostsByUserId(Guid userId)
+        public async Task<IList<GetPostDto>> GetPostsByUserId(Guid userId, int batchNumber)
         {
             var postsDtoList = new List<GetPostDto>();
 
             var posts = await _dataContext.Posts.Where(x => x.UserId == userId)
                 .Include(y => y.Photos)
+                .Skip(5 * batchNumber)
+                .Take(5)
                 .ToListAsync();
 
             var observer = _userAccessorService.GetCurrentUserId();

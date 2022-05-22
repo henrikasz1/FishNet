@@ -41,8 +41,12 @@ const MainScreen = () => {
     });
   }
 
-  const onPressProfile = () => {
-    navigation.navigate("ProfileScreen")
+  const onPressProfile = (userId) => {
+    navigation.navigate("ProfileScreen", {currentBackScreen: "MainScreen", userId});
+  }
+
+  const onPressProfileLikerId = () => {
+    navigation.navigate("ProfileScreen", {currentBackScreen: "MainScreen", userId: likerId});
   }
 
   const onPressShop = () => {
@@ -86,7 +90,11 @@ const MainScreen = () => {
     await axios.get(url).then((response) => {
       if (response.status == '200') {
         if (response.data.length === 0){
-          setBatchNum(batchNumber - 1);
+          // setBatchNum(batchNumber - 1);
+          if (isPublicPosts == true)
+          {
+            setBatchNum(1);
+          }
           setFetchingPublic(true);
         }
         response.data.forEach((post) => {
@@ -153,7 +161,7 @@ const MainScreen = () => {
     <View style={styles.container}>
       <Header
         first={onPressSearch}
-        second={onPressProfile}
+        second={onPressProfileLikerId}
       />
 
       { loading ? (
@@ -182,6 +190,7 @@ const MainScreen = () => {
             onDelete={handleRemovePostFromState}
             isFriendPost={true}
             goBackComments="MainScreen"
+            onPressPhoto={() => onPressProfile(userId)}
           />
         )) : (
             <Block
@@ -207,6 +216,7 @@ const MainScreen = () => {
             onDelete={handleRemovePostFromState}
             isFriendPost={false}
             goBackComments="MainScreen"
+            onPressPhoto={() => onPressProfile(userId)}
           />
         )) : (
             <Block
@@ -224,7 +234,7 @@ const MainScreen = () => {
       <Footer
         style={styles.footer}
         homeC="#3B71F3"
-        onPressProfile={onPressProfile}
+        onPressProfile={onPressProfileLikerId}
         onPressHome={onPressHome}
         onPressShop={onPressShop}
         onPressEvent={onPressEvent}

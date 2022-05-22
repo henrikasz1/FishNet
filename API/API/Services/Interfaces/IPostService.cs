@@ -11,7 +11,7 @@ namespace API.Services
     {
         Task AddPost(List<IFormFile> file, AddPostDto post);
         Task<GetPostDto> GetPostById(Guid postId);
-        Task<IList<GetPostDto>> GetPostsByUserId(Guid userId);
+        Task<IList<GetPostDto>> GetPostsByUserId(Guid userId, int batchNumber);
         Task<IList<GetPostDto>> GetAllPosts();
 
         Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber);

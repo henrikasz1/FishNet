@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using API.Dtos.UserDtos;
 using API.Services.Interfaces;
+using API.Dtos.SearchDtos;
 
 namespace API.Controllers
 {
@@ -23,7 +24,6 @@ namespace API.Controllers
     {
         private readonly IAuthManagementService _authManagementService;
         private readonly UserManager<User> _userManager;
-        //private readonly IUserAccessorService _userAccessorService;
         private readonly DataContext _dataContext;
         private readonly IUserService _userService;
         private readonly string CurrentUserId;
@@ -195,9 +195,18 @@ namespace API.Controllers
 
         [HttpGet("getbyname/{filter}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<IList<GetUserDto>>> GetUserByName(string filter)
+        public async Task<ActionResult<IList<GetSearchResultsDto>>> GetUserByName(string filter)
         {
             var result = await _userService.GetUserByName(filter);
+
+            return Ok(result);
+        }
+
+        [HttpGet("getbyid/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<GetUserDtoV2>> GetUserById(Guid id)
+        {
+            var result = await _userService.GetUserById(id);
 
             return Ok(result);
         }

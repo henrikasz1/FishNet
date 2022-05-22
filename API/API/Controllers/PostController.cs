@@ -40,10 +40,18 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //[HttpGet("userposts/{userId}")]
+        //public async Task<ActionResult<IList<GetPostDto>>> GetUsersPosts(Guid userId)
+        //{
+        //    var result = await _postService.GetPostsByUserId(userId);
+
+        //    return Ok(result);
+        //}
+
         [HttpGet("userposts/{userId}")]
-        public async Task<ActionResult<IList<GetPostDto>>> GetUsersPosts(Guid userId)
+        public async Task<ActionResult<IList<GetPostDto>>> GetUserPostsPaginated(Guid userId, [FromQuery] int batchSize = 0)
         {
-            var result = await _postService.GetPostsByUserId(userId);
+            var result = await _postService.GetPostsByUserId(userId, batchSize);
 
             return Ok(result);
         }
