@@ -12,7 +12,7 @@ import EventScreen from '../screens/EventScreen';
 import GroupScreen from '../screens/GroupScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import SearchScreen from '../screens/SearchScreen';
-import CreatePostScreen from '../screens/CreatePostScreen';
+import PostAdvertsScreen from '../screens/PostAdvertsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,17 +20,17 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name='SignIn' component={SignInScreen} />
-          <Stack.Screen name='SignUp' component={SignUpScreen} />
-          <Stack.Screen name='MainScreen' component={MainScreen} />
-          <Stack.Screen name='InitialPhotoScreen' component={InitialPhotoScreen} />
-          <Stack.Screen name='ProfileScreen' component={ProfileScreen} />
-          <Stack.Screen name='ShopScreen' component={ShopScreen} />
-          <Stack.Screen name='EventScreen' component={EventScreen} />
-          <Stack.Screen name='GroupScreen' component={GroupScreen} />
-          <Stack.Screen name='CommentsScreen' component={CommentsScreen} />
-          <Stack.Screen name='SearchScreen' component={SearchScreen} />
-          <Stack.Screen name='CreatePostScreen' component={CreatePostScreen} />
+          <Stack.Screen name="SignIn" component={SignInScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="MainScreen" component={MainScreen} />
+          <Stack.Screen name="InitialPhotoScreen" component={InitialPhotoScreen} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="ShopScreen" component={ShopScreen} />
+          <Stack.Screen name="EventScreen" component={EventScreen} />
+          <Stack.Screen name="GroupScreen" component={GroupScreen} />
+          <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
+          <Stack.Screen name="SearchScreen" component={SearchScreen} />
+          <Stack.Screen name="PostAdvertsScreen" component={PostAdvertsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

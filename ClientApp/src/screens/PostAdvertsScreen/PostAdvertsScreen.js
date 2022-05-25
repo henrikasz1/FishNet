@@ -7,12 +7,13 @@ import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl';
 import axios from 'axios';
 import Product from '../../components/Product';
+import CarouselComponent from '../../components/Feed/CarouselComponent';
 
-const ShopScreen = () => {
+const ShopScreen = ({route}) => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-
+  const {description, title, price, location, photos, shopId} = route.params;
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -51,12 +52,6 @@ const ShopScreen = () => {
     navigation.navigate("SearchScreen", {backScreen: "ShopScreen"})
   }
 
-  const onPressProduct = (shopItem) => {
-    const { description, title, price, location, photos, shopId } = shopItem;
-    navigation.navigate("PostAdvertsScreen",
-     {backScreen: "ShopScreen", description, title, price, location, photos, shopId})
-  }
-
   if (loading) {
     handleLoad()
   }
@@ -68,21 +63,14 @@ const ShopScreen = () => {
         first={onPressSearch}
         second={onPressProfile}
       />
-      <ScrollView ref={scrollRef}>
-        <View style={{...styles.container, ...styles.shop}}>{data.map((shopItem, key) => { 
-          console.log(shopItem);
-          return <Product
-            onPressProduct={(shopItem) => onPressProduct(shopItem)}
-            description={shopItem.description}
-            title={shopItem.productName}
-            photos={shopItem.photos}
-            price={shopItem.price}
-            location={shopItem.location}
-            shopId={shopItem.shopId}
-            key={key}
-          />
-        })}</View>
-      </ScrollView>
+    
+    <View style={{flex: 1}}>
+        <Text>{description}</Text>
+        <Text>{location}</Text>
+        <Text>{title}</Text>
+        <Text>{price}</Text>
+        <CarouselComponent photos={photos}></CarouselComponent>
+    </View>
 
       <Footer
         style={styles.footer}
