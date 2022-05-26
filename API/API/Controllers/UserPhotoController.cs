@@ -51,7 +51,7 @@ namespace API.Controllers
 
             if (result == null)
             {
-                return Ok("No photos to show");
+                return Ok();
             }
 
             return Ok(result);

@@ -42,24 +42,28 @@ const MainScreen = () => {
     });
   }
 
-  const onPressProfile = () => {
-    navigation.navigate("ProfileScreen")
+  const onPressProfile = (userId) => {
+    navigation.push("ProfileScreen", {currentBackScreen: "MainScreen", userId});
+  }
+
+  const onPressProfileLikerId = () => {
+    navigation.push("ProfileScreen", {currentBackScreen: "MainScreen", userId: likerId});
   }
 
   const onPressShop = () => {
-    navigation.navigate("ShopScreen")
+    navigation.push("ShopScreen")
   }
 
   const onPressEvent = () => {``
-    navigation.navigate("EventScreen")
+    navigation.push("EventScreen")
   }
 
   const onPressGroup = () => {
-    navigation.navigate("GroupScreen")
+    navigation.push("GroupScreen")
   }
 
   const onPressSearch = () => {
-    navigation.navigate("SearchScreen", {backScreen: "MainScreen"})
+    navigation.push("SearchScreen", {backScreen: "MainScreen"})
   }
 
   const feedWarmUp = async () => {
@@ -91,7 +95,11 @@ const MainScreen = () => {
     await axios.get(url).then((response) => {
       if (response.status == '200') {
         if (response.data.length === 0){
-          setBatchNum(batchNumber - 1);
+          // setBatchNum(batchNumber - 1);
+          if (isPublicPosts == true)
+          {
+            setBatchNum(1);
+          }
           setFetchingPublic(true);
         }
         response.data.forEach((post) => {
@@ -158,21 +166,8 @@ const MainScreen = () => {
     <View style={styles.container}>
       <Header
         first={onPressSearch}
-        second={onPressProfile}
+        second={onPressProfileLikerId}
       />
-
-      <View style={styles.uploadSection} >
-        <View>
-          <TouchableWithoutFeedback onPress={onPressCreatePost}>
-            <View style={styles.createPostBtn}>
-              <Text>Create post</Text>
-              <View style={[styles.icon]}>
-                <Icon name="plus" size={22} color="#565656"/>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-            </View>
-      </View>
       { loading ? (
         <View style={styles.cc}>
           <ActivityIndicator size="large" />
@@ -183,6 +178,18 @@ const MainScreen = () => {
             handleLoadMore();
           }
         }}  ref={scrollRef}>
+
+            <TouchableWithoutFeedback onPress={onPressCreatePost}>
+              <View style={styles.createPostBtn}>
+
+                <Text>Create post</Text>
+
+                <View style={[styles.icon]}>
+                  <Icon name="plus" size={22} color="#565656"/>
+                </View>
+
+            </View>
+            </TouchableWithoutFeedback> 
           {data.length ? data
             .filter(post => post.isFriendPost == true)
             .map(({ title, photos, postId, userId, likesCount, body, commentsCount }, index) => (
@@ -199,6 +206,7 @@ const MainScreen = () => {
             onDelete={handleRemovePostFromState}
             isFriendPost={true}
             goBackComments="MainScreen"
+            onPressPhoto={() => onPressProfile(userId)}
           />
         )) : (
             <Block
@@ -224,6 +232,7 @@ const MainScreen = () => {
             onDelete={handleRemovePostFromState}
             isFriendPost={false}
             goBackComments="MainScreen"
+            onPressPhoto={() => onPressProfile(userId)}
           />
         )) : (
             <Block
@@ -241,7 +250,7 @@ const MainScreen = () => {
       <Footer
         style={styles.footer}
         homeC="#3B71F3"
-        onPressProfile={onPressProfile}
+        onPressProfile={onPressProfileLikerId}
         onPressHome={onPressHome}
         onPressShop={onPressShop}
         onPressEvent={onPressEvent}
@@ -273,15 +282,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   icon: {
+    marginLeft: 5,
     paddingLeft: '3%',
     paddingRight: '3%',
     alignItems: 'center'
   },
   createPostBtn: {
     flexDirection: 'row',
-    backgroundColor: 'lightgrey',
-    borderRadius: 5,
-    padding: 5
+    backgroundColor: 'white',
+    borderRadius: 15,
+    width: 120,
+    padding: 7,
+    marginVertical: '2%',
+    marginLeft: '2%'
   }
 });
 

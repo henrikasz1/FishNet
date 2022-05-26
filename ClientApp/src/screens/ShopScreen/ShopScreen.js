@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Header from '../../components/Header';
 import SearchHeader from '../../components/SearchHeader';
 import Footer from '../../components/Footer';
@@ -12,16 +12,17 @@ const ShopScreen = () => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
+  const getCurrentUserId = `${BaseUrl}/api/user/getuserid`
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState("")
 
   const handleLoad = async() => {
     const url = `${BaseUrl}/api/shop/allshopads`
     const shopItems = (await axios.get(url)).data
     setData(shopItems)
     setLoading(false)
-    console.log(shopItems)
   }
 
   const onPressHome = () => {
@@ -29,7 +30,7 @@ const ShopScreen = () => {
   }
 
   const onPressProfile = () => {
-      navigation.navigate("ProfileScreen")
+    navigation.push("ProfileScreen", {userId: currentUserId});
   }
 
   const onPressShop = () => {
@@ -54,6 +55,17 @@ const ShopScreen = () => {
   if (loading) {
     handleLoad()
   }
+
+  useEffect(() => {
+    axios
+      .get(getCurrentUserId)
+      .then(response => {
+        setCurrentUserId(response.data);
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }, [])
 
   return (
 

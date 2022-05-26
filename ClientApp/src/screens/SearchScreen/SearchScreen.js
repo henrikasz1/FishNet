@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, useWindowDimensions, ActivityIndicator, StyleSheet, Image } from 'react-native'
+import { View, Text, ScrollView, useWindowDimensions, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native'
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import SearchHeader from '../../components/SearchHeader';
 import SearchResult from '../../components/SearchResult';
@@ -6,6 +6,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import DeadFish from '../../../assets/images/deadFish.png';
 import Fish from '../../../assets/images/Fish.png';
+import DefaultUserPhoto from '../../../assets/images/default-user-image.png'
 import { BaseUrl } from '../../components/Common/BaseUrl';
 
 const SearchScreen = ({route}) => {
@@ -65,6 +66,13 @@ const SearchScreen = ({route}) => {
     }
   }
 
+  const navigationHelper = (id, entityType) => {
+    if (entityType == 0)
+    {
+      navigation.push("ProfileScreen", {currentBackScreen: "SearchScreen", backScreen: route.params.backScreen, userId: id});
+    }
+  }
+
   return (
     
     <View style={styles.root}>
@@ -77,13 +85,15 @@ const SearchScreen = ({route}) => {
       { results.length > 0 ? 
         <ScrollView>
           {results.map(({entityId, entityName, entityMainPhotoUrl, entityType}, index) => (
-            <SearchResult
-              key={index}
-              id={entityId}
-              name={entityName}
-              photo={entityMainPhotoUrl}
-              type={renderType(entityType)}
-            />
+            <TouchableOpacity key={index} onPress={() => navigationHelper(entityId, entityType)}>
+              <SearchResult
+                key={index}
+                id={entityId}
+                name={entityName}
+                photo={entityMainPhotoUrl}
+                type={renderType(entityType)}
+              />
+            </TouchableOpacity>
           ))}
         </ScrollView>
         :

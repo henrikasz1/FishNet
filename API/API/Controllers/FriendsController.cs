@@ -61,5 +61,12 @@ namespace API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("getfriendshipstatus/{userId}")]
+        public async Task<ActionResult<bool>> CheckIfFriends(Guid userId)
+        {
+            var result = await _friendsService.CheckIfFriends(userId);
+            return Ok(result);
+        }
     }
 }

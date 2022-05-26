@@ -40,17 +40,14 @@ const styles = StyleSheet.create({
     paddingBottom: '1%',
     alignItems: 'center',
     paddingLeft: 5
-    // backgroundColor: 'orange'
   },
   profile: {
     paddingRight: '3%',
     paddingHorizontal: '1%',
     height: 50,
-    // backgroundColor: 'white',
     alignItems: 'center',
 
     flexDirection: 'row',
-    // backgroundColor: 'red',
     width: '100%',
   },
   profileImage: {
@@ -84,7 +81,8 @@ export default function Comment({
   likesCount,
   createdAt,
   userName,
-  commentLiker
+  commentLiker,
+  onPressPhoto
 }) {
 
   const [haveThisCommentLiked, setHaveLikedComment] = useState(false);
@@ -120,18 +118,20 @@ export default function Comment({
     <View style={{...styles.container, ...styles.comment}}>
       <View style={styles.profile}>
         <View style={styles.secondBlock}>
-          {
-          userMainPhoto !== undefined && userMainPhoto.includes('http') ?
-            <Image
-              source={{ uri: userMainPhoto }}
-              style={styles.profileImage}
-            />
-          :
-            <Image
-              source={DefaultUserPhoto}
-              style={styles.profileImage}
-            />
-          }
+          <TouchableWithoutFeedback onPress={onPressPhoto}>
+            {
+            userMainPhoto !== undefined && userMainPhoto.includes('http') ?
+              <Image
+                source={{ uri: userMainPhoto }}
+                style={styles.profileImage}
+              />
+            :
+              <Image
+                source={DefaultUserPhoto}
+                style={styles.profileImage}
+              />
+            }
+          </TouchableWithoutFeedback>
 
            <Text style={styles.title}>
             {userName}

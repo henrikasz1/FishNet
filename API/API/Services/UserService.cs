@@ -20,6 +20,30 @@ namespace API.Services
             _dataContext = dataContext;
         }
 
+        public async Task<GetUserDtoV2> GetUserById(Guid id)
+        {
+            var user = await _dataContext.Users
+                .Include(x => x.Photos)
+                .Where(x => x.UserId == id)
+                .SingleOrDefaultAsync();
+
+            var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ? user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+
+            var userDto = new GetUserDtoV2
+            {
+                UserId = user.UserId,
+                MainUserPhotoUrl = userMainPhoto,
+                Name = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                IsProfilePrivate = user.IsProfilePrivate
+            };
+
+            return userDto == null
+               ? throw new Exception("Could not find anything")
+               : userDto;
+        }
+
         public async Task<IList<GetSearchResultsDto>> GetUserByName(string filter)
         {
             filter = filter.Replace('%', ' ');
@@ -33,7 +57,7 @@ namespace API.Services
 
             foreach (var user in users)
             {
-                var userMainPhoto = user.Photos.Any() ? user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+                var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ? user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
 
                 userDto.Add(new GetSearchResultsDto
                 {

@@ -1,5 +1,4 @@
-﻿using API.Models;
-using System;
+﻿using System;
 
 namespace API.Dtos.UserDtos
 {
