@@ -174,7 +174,7 @@ export default function Block({ title, photo, caption, userId, postId, likesCoun
 
         <View style={styles.secondBlock}>
           <TouchableWithoutFeedback onPress={onPressPhoto}>
-            {profilePicture !== undefined ?
+            {profilePicture !== null ?
               <Image
                 source={{ uri: profilePicture }}
                 style={styles.profileImage}

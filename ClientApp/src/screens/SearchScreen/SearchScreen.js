@@ -69,7 +69,7 @@ const SearchScreen = ({route}) => {
   const navigationHelper = (id, entityType) => {
     if (entityType == 0)
     {
-      navigation.navigate("ProfileScreen", {currentBackScreen: "SearchScreen", backScreen: route.params.backScreen, userId: id});
+      navigation.push("ProfileScreen", {currentBackScreen: "SearchScreen", backScreen: route.params.backScreen, userId: id});
     }
   }
 

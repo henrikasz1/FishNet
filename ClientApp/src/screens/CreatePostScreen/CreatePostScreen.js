@@ -84,7 +84,7 @@ const CreatePostScreen = () => {
 
         <View style={styles.header}>
             <Text style={styles.title}> Create a post </Text>
-            <Text style={styles.skip} onPress={handleSkip}>SKIP</Text>
+            <Text style={styles.skip} onPress={handleSkip}>CANCEL</Text>
         </View>
 
         <PhotoManagerComponent pics={images}/>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   skip: {
     marginTop: "1.5%",
     fontSize: 15,
-    left: "-40%"
+    left: "-80%"
   },
   root: {
       alignItems: 'center',

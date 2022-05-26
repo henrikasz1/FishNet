@@ -30,7 +30,7 @@ const ShopScreen = () => {
   }
 
   const onPressProfile = () => {
-    navigation.navigate("ProfileScreen", {userId: currentUserId});
+    navigation.push("ProfileScreen", {userId: currentUserId});
   }
 
   const onPressShop = () => {
@@ -65,7 +65,6 @@ const ShopScreen = () => {
       .catch(err => {
         console.log(err)
       })
-
     }, [])
 
   return (

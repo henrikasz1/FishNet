@@ -106,7 +106,6 @@ const ProfileScreen = ({ route }) => {
   }
 
   useEffect(() => {
-
     const getData = async () => {
       await axios
         .get(getCurrentUserId)
@@ -160,6 +159,7 @@ const ProfileScreen = ({ route }) => {
       <ProfileHeader
         onPressBack={() => navigation.pop() }
         name={formatName()}
+        edit={route.params.userId == currentUserId}
       />
       
       { loading ?
@@ -203,7 +203,7 @@ const ProfileScreen = ({ route }) => {
                 {photos !== undefined && photos !== "" &&
                     <View style={styles.photos}>
                       {photos.map((photo, key) => (
-                        <TouchableWithoutFeedback key={photo.id} onPress={() => console.warn("dfd")/*() => navigation.navigate("PhotosScreen", {firstPhotoId: photo.id})*/}>
+                        <TouchableWithoutFeedback key={photo.id} onPress={() => navigation.push("PhotosScreen", {firstPhotoId: photo.id, name: results.name, userId: results.userId, currentUserId})}>
                           <View width={"33.3%"}>
                             <Photo
                               id={photo.id}

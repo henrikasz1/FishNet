@@ -30,7 +30,7 @@ const GroupScreen = () => {
   }
 
   const onPressProfile = () => {
-      navigation.navigate("ProfileScreen", {currentBackScreen: "GroupScreen", userId: currentUserId});
+      navigation.push("ProfileScreen", {currentBackScreen: "GroupScreen", userId: currentUserId});
   }
 
   const onPressEvent = () => {

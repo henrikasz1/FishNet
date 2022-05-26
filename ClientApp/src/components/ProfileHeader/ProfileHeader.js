@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import React from 'react';
 
-function ProfileHeader({name, onPressBack}) {
+function ProfileHeader({name, onPressBack, edit}) {
 
   return (
     <View style={styles.header}>
@@ -13,6 +13,11 @@ function ProfileHeader({name, onPressBack}) {
 
             <View style={styles.textContainer}>
                 <Text style={styles.text}> {name} </Text>
+            </View>
+            
+            <View style={styles.edit}>
+                {edit &&
+                <Icon name={"edit"} size={30} color={"#353839"}/>}
             </View>
         </View>
     </View>
@@ -62,6 +67,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         width: '100%',
     },
+    edit: {
+        marginLeft: 'auto',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
 
 export default ProfileHeader;

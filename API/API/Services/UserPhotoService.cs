@@ -170,17 +170,30 @@ namespace API.Services
             }
 
             var mainPhoto = await _dataContext.UserPhotos
-                .Where(x => x.IsMain == true)
+                .Where(x => x.IsMain == true && x.UserId == user.UserId)
                 .FirstOrDefaultAsync();
 
-            mainPhoto.IsMain = false;
-            photo.IsMain = true;
+            using (var dbContextTransaction = _dataContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (mainPhoto != null)
+                    {
+                        mainPhoto.IsMain = false;
+                        _dataContext.SaveChanges();
+                    }
 
-            var result = await _dataContext.SaveChangesAsync() > 0;
+                    photo.IsMain = true;
+                    _dataContext.SaveChanges();
 
-            return !result
-                ? throw new DbUpdateException("Failed to make the photo as main")
-                : "Photo has been changed to main successfully";
+                    dbContextTransaction.Commit();
+
+                    return "Photo has been changed to main successfully";
+                }
+                catch (Exception ex)
+                {
+                    throw new DbUpdateException("Failed to make the photo as main");                }
+            }
         }
 
         public async Task<GetUserPhotoDto> GetSelectedUserPhoto(Guid userId, string photoId)
