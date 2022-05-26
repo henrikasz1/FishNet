@@ -54,6 +54,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("requests")]
+        public async Task<ActionResult<IList<GetFriendsDto>>> GetFriendRequests()
+        {
+            var result = await _friendsService.GetPendingFriendRequests();
+            
+            return Ok(result);
+        }
+
         [HttpDelete("unfriend/{friendId}")]
         public async Task<ActionResult<FriendRequestResponse>> Unfriend(Guid friendId)
         {

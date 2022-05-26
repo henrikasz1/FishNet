@@ -154,6 +154,40 @@ namespace API.Services
             return response;
         }
 
+        public async Task<IList<GetFriendsDto>> GetPendingFriendRequests()
+        {
+            var user = await _dataContext.Users
+                .Include(x => x.Friends.Where(y => y.Status == FriendshipState.Pending))
+                .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
+
+            var friends = new List<User>();
+
+            foreach (var friend in user.Friends)
+            {
+                friends.Add(await _dataContext.Users
+                    .Include(x => x.Photos)
+                    .Where(x => x.UserId == friend.FriendId)
+                    .FirstOrDefaultAsync());
+            }
+
+            var response = new List<GetFriendsDto>();
+
+            foreach (var friend in friends)
+            {
+                var userMainPhoto = friend.Photos.Any() ? friend.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+
+                response.Add(new GetFriendsDto
+                {
+                    FriendId = friend.UserId,
+                    FirstName = friend.FirstName,
+                    LastName = friend.LastName,
+                    MainImageUrl = userMainPhoto
+                });
+            }
+
+            return response;
+        }
+
         public async Task<FriendRequestResponse> Unfriend(Guid friendId)
         {
             var userFriendship = await _dataContext.Friends
