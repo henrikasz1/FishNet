@@ -47,8 +47,8 @@ export default function CommentsScreen({ route }) {
       navigation.navigate("ShopScreen");
   }
 
-  const onPressProfile = () => {
-      navigation.navigate("ProfileScreen");
+  const onPressProfile = (userId) => {
+    navigation.navigate("ProfileScreen", {userId});
   }
 
   const onPressGroup = () => {
@@ -65,11 +65,10 @@ export default function CommentsScreen({ route }) {
     handleLoad().then(() => setLoading(false));
   }
 
-
   return (
     <View style={styles.container}>
       <GoBackHeader
-        onPressBack={() => navigation.navigate(backScreen)}
+        onPressBack={() => navigation.pop()}
         text="Comments"
       />
 
@@ -89,6 +88,7 @@ export default function CommentsScreen({ route }) {
                   postId={postId}
                   userName={userName}
                   key={key}
+                  onPressPhoto={() => onPressProfile(userId)}
                 />
               )}
             </ScrollView>

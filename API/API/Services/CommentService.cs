@@ -78,7 +78,8 @@ namespace API.Services
                     .Include(x => x.Photos)
                     .FirstOrDefaultAsync(x => x.UserId == comment.User.UserId);
 
-                var userMainPhoto = user.Photos.Any() ? user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+                var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ?
+                    user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
 
                 result.Add(new GetCommentDto
                 {
@@ -157,10 +158,10 @@ namespace API.Services
                 var user = await _dataContext.Users
                     .Include(x => x.Photos)
                     .FirstOrDefaultAsync(x => x.UserId == like.LoverId);
-                var userMainPhoto = user.Photos.Any() ? user.Photos
-                    .FirstOrDefault(x => x.IsMain == true)
-                    .Url : string.Empty;
-                
+                var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ?
+                    user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+
+
                 usersDtoList.Add(
                     new GetLikesDto()
                     {

@@ -172,5 +172,14 @@ namespace API.Services
                 ? new FriendRequestResponse { Status = "Failed to unfriend user" }
                 : new FriendRequestResponse { Status = "User has been successfully unfriended" };
         }
+
+        public async Task<bool> CheckIfFriends(Guid userId)
+        {
+            var userFriendship = await _dataContext.Friends
+               .Where(x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()) && x.FriendId == userId)
+               .FirstOrDefaultAsync();
+
+            return userFriendship == null ? false : true;
+        }
     }
 }

@@ -7,10 +7,6 @@ import FormData from 'form-data';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 
-/* <View style={styles.icon}>
-<Icon name="heart" size={17} color={haveThisCommentLiked ? "crimson" : "black"} />
-</View> */
-
 const CommentButton = ({onPress}) => {
   return (
       <TouchableOpacity onPress={onPress} style={styles.commentBtn}>

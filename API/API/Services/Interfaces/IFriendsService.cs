@@ -13,5 +13,6 @@ namespace API.Services.Interfaces
         Task<FriendRequestResponse> DeclineFriendRequest(Guid friendId);
         Task<IList<GetFriendsDto>> GetAllFriendsList();
         Task<FriendRequestResponse> Unfriend(Guid friendId);
+        Task<bool> CheckIfFriends(Guid userId);
     }
 }
