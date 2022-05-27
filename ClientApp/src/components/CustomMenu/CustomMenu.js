@@ -8,7 +8,7 @@ import {
     MenuTrigger,
   } from 'react-native-popup-menu';
 
-const CustomMenu = ({changeMainUserPhoto, deleteUserPhoto}) => (
+const CustomMenu = ({changeMainUserPhoto, deleteUserPhoto, disable}) => (
     <View>
     <Menu>
       <MenuTrigger>
@@ -17,7 +17,7 @@ const CustomMenu = ({changeMainUserPhoto, deleteUserPhoto}) => (
         </View>
       </MenuTrigger>
       <MenuOptions optionsContainerStyle={{ marginTop: 30, color: 'black' }}>
-        <MenuOption onSelect={changeMainUserPhoto} text='Change photo to main' />
+        <MenuOption onSelect={changeMainUserPhoto} disabled={disable} text='Change photo to main' />
         <MenuOption onSelect={() => alert(`Not called`)} text='Edit' />
         <MenuOption onSelect={deleteUserPhoto} >
           <Text style={{color: 'red'}}>Delete</Text>

@@ -160,6 +160,7 @@ const ProfileScreen = ({ route }) => {
         onPressBack={() => navigation.pop() }
         name={formatName()}
         edit={route.params.userId == currentUserId}
+        userId={route.params.userId}
       />
       
       { loading ?
