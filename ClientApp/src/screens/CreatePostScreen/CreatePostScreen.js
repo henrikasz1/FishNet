@@ -71,13 +71,13 @@ const CreatePostScreen = () => {
     axios
         .post(url, data, config)
         .then((response) => {
-          navigation.navigate('MainScreen');
+          // navigation.push('MainScreen');
           setIsSubmitting(false);
         })
         .catch(error => {
           setIsSubmitting(false);
         })
-    navigation.navigate('MainScreen');
+    navigation.push('MainScreen');
   };
 
   return (
