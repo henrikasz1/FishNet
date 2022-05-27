@@ -33,7 +33,7 @@ function Header({first, second}) {
         <View style={styles.secondBlock}>
 
           <View style={styles.icon}>
-            <Icon name="search" size={23} onPress={first}/>
+            <Icon name="search" size={23} onPress={()=>first}/>
           </View>
 
           {profileImage !== undefined ?

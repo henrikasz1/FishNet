@@ -8,12 +8,13 @@ import { BaseUrl } from '../../components/Common/BaseUrl';
 import axios from 'axios';
 import Product from '../../components/Product';
 import CarouselComponent from '../../components/Feed/CarouselComponent';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 const ShopScreen = ({route}) => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-  const {description, title, price, location, photos, shopId} = route.params;
+  const {description, title, price, location, photos, userId} = route.params;
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -22,7 +23,6 @@ const ShopScreen = ({route}) => {
     const shopItems = (await axios.get(url)).data
     setData(shopItems)
     setLoading(false)
-    console.log(shopItems)
   }
 
   const onPressHome = () => {
@@ -52,8 +52,17 @@ const ShopScreen = ({route}) => {
     navigation.navigate("SearchScreen", {backScreen: "ShopScreen"})
   }
 
+  const onPressBack = () => {
+    navigation.navigate("ShopScreen")
+  }
+
   if (loading) {
     handleLoad()
+  }
+
+  const getUser = () => {
+    const user = `${BaseUrl}/api/user/getbyid/${userId}`
+    userName 
   }
 
   return (
@@ -63,13 +72,16 @@ const ShopScreen = ({route}) => {
         first={onPressSearch}
         second={onPressProfile}
       />
-    
-    <View style={{flex: 1}}>
-        <Text>{description}</Text>
-        <Text>{location}</Text>
-        <Text>{title}</Text>
-        <Text>{price}</Text>
-        <CarouselComponent photos={photos}></CarouselComponent>
+      <View>
+        <Icon name={"chevron-left"} size={25} color={"#353839"} onPress={onPressBack}/>
+      </View>
+    <View style={{flex: 1, height: 500, width: 300}}>
+        <CarouselComponent pics={photos} style={styles.itemPhotos}></CarouselComponent>
+        <Text style={styles.nameText}>{userId}</Text>
+        <Text style={styles.text}>{description}</Text>
+        <Text style={styles.text}>{location}</Text>
+        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.text}>{price}</Text>
     </View>
 
       <Footer
@@ -93,6 +105,19 @@ const styles = StyleSheet.create({
     shop: {
       flexDirection: 'row',
       flexWrap: 'wrap',
+    },
+    itemPhotos: {
+      alignItems: 'center',
+      flex: 1,
+      justifyContent: 'center'
+    },
+    text: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    nameText: {
+      fontWeight: 'bold',
+      fontSize: 20
     }
 })
 

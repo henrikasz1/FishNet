@@ -1,27 +1,28 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import React, {useState} from 'react'
 import Header from '../../components/Header';
-import SearchHeader from '../../components/SearchHeader';
+import ShopSearchHeader from '../../components/SearchHeader';
 import Footer from '../../components/Footer';
 import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl';
 import axios from 'axios';
 import Product from '../../components/Product';
+import MarketplaceHeader from '../../components/MarketplaceHeader';
 
 const ShopScreen = () => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const searchUrl = `${BaseUrl}/api/shop/shopbyname/${search}`;
 
   const handleLoad = async() => {
     const url = `${BaseUrl}/api/shop/allshopads`
     const shopItems = (await axios.get(url)).data
     setData(shopItems)
     setLoading(false)
-    console.log(shopItems)
   }
 
   const onPressHome = () => {
@@ -47,32 +48,31 @@ const ShopScreen = () => {
       navigation.navigate("GroupScreen")
   }
 
-  const onPressSearch = () => {
-    navigation.navigate("SearchScreen", {backScreen: "ShopScreen"})
+  const onPressProduct = (shopItem) => {
+    const { description, title, price, location, photos, userId} = shopItem;
+    navigation.navigate("PostAdvertsScreen",
+     {backScreen: "ShopScreen", description, title, price, location, photos, userId})
   }
 
-  const onPressProduct = (shopItem) => {
-    const { description, title, price, location, photos, shopId } = shopItem;
-    navigation.navigate("PostAdvertsScreen",
-     {backScreen: "ShopScreen", description, title, price, location, photos, shopId})
+  const onPressSearch = () => {
+    navigation.navigate("ShopSearchScreen")
   }
 
   if (loading) {
     handleLoad()
   }
 
+  
+
   return (
 
     <View style={styles.container}>
-      <Header
-        first={onPressSearch}
-        second={onPressProfile}
-      />
+      <MarketplaceHeader first={onPressSearch}>
+      </MarketplaceHeader>
       <ScrollView ref={scrollRef}>
         <View style={{...styles.container, ...styles.shop}}>{data.map((shopItem, key) => { 
-          console.log(shopItem);
           return <Product
-            onPressProduct={(shopItem) => onPressProduct(shopItem)}
+            onPressProduct={() => onPressProduct(shopItem)}
             description={shopItem.description}
             title={shopItem.productName}
             photos={shopItem.photos}

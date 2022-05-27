@@ -13,6 +13,7 @@ import GroupScreen from '../screens/GroupScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import SearchScreen from '../screens/SearchScreen';
 import PostAdvertsScreen from '../screens/PostAdvertsScreen';
+import ShopSearchScreen from '../screens/ShopSearchScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ const Navigation = () => {
           <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="PostAdvertsScreen" component={PostAdvertsScreen} />
+          <Stack.Screen name="ShopSearchScreen" component={ShopSearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
