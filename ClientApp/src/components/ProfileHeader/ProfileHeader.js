@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
-function ProfileHeader({name, onPressBack, edit}) {
+function ProfileHeader({name, onPressBack, edit, userId}) {
+  const navigation = useNavigation();
 
   return (
     <View style={styles.header}>
@@ -15,10 +17,12 @@ function ProfileHeader({name, onPressBack, edit}) {
                 <Text style={styles.text}> {name} </Text>
             </View>
             
-            <View style={styles.edit}>
-                {edit &&
-                <Icon name={"edit"} size={30} color={"#353839"}/>}
-            </View>
+            <TouchableWithoutFeedback onPress={() => navigation.push("EditProfileScreen", {userId})}>
+                <View style={styles.edit}>
+                    {edit &&
+                    <Icon name={"edit"} size={30} color={"#353839"}/>}
+                </View>
+            </TouchableWithoutFeedback>
         </View>
     </View>
   )
