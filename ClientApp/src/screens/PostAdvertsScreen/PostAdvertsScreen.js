@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import Header from '../../components/Header';
 import SearchHeader from '../../components/SearchHeader';
 import Footer from '../../components/Footer';
@@ -7,22 +7,22 @@ import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl';
 import axios from 'axios';
 import Product from '../../components/Product';
+import CarouselComponent from '../../components/Feed/CarouselComponent';
 
-const ShopScreen = () => {
+const ShopScreen = ({route}) => {
   
   const navigation = useNavigation();
   const scrollRef = React.useRef(null);
-  const getCurrentUserId = `${BaseUrl}/api/user/getuserid`
-
+  const {description, title, price, location, photos, shopId} = route.params;
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  const [currentUserId, setCurrentUserId] = useState("")
 
   const handleLoad = async() => {
     const url = `${BaseUrl}/api/shop/allshopads`
     const shopItems = (await axios.get(url)).data
     setData(shopItems)
     setLoading(false)
+    console.log(shopItems)
   }
 
   const onPressHome = () => {
@@ -30,7 +30,7 @@ const ShopScreen = () => {
   }
 
   const onPressProfile = () => {
-    navigation.push("ProfileScreen", {userId: currentUserId});
+      navigation.navigate("ProfileScreen")
   }
 
   const onPressShop = () => {
@@ -52,26 +52,9 @@ const ShopScreen = () => {
     navigation.navigate("SearchScreen", {backScreen: "ShopScreen"})
   }
 
-  const onPressProduct = (shopItem) => {
-    const { description, title, price, location, photos, shopId } = shopItem;
-    navigation.navigate("PostAdvertsScreen",
-     {backScreen: "ShopScreen", description, title, price, location, photos, shopId})
-  }
-
   if (loading) {
     handleLoad()
   }
-
-  useEffect(() => {
-    axios
-      .get(getCurrentUserId)
-      .then(response => {
-        setCurrentUserId(response.data);
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }, [])
 
   return (
 
@@ -80,21 +63,14 @@ const ShopScreen = () => {
         first={onPressSearch}
         second={onPressProfile}
       />
-      <ScrollView ref={scrollRef}>
-        <View style={{...styles.container, ...styles.shop}}>{data.map((shopItem, key) => { 
-          console.log(shopItem);
-          return <Product
-            onPressProduct={(shopItem) => onPressProduct(shopItem)}
-            description={shopItem.description}
-            title={shopItem.productName}
-            photos={shopItem.photos}
-            price={shopItem.price}
-            location={shopItem.location}
-            shopId={shopItem.shopId}
-            key={key}
-          />
-        })}</View>
-      </ScrollView>
+    
+    <View style={{flex: 1}}>
+        <Text>{description}</Text>
+        <Text>{location}</Text>
+        <Text>{title}</Text>
+        <Text>{price}</Text>
+        <CarouselComponent photos={photos}></CarouselComponent>
+    </View>
 
       <Footer
         style={styles.footer}

@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
 import PhotoManagerComponent from '../../components/CreatePost/PhotoManagerComponent';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 
 
 const CreatePostScreen = () => {
@@ -25,23 +26,24 @@ const CreatePostScreen = () => {
     navigation.navigate('MainScreen');
   }
 
-  const handleChoosePhoto = () => {
+  const handleChoosePhoto = async () => {
     const options = {
       noData: true,
     };
 
-    ImagePicker.launchImageLibrary(options, response => {
-      if (!response.didCancel)
-      {
-        const photo = {
-            name: response.assets[0].fileName,
-            type: response.assets[0].type,
-            uri: response.assets[0].uri
-        };
-        setImages([...images, photo]);
-      }
-    });
+    const response = await MultipleImagePicker.openPicker(options);
 
+    const _photos = response.map(entry => {
+      return {
+        name: entry.fileName,
+        type: entry.mime,
+        uri: entry.path
+      };
+    })
+
+
+    console.log(response);
+    setImages(_photos);
     setIsSubmitting(false);
   };
 
@@ -69,13 +71,13 @@ const CreatePostScreen = () => {
     axios
         .post(url, data, config)
         .then((response) => {
-          navigation.navigate('MainScreen');
+          // navigation.push('MainScreen');
           setIsSubmitting(false);
         })
         .catch(error => {
           setIsSubmitting(false);
         })
-    navigation.navigate('MainScreen');
+    navigation.push('MainScreen');
   };
 
   return (
@@ -97,7 +99,7 @@ const CreatePostScreen = () => {
 
         <CustomButton 
           style={styles.button}
-          text="Upload a Photo"
+          text="Upload Photos"
           onPress={handleChoosePhoto}
         />
 

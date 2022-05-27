@@ -12,6 +12,7 @@ import EventScreen from '../screens/EventScreen';
 import GroupScreen from '../screens/GroupScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import SearchScreen from '../screens/SearchScreen';
+import PostAdvertsScreen from '../screens/PostAdvertsScreen';
 import CreatePostScreen from '../screens/CreatePostScreen';
 import PhotosScreen from '../screens/PhotosScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
@@ -34,6 +35,7 @@ const Navigation = () => {
           <Stack.Screen name='SearchScreen' component={SearchScreen} />
           <Stack.Screen name='CreatePostScreen' component={CreatePostScreen} />
           <Stack.Screen name='PhotosScreen' component={PhotosScreen} />
+          <Stack.Screen name="PostAdvertsScreen" component={PostAdvertsScreen} />
           <Stack.Screen name='EditProfileScreen' component={EditProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>

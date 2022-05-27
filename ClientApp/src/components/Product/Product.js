@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Image, StyleSheet} from 'react-native';
+import {Text, View, Image, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 
 const styles = StyleSheet.create({
   product: {
@@ -12,9 +12,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function Product({description, title, price, location, photos, shopId}) {
+export default function Product({onPressProduct, description, title, price, location, photos, shopId}) {
   return (<View style={styles.product}>
-    {photos && photos[0] && <Image style={styles.image} source={{uri: photos[0].url}} />}
+    {photos && photos[0] && <TouchableWithoutFeedback onPress={onPressProduct}><Image style={styles.image} source={{uri: photos[0].url}} /></TouchableWithoutFeedback> }
     <Text>{title}</Text>
     <Text>{location}</Text>
     <Text>{price}</Text>
