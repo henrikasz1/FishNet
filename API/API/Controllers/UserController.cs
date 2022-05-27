@@ -172,25 +172,32 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
-            if (await _dataContext.Users.AnyAsync(x => x.Email == userUpdate.Email)
+            if (await _dataContext.Users.AnyAsync(x => x.Email == userUpdate.Email && x.UserId != user.UserId)
                 && userUpdate.Email != user.Email)
             {
                 return BadRequest("Email is already in use");
             }
 
-            user.FirstName = userUpdate.FirstName ?? user.FirstName;
-            user.LastName = userUpdate.LastName ?? user.LastName;
-            user.Email = userUpdate.Email ?? user.Email;
-            if (user.IsProfilePrivate != userUpdate.IsProfilePrivate) user.IsProfilePrivate = userUpdate.IsProfilePrivate;
-
-            var success = await _dataContext.SaveChangesAsync() > 0;
-
-            if (success)
+            if (userUpdate.FirstName != null && userUpdate.FirstName != user.FirstName)
             {
-                return Ok();
+                user.FirstName = userUpdate.FirstName;
             }
 
-            throw new Exception("Problem occured while saving changes");
+            if (userUpdate.LastName != null && userUpdate.LastName != user.LastName)
+            {
+                user.LastName = userUpdate.LastName;
+            }
+
+            if (userUpdate.Email != null && userUpdate.Email != user.Email)
+            {
+                user.Email = userUpdate.Email;
+            }
+
+            if (user.IsProfilePrivate != userUpdate.IsProfilePrivate) user.IsProfilePrivate = userUpdate.IsProfilePrivate;
+
+            await _dataContext.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpGet("getbyname/{filter}")]
@@ -225,6 +232,34 @@ namespace API.Controllers
             var result = await _userService.GetUserName(id);
 
             return Ok(result);
+        }
+
+        [HttpGet("checkpassword/{password}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<bool>> CheckPassword(string password)
+        {
+            var user = await _dataContext.Users.SingleOrDefaultAsync(
+                x => x.UserId == Guid.Parse(CurrentUserId));
+
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+            return await _userManager.CheckPasswordAsync(existingUser, password);
+        }
+
+        [HttpPut("changepassword/{password}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult> ChangePassword([FromHeader] string Authorization, string password)
+        {
+            var user = await _dataContext.Users.SingleOrDefaultAsync(
+                x => x.UserId == Guid.Parse(CurrentUserId));
+
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            await _userManager.ResetPasswordAsync(existingUser, token, password);
+
+            return Ok();
         }
     }
 }
