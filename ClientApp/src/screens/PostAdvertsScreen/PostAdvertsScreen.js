@@ -60,11 +60,6 @@ const ShopScreen = ({route}) => {
     handleLoad()
   }
 
-  const getUser = () => {
-    const user = `${BaseUrl}/api/user/getbyid/${userId}`
-    userName 
-  }
-
   return (
 
     <View style={styles.container}>
