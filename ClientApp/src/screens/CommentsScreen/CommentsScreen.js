@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { BaseUrl } from '../../components/Common/BaseUrl'
 import axios from 'axios';
-import GoBackHeader from '../../components/GoBackHeader';
 import Footer from '../../components/Footer';
+
+import GoBackHeader from '../../components/GoBackHeader';
 import Comment from '../../components/Comments/CommentComponent';
 import CommentWriteComponent from '../../components/Comments/CommentWriteComponent';
 import Fish from '../../../assets/images/Fish.png';
