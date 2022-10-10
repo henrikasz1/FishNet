@@ -157,7 +157,7 @@ namespace API.Services
         public async Task<IList<GetFriendsDto>> GetPendingFriendRequests()
         {
             var user = await _dataContext.Users
-                .Include(x => x.Friends.Where(y => y.Status == FriendshipState.Pending))
+                .Include(x => x.Friends.Where(y => y.State == FriendshipState.Pending))
                 .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(_userAccessorService.GetCurrentUserId()));
 
             var friends = new List<User>();
