@@ -64,6 +64,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+
         //get all posts from non-friends public
         [HttpGet("remainingposts")]
         public async Task<ActionResult<IList<GetPostDto>>> GetRemainingPosts([FromQuery] int batchSize = 0)
