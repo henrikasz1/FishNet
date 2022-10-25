@@ -63,7 +63,40 @@ namespace API.Services
             return response;
         }
         
-        
+        public async Task<IList<GetCommentDto>> GetAllPostComments(Guid postId)
+        {
+            var comms = await _dataContext.Comments.Include(x => x.User).Where(x => x.Post.PostId == postId).ToListAsync();
+
+            var result = new List<GetCommentDto>();
+
+            foreach (var comm in comms)
+            {
+                var user = await _dataContext.Users
+                    .Include(x => x.Photos)
+                    .FirstOrDefaultAsync(x => x.UserId == comm.User.UserId);
+
+                var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ?
+                    user.Photos.FirstOrDefault(x => x.IsMain == true).Url : string.Empty;
+
+                result.Add(new GetCommentDto
+                {
+                    CommentId = comm.CommentId,
+                    
+                    UserId = comm.User.UserId,
+                    
+                    UserName = comm.User.FirstName + ' ' + comm.User.LastName,
+                    
+                    UserMainPhoto = userMainPhoto,
+                    
+                    Body = comm.Body,
+                    
+                    LikesCount = comm.LikesCount,
+                    
+                    CreatedAt = comm.CreatedAt
+                });
+            }
+            return result;
+        }
 
         public async Task<CommentResponse> DeleteComment(Guid commentId)
         {
@@ -88,7 +121,33 @@ namespace API.Services
             return response;
         }
 
-        
+        public async Task<CommentResponse> UpdateComment(Guid commentId, CommentDto newComment)
+        {
+            var response = new CommentResponse();
+            var comm = await _dataContext.Comments.Include(x => x.User).FirstOrDefaultAsync(x => x.CommentId == commentId);
+
+            if (comm == null) { response.Status = "Could not find comment"; return response; }
+
+            var user = Guid.Parse(_userAccessorService.GetCurrentUserId());
+
+            if (comm.User.UserId != user) throw new Exception("You are not aloud to delete this comment");
+
+            comm.Body = newComment.Body ?? comm.Body;
+
+            if (comm.Body == newComment.Body)
+            {
+                comm.CreatedAt = DateTime.Now;
+                
+                response.Status = "Comment updated successfully";
+            }
+
+            var result = await _dataContext.SaveChangesAsync() > 0;
+
+            if (!result) response.Status = "Failed to delete comment";
+            else response.Status = "Comment delete successfully";
+
+            return response;
+        }
         
         public async Task<IList<GetLikesDto>> GetCommentLikesById(Guid commentId)
         {
