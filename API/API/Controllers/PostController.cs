@@ -80,5 +80,24 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        //get all posts from friends
+        [HttpGet("allfriendposts")]
+        public async Task<ActionResult<IList<GetPostDto>>> GetAllFriendPosts([FromQuery] int batchSize = 0)
+        {
+            var result = await _postService.GetAllFriendPosts(batchSize);
+
+            return Ok(result);
+        }
+
+        [HttpPost("delete/{id}")]
+        public async Task<IActionResult> DeletePost([FromBody]string id)
+        {
+            await _postService.DeletePostById(id);
+
+
+            return Ok();
+        }
+
     }
 }
