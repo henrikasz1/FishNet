@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Dtos.LikesDto;
-
 namespace API.Services
 {
     public interface IPostService
@@ -13,7 +12,11 @@ namespace API.Services
         Task<GetPostDto> GetPostById(Guid postId);
         Task<IList<GetPostDto>> GetPostsByUserId(Guid userId, int batchNumber);
         Task<IList<GetPostDto>> GetAllPosts();
+
+        public Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber);
+
         Task<IList<GetPostDto>> GetRemainingPublicPosts(int batchNumber);
+        public Task DeletePostById(string id);
         Task UpdatePostById(Guid postId, EditPostDto newPost);
         Task<IList<GetLikesDto>> GetPostLikesById(Guid postId);
     }
