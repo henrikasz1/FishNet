@@ -30,21 +30,9 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("getall/{postId}")]
-        public async Task<ActionResult<IList<GetCommentDto>>> GettAllPostComments(Guid postId)
-        {
-            var result = await _commentService.GetAllPostComments(postId);
+        
 
-            return Ok(result);
-        }
-
-        [HttpPut("update/{commentId}")]
-        public async Task<ActionResult<CommentResponse>> EditComment(Guid commentId, CommentDto comment)
-        {
-            var result = await _commentService.UpdateComment(commentId, comment);
-
-            return Ok();
-        }
+        
 
         [HttpDelete("delete/{commentId}")]
         public async Task<ActionResult<CommentResponse>> DeleteComment(Guid commentId)
