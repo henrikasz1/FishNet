@@ -16,5 +16,8 @@ namespace API.Services
         Task<IList<GetPostDto>> GetRemainingPublicPosts(int batchNumber);
         Task UpdatePostById(Guid postId, EditPostDto newPost);
         Task<IList<GetLikesDto>> GetPostLikesById(Guid postId);
+
+        public Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber);
+        public Task DeletePostById(string id);
     }
 }
