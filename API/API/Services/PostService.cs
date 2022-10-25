@@ -204,51 +204,7 @@ namespace API.Services
             return postsDtoList;
         }
 
-        //the idea discussed is fetching friends posts from one endpoint and if theres no more left we fetch public posts excluding our friends
-        //this endpoint handles the posts from friends
-        public async Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber)
-        {
-            var postsDtoList = new List<GetPostDto>();
-            var observer = _userAccessorService.GetCurrentUserId();
-
-            var posts = await _dataContext.Posts
-                .Select(x => x)
-                .Include(y => y.Photos)
-                .Where(x => x.UserId != Guid.Parse(observer) && x.postType == PostType.Feed)
-                .Skip(5*batchNumber)
-                .Take(5)
-                .ToListAsync();
-
-            foreach (var post in posts)
-            {
-                var postOwner = await _dataContext.Users
-                    .Include(x => x.Friends)
-                    .FirstOrDefaultAsync(x => x.UserId == post.UserId);
-                
-                
-                var commentsAmount = await _dataContext.Comments
-                    .CountAsync(comm => comm.Post.PostId == post.PostId);
-
-
-                if (postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
-                {
-                    postsDtoList.Add(
-                    new GetPostDto
-                    {
-                        PostId = post.PostId,
-                        UserId = post.UserId,
-                        Body = post.Body,
-                        CreatedAt = post.CreatedAt,
-                        LikesCount = post.LikesCount,
-                        Photos = post.Photos,
-                        CommentsCount = commentsAmount
-                    });
-                }
-            }
-
-            return postsDtoList;
-        }
-
+ 
         public async Task<IList<GetPostDto>> GetRemainingPublicPosts(int batchNumber)
         {
             var postsDtoList = new List<GetPostDto>();
@@ -288,33 +244,6 @@ namespace API.Services
             }
 
             return postsDtoList;
-        }
-
-        public async Task DeletePostById(string id)
-        {
-            var userId = _userAccessorService.GetCurrentUserId();
-
-            var postToDelete = await _dataContext.Posts.Include(x => x.Photos)
-                .FirstOrDefaultAsync(y => y.PostId == Guid.Parse(id));
-
-            if (postToDelete.UserId != Guid.Parse(userId))
-            {
-                throw new UnauthorizedAccessException("User does not own this post");
-            }
-
-            foreach (var photo in postToDelete.Photos)
-            {
-                await _photoService.DeletePostPhoto(photo);
-            }
-
-            _dataContext.Posts.Remove(postToDelete);
-
-            var result = await _dataContext.SaveChangesAsync() > 0;
-
-            if (!result)
-            {
-                throw new DbUpdateException("Unable to remove post");
-            }
         }
 
         public async Task UpdatePostById(Guid postId, EditPostDto newPost)
