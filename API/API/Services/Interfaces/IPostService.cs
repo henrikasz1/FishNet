@@ -13,11 +13,7 @@ namespace API.Services
         Task<GetPostDto> GetPostById(Guid postId);
         Task<IList<GetPostDto>> GetPostsByUserId(Guid userId, int batchNumber);
         Task<IList<GetPostDto>> GetAllPosts();
-
-        Task<IList<GetPostDto>> GetAllFriendPosts(int batchNumber);
-
         Task<IList<GetPostDto>> GetRemainingPublicPosts(int batchNumber);
-        Task DeletePostById(string id);
         Task UpdatePostById(Guid postId, EditPostDto newPost);
         Task<IList<GetLikesDto>> GetPostLikesById(Guid postId);
     }
