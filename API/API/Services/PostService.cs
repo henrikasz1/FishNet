@@ -28,7 +28,7 @@ namespace API.Services
             _photoService = photoService;
         }
 
-        public async Task AddPost(List<IFormFile> files, AddPostDto post)
+        public async Task AddPost(List<IFormFile> file, AddPostDto post)
         {
             var userId = _userAccessorService.GetCurrentUserId();
 
@@ -44,7 +44,7 @@ namespace API.Services
 
             var result = await _dataContext.SaveChangesAsync() > 0;
 
-            foreach (var photo in files)
+            foreach (var photo in file)
             {
                 await _photoService.SavePostPhoto(photo, newPost.PostId);
             }
@@ -71,7 +71,7 @@ namespace API.Services
                 .CountAsync(comm => comm.Post.PostId == post.PostId);
 
 
-            if (postOwner.IsProfilePrivate == true && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+            if (postOwner.IsProfilePrivate && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
             {
                 throw new UnauthorizedAccessException("You are not alowed to view this post");
             }
@@ -98,19 +98,20 @@ namespace API.Services
                 .Where(x => x.ObjectId == postId)
                 .ToListAsync();
 
-            foreach (var like in likes)
+            foreach (var loverId in likes.Select(x => x.LoverId))
             {
                 var user = await _dataContext.Users
                     .Include(x => x.Photos)
-                    .FirstOrDefaultAsync(x => x.UserId == like.LoverId);
-                var userMainPhoto = user.Photos.Where(x => x.IsMain == true).Any() ? user.Photos
-                    .FirstOrDefault(x => x.IsMain == true)
-                    .Url : string.Empty;
+                    .FirstOrDefaultAsync(x => x.UserId == loverId);
+
+                var userMainPhoto = user.Photos != null && user.Photos.Any(x => x.IsMain) ? 
+                    user.Photos.First(x => x.IsMain).Url :
+                    string.Empty;
                 
                 usersDtoList.Add(
                     new GetLikesDto()
                     {
-                        UserId = like.LoverId,
+                        UserId = loverId,
                         MainPhotoUrl = userMainPhoto,
                         FirstName= user.FirstName,
                         LastName = user.LastName
@@ -135,7 +136,7 @@ namespace API.Services
                 .Include(x => x.Friends)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
-            if (postOwner.IsProfilePrivate == true && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+            if (postOwner.IsProfilePrivate && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
             {
                 throw new UnauthorizedAccessException("You are not alowed to view this user's activity");
             }
@@ -184,8 +185,8 @@ namespace API.Services
                 var commentsAmount = await _dataContext.Comments
                     .CountAsync(comm => comm.Post.PostId == post.PostId);
 
-                if (postOwner.IsProfilePrivate == true && postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)) 
-                    || postOwner.IsProfilePrivate == false)
+                if (postOwner.IsProfilePrivate && postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)) 
+                    || !postOwner.IsProfilePrivate)
                 {
                     postsDtoList.Add(
                     new GetPostDto
@@ -227,7 +228,7 @@ namespace API.Services
                 var commentsAmount = await _dataContext.Comments
                     .CountAsync(comm => comm.Post.PostId == post.PostId);
 
-                if (postOwner.IsProfilePrivate == false && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
+                if (!postOwner.IsProfilePrivate && !postOwner.Friends.Any(x => x.FriendId == Guid.Parse(observer)))
                 {
                     postsDtoList.Add(
                     new GetPostDto

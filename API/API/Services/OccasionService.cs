@@ -65,7 +65,7 @@ namespace API.Services
             }
             else
             {
-                throw new Exception("Select a proper date");
+                throw new ArgumentException("Select a proper date");
             }
         }
 
@@ -76,10 +76,10 @@ namespace API.Services
                 .Include(y => y.Participants)
                 .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
-            if (occasion == null) throw new Exception("Invalid occasion");
+            if (occasion == null) throw new InvalidOperationException("Invalid occasion");
             if (occasion.Participants.Any(x => Equals(userId)))
             {
-                throw new Exception("User has already joined the event");
+                throw new InvalidOperationException("User has already joined the event");
             }
             
             var participant = new OccasionUser()
@@ -107,16 +107,16 @@ namespace API.Services
                 .Include(y => y.Participants)
                 .FirstOrDefaultAsync(y => y.OccasionId == occasionId);
 
-            if (occasion == null) throw new Exception("Invalid occasion");
+            if (occasion == null) throw new InvalidOperationException("Invalid occasion");
             
             if (occasion.Participants.All(x => x.UserId != Guid.Parse(userId)))
             {
-                throw new Exception("User has not joined the event yet");
+                throw new InvalidOperationException("User has not joined the event yet");
             }
 
             if (occasion.HostId != Guid.Parse(userId))
             {
-                throw new Exception("As an occasion host, you cannot leave the occasion");
+                throw new InvalidOperationException("As an occasion host, you cannot leave the occasion");
             }
             occasion.ParticipantsCount--;
             _dataContext.OccasionUsers.Remove(user);
@@ -166,92 +166,47 @@ namespace API.Services
             
             foreach (var occasion in occasions)
             {
-                var occasionMainPhoto = occasion.Photos.Any() ? occasion.Photos
-                    .FirstOrDefault(x => x.IsMain == true)
-                    .Url : string.Empty;
+                var occasionMainPhoto = occasion.Photos != null && occasion.Photos.Any(x => x.IsMain) ? 
+                    occasion.Photos.FirstOrDefault(x => x.IsMain).Url :
+                    string.Empty;
 
-                occasionsList.Add( new GetSearchResultsDto
-                {
-                    EntityId = occasion.OccasionId,
-                    EntityMainPhotoUrl = occasionMainPhoto,
-                    EntityName = occasion.Title,
-                    EntityType = SearchResultType.Event
-                });
+                occasionsList.Add( 
+                    new GetSearchResultsDto
+                    {
+                        EntityId = occasion.OccasionId,
+                        EntityMainPhotoUrl = occasionMainPhoto,
+                        EntityName = occasion.Title,
+                        EntityType = SearchResultType.Event
+                    });
             }
             return occasionsList;
         }
 
         public async Task<IList<GetOccasionDto>> GetAllOccasions()
         {
-            var occasionsList = new List<GetOccasionDto>();
-            
             var occasions = await _dataContext.Occasions
                 .Select(y => y)
                 .Include(y => y.Participants)
                 .Include(y => y.Photos)
                 .ToListAsync();
 
-            foreach (var occasion in occasions)
-            {
-                var getOccasion = new GetOccasionDto
-                {
-                    OccasionId = occasion.OccasionId,
-                    HostId = occasion.HostId,
-                    Title = occasion.Title,
-                    Description = occasion.Description,
-                    Location = occasion.Location,
-                    StartsAt = occasion.StartsAt,
-                    EndsAt = occasion.EndsAt,
-                    ParticipantsCount = occasion.ParticipantsCount,
-                    Photos = occasion.Photos,
-                };
-                getOccasion.ParticipantsIds = new List<Guid>();
-                foreach (var participant in occasion.Participants)
-                {
-                    getOccasion.ParticipantsIds.Add(participant.UserId);
-                }
-                occasionsList.Add(getOccasion);
-            }
-            return occasionsList;
+            return GetOccasionsList(occasions);
         }
 
         public async Task<IList<GetOccasionDto>> GetOccasionsByHostId(Guid hostId)
         {
-            var occasionsList = new List<GetOccasionDto>();
-
             var occasions = await _dataContext.Occasions
                 .Where(y => y.HostId == hostId)
                 .Include(y => y.Participants)
                 .Include(y => y.Photos)
                 .ToListAsync();
 
-            foreach (var occasion in occasions)
-            {
-                var getOccasion = new GetOccasionDto
-                {
-                    OccasionId = occasion.OccasionId,
-                    HostId = occasion.HostId,
-                    Title = occasion.Title,
-                    Description = occasion.Description,
-                    Location = occasion.Location,
-                    StartsAt = occasion.StartsAt,
-                    EndsAt = occasion.EndsAt,
-                    ParticipantsCount = occasion.ParticipantsCount,
-                    Photos = occasion.Photos,
-                };
-                getOccasion.ParticipantsIds = new List<Guid>();
-                foreach (var participant in occasion.Participants)
-                {
-                    getOccasion.ParticipantsIds.Add(participant.UserId);
-                }
-                occasionsList.Add(getOccasion);
-            }
-            return occasionsList;
+            return GetOccasionsList(occasions);
         }
 
-        public async Task DeleteOccasionById(Guid occasionId)
+        public async Task DeleteOccasionById(Guid eventId)
         {
-            var occasion = await _dataContext.Occasions.FindAsync(occasionId);
+            var occasion = await _dataContext.Occasions.FindAsync(eventId);
             
             var hostId = _userAccessorService.GetCurrentUserId();
 
@@ -302,13 +257,45 @@ namespace API.Services
                 }
                 else
                 {
-                    throw new Exception("Select a proper date");
+                    throw new ArgumentException("Select a proper date");
                 }
             }
             else
             {
-                throw new Exception("Occasion has started or ended. You cannot change the date");
+                throw new InvalidOperationException("Occasion has started or ended. You cannot change the date");
             }
+        }
+
+        private List<GetOccasionDto> GetOccasionsList(List<Occasion> occasions)
+        {
+            var occasionsList = new List<GetOccasionDto>();
+
+            foreach (var occasion in occasions)
+            {
+                var getOccasion = new GetOccasionDto
+                {
+                    OccasionId = occasion.OccasionId,
+                    HostId = occasion.HostId,
+                    Title = occasion.Title,
+                    Description = occasion.Description,
+                    Location = occasion.Location,
+                    StartsAt = occasion.StartsAt,
+                    EndsAt = occasion.EndsAt,
+                    ParticipantsCount = occasion.ParticipantsCount,
+                    Photos = occasion.Photos,
+                };
+
+                getOccasion.ParticipantsIds = new List<Guid>();
+
+                foreach (var participant in occasion.Participants)
+                {
+                    getOccasion.ParticipantsIds.Add(participant.UserId);
+                }
+
+                occasionsList.Add(getOccasion);
+            }
+
+            return occasionsList;
         }
     }
 }

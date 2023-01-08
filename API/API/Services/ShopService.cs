@@ -81,126 +81,54 @@ namespace API.Services
 
         public async Task<IList<GetShopAdDto>> GetShopAdsByUserId(Guid userId)
         {
-            var shopAdsDtoList = new List<GetShopAdDto>();
-
             var shopAds = await _dataContext.ShopAdverts.Where(x => x.UserId == userId)
                 .Include(y => y.Photos)
                 .ToListAsync();
 
-            foreach (var shopAd in shopAds)
-            {
-                shopAdsDtoList.Add(
-                    new GetShopAdDto
-                    {
-                        ShopId = shopAd.ShopId,
-                        UserId = shopAd.UserId,
-                        ProductName = shopAd.ProductName,
-                        Price = shopAd.Price,
-                        Location = shopAd.Location,
-                        Description = shopAd.Description,
-                        ProductType = shopAd.ProductType,
-                        CreatedAt = DateTime.Now,
-                        LikesCount = shopAd.LikesCount,
-                        Photos = shopAd.Photos
-                    });
-            }
+            var shopAdsDtoList = GetShopAdList(shopAds);
 
-            return shopAdsDtoList == null
+            return shopAdsDtoList.Any()
                 ? throw new Exception("Could not find any advertisements")
                 : shopAdsDtoList;
         }
 
         public async Task<IList<GetShopAdDto>> GetAllShopAds()
         {
-            var shopAdsDtoList = new List<GetShopAdDto>();
-
             var shopAds = await _dataContext.ShopAdverts
                .Include(y => y.Photos)
                .ToListAsync();
 
-            foreach (var shopAd in shopAds)
-            {
-                shopAdsDtoList.Add(
-                    new GetShopAdDto
-                    {
-                        ShopId = shopAd.ShopId,
-                        UserId = shopAd.UserId,
-                        ProductName = shopAd.ProductName,
-                        Price = shopAd.Price,
-                        Location = shopAd.Location,
-                        Description = shopAd.Description,
-                        ProductType = shopAd.ProductType,
-                        CreatedAt = DateTime.Now,
-                        LikesCount = shopAd.LikesCount,
-                        Photos = shopAd.Photos
-                    });
-            }
+            var shopAdsDtoList = GetShopAdList(shopAds);
 
-            return shopAdsDtoList == null
+            return shopAdsDtoList.Any()
                 ? throw new Exception("Could not find any advertisements")
                 : shopAdsDtoList;
         }
 
         public async Task<IList<GetShopAdDto>> GetShopAdsByName(string filter)
         {
-            var shopAdsDtoList = new List<GetShopAdDto>();
-
             var shopAds = await _dataContext.ShopAdverts
                .Include(y => y.Photos)
                .Where(x => x.ProductName.ToLower().Contains(filter.ToLower()))
                .ToListAsync();
 
-            foreach (var shopAd in shopAds)
-            {
-                shopAdsDtoList.Add(
-                    new GetShopAdDto
-                    {
-                        ShopId = shopAd.ShopId,
-                        UserId = shopAd.UserId,
-                        ProductName = shopAd.ProductName,
-                        Price = shopAd.Price,
-                        Location = shopAd.Location,
-                        Description = shopAd.Description,
-                        ProductType = shopAd.ProductType,
-                        CreatedAt = DateTime.Now,
-                        LikesCount = shopAd.LikesCount,
-                        Photos = shopAd.Photos
-                    });
-            }
+            var shopAdsDtoList = GetShopAdList(shopAds);
 
-            return shopAdsDtoList == null
+            return shopAdsDtoList.Any()
                 ? throw new Exception("Could not find any advertisements")
                 : shopAdsDtoList;
         }
 
         public async Task<IList<GetShopAdDto>> GetShopAdByCategory(ProductType category)
         {
-            var shopAdsDtoList = new List<GetShopAdDto>();
-
             var shopAds = await _dataContext.ShopAdverts
                 .Include(x => x.Photos)
                 .Where(x => x.ProductType == category)
                 .ToListAsync();
 
-            foreach (var shopAd in shopAds)
-            {
-                shopAdsDtoList.Add(
-                    new GetShopAdDto
-                    {
-                        ShopId = shopAd.ShopId,
-                        UserId = shopAd.UserId,
-                        ProductName = shopAd.ProductName,
-                        Price = shopAd.Price,
-                        Location = shopAd.Location,
-                        Description = shopAd.Description,
-                        ProductType = shopAd.ProductType,
-                        CreatedAt = DateTime.Now,
-                        LikesCount = shopAd.LikesCount,
-                        Photos = shopAd.Photos
-                    });
-            }
+            var shopAdsDtoList = GetShopAdList(shopAds);
 
-            return shopAdsDtoList == null
+            return shopAdsDtoList.Any()
                 ? throw new Exception("Could not find any advertisements")
                 : shopAdsDtoList;
         }
@@ -254,6 +182,31 @@ namespace API.Services
             {
                 throw new DbUpdateException("Could not update advertisement");
             }
+        }
+
+        private List<GetShopAdDto> GetShopAdList(List<Shop> shopAds)
+        {
+            var shopAdsDtoList = new List<GetShopAdDto>();
+
+            foreach (var shopAd in shopAds)
+            {
+                shopAdsDtoList.Add(
+                    new GetShopAdDto
+                    {
+                        ShopId = shopAd.ShopId,
+                        UserId = shopAd.UserId,
+                        ProductName = shopAd.ProductName,
+                        Price = shopAd.Price,
+                        Location = shopAd.Location,
+                        Description = shopAd.Description,
+                        ProductType = shopAd.ProductType,
+                        CreatedAt = DateTime.Now,
+                        LikesCount = shopAd.LikesCount,
+                        Photos = shopAd.Photos
+                    });
+            }
+
+            return shopAdsDtoList;
         }
     }
 }
